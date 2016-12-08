@@ -76,6 +76,37 @@
          <groupId>org.dspace</groupId>
          <artifactId>dspace-api</artifactId>
       </dependency>
+
+      <dependency>
+         <groupId>org.dspace.modules</groupId>
+         <artifactId>framework</artifactId>
+         <version>5.6-0.5.2-0</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.glassfish.jersey.core</groupId>
+         <artifactId>jersey-client</artifactId>
+         <version>2.9.1</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-impl</artifactId>
+         <version>1.2.14</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.ws.commons.axiom</groupId>
+         <artifactId>axiom-api</artifactId>
+         <version>1.2.14</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.neethi</groupId>
+         <artifactId>neethi</artifactId>
+         <version>3.0.2</version>
+      </dependency>
+
       <dependency>
          <groupId>org.dspace</groupId>
          <artifactId>dspace-api-lang</artifactId>
@@ -97,6 +128,16 @@
          </exclusions>
       </dependency>
 
+      <dependency>
+         <groupId>javax.ws.rs</groupId>
+         <artifactId>javax.ws.rs-api</artifactId>
+         <version>2.0.1</version>
+      </dependency>
+      <dependency>
+         <groupId>junit</groupId>
+         <artifactId>junit</artifactId>
+         <version>4.11</version>
+      </dependency>
    </dependencies>
 
 </project>

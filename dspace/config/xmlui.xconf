@@ -87,6 +87,8 @@
         <aspect name="E-Person" path="resource://aspects/EPerson/" />
         <aspect name="Submission and Workflow" path="resource://aspects/Submission/" />
 
+        <aspect name="ScienceDirect" path="resource://aspects/ScienceDirect/" />
+
         <!-- ========================
              Usage Statistics Engines
              ======================== -->

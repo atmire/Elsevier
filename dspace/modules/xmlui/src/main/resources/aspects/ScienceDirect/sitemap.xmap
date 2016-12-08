@@ -1,0 +1,37 @@
+<map:sitemap xmlns:map="http://apache.org/cocoon/sitemap/1.0">
+
+    <map:components>
+        <map:transformers>
+            <map:transformer name="ElsevierEmbed" src="com.atmire.sciencedirect.embed.ElsevierEmbed"/>
+        </map:transformers>
+
+        <map:matchers default="wildcard">
+            <map:matcher name="HandleTypeMatcher" src="org.dspace.app.xmlui.aspect.general.HandleTypeMatcher"/>
+            <map:matcher name="HandleAuthorizedMatcher" src="org.dspace.app.xmlui.aspect.general.HandleAuthorizedMatcher"/>
+        </map:matchers>
+
+    </map:components>
+
+
+    <map:pipelines>
+        <map:pipeline>
+            <map:generate/>
+
+
+            <map:match pattern="handle/*/*/elsevier-embed/**">
+                <map:match type="HandleAuthorizedMatcher" pattern="READ">
+                    <map:match type="HandleTypeMatcher" pattern="item">
+                        <map:transform type="ElsevierEmbed">
+                            <map:parameter name="handle" value="{../../1}/{../../2}"/>
+                            <map:parameter name="pii" value="{../../3}"/>
+                            <!-- 1x ../ per map:match parent-->
+                        </map:transform>
+                        <map:serialize type="xml"/>
+                    </map:match>
+                </map:match>
+            </map:match>
+
+            <map:serialize type="xml"/>
+        </map:pipeline>
+    </map:pipelines>
+</map:sitemap>

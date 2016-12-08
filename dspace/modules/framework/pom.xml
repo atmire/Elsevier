@@ -1,0 +1,61 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.dspace.modules</groupId>
+    <artifactId>framework</artifactId>
+    <version>5.6-0.5.2-0</version>
+    <name>Imports and citations framework</name>
+
+    <!--
+       A Parent POM that Maven inherits DSpace Defaults
+       POM atrributes from.
+    -->
+    <parent>
+        <groupId>org.dspace</groupId>
+        <artifactId>modules</artifactId>
+        <version>5.6</version>
+        <relativePath>..</relativePath>
+    </parent>
+
+    <build>
+       <plugins>
+         <plugin>
+             <groupId>com.mycila.maven-license-plugin</groupId>
+             <artifactId>maven-license-plugin</artifactId>
+             <configuration>
+                 <!--Exclude license check for all messages.xml files-->
+                 <excludes>
+                     <exclude>**/*</exclude>
+                 </excludes>
+             </configuration>
+         </plugin>
+       </plugins>
+    </build>
+
+    <!--
+       Runtime and Compile Time dependencies for DSpace.
+    -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.dspace</groupId>
+            <artifactId>dspace-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-impl</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom</groupId>
+            <artifactId>axiom-api</artifactId>
+            <version>1.2.14</version>
+        </dependency>
+
+
+
+    </dependencies>
+
+</project>
