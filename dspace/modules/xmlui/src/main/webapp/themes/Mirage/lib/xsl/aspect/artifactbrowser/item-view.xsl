@@ -338,6 +338,10 @@
         <table class="ds-includeSet-table detailtable">
             <xsl:apply-templates mode="itemDetailView-DIM"/>
         </table>
+
+        <xsl:if test='confman:getProperty("elsevier-sciencedirect.embed.link.position") = "top"'>
+            <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
+        </xsl:if>
         <span class="Z3988">
             <xsl:attribute name="title">
                 <xsl:call-template name="renderCOinS"/>
@@ -708,14 +712,7 @@
                         <xsl:attribute name="href">
                             <xsl:value-of select="dri:xref/@target"/>
                         </xsl:attribute>
-                        <img alt="Icon" src="{concat($theme-path, '/images/mime.png')}" style="max-height: {$thumbnail.maxheight}px;">
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="$pii-url"/>
-                                <xsl:text>?apiKey=</xsl:text>
-                                <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.key')"/>
-                                <xsl:text>&amp;httpAccept=image/png&amp;cdnRedirect=true</xsl:text>
-                            </xsl:attribute>
-                        </img>
+                        <img alt="Icon" src="{concat($theme-path, '/images/app-pdf.png')}" style="max-height: {$thumbnail.maxheight}px;"/>
                     </a>
                 </div>
                 <div class="file-metadata" style="max-height: {$thumbnail.maxheight}px;">
@@ -728,12 +725,19 @@
                         </a>
                     </div>
                     <div>
-                        <span class="checkmark">
-                            <xsl:text> </xsl:text>
-                            <xsl:text>&#10003;</xsl:text>
-                        </span>
-                        <span>
+                        <span class="full-text-access hidden">
                             <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_access</i18n:text>
+                        </span>
+                        <span class="open-access hidden">
+                            <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_openaccess</i18n:text>
+                        </span>
+                        <span class="checkmark">
+                            <a>
+                            <xsl:attribute name="href">
+                                <xsl:call-template name="linkToArticleUrl"/>
+                            </xsl:attribute>
+                            <img alt="Icon" src="{concat($theme-path, '/images/greenArrowInBox.svg')}" style="height: 14px;"/>
+                            </a>
                         </span>
                     </div>
                 </div>
@@ -742,27 +746,17 @@
                 <div class="thumbnail-wrapper" style="width: {$thumbnail.maxwidth}px;">
                     <a>
                         <xsl:attribute name="href">
-                            <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'ui.article.url')"/>
-                            <xsl:text>/pii/</xsl:text>
-                            <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
+                            <xsl:call-template name="linkToArticleUrl"/>
                         </xsl:attribute>
-                        <img alt="Icon" src="{concat($theme-path, '/images/mime.png')}" style="max-height: {$thumbnail.maxheight}px;">
-                            <xsl:attribute name="src">
-                                <xsl:value-of select="$pii-url"/>
-                                <xsl:text>?apiKey=</xsl:text>
-                                <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.key')"/>
-                                <xsl:text>&amp;httpAccept=image/png&amp;cdnRedirect=true</xsl:text>
-                            </xsl:attribute>
-                        </img>
+                        <img alt="Icon" src="{concat($theme-path, '/images/app-pdf.png')}" style="max-height: {$thumbnail.maxheight}px;"/>
                     </a>
+
                 </div>
                 <div class="file-metadata" style="max-height: {$thumbnail.maxheight}px;">
                     <div>
                         <a>
                             <xsl:attribute name="href">
-                                <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'ui.article.url')"/>
-                                <xsl:text>/pii/</xsl:text>
-                                <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
+                                <xsl:call-template name="linkToArticleUrl"/>
                             </xsl:attribute>
                             <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_view</i18n:text>
                         </a>
@@ -774,8 +768,20 @@
                     </div>
                 </div>
             </div>
+            <a>
+                <xsl:attribute name="href">
+                    <xsl:value-of select="dri:xref/@target"/>
+                </xsl:attribute>
+                <i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-viewOpen</i18n:text>
+            </a>
+
         </div>
 
     </xsl:template>
 
+    <xsl:template name="linkToArticleUrl">
+        <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'ui.article.url')"/>
+        <xsl:text>/pii/</xsl:text>
+        <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
+    </xsl:template>
 </xsl:stylesheet>

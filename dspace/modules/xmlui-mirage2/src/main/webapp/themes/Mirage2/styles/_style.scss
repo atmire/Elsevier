@@ -59,3 +59,47 @@
     margin-bottom:5px;
   }
 }
+
+.modal-open  {
+    #main-container {
+        overflow: visible;
+    }
+    .navbar {
+        z-index:0;
+    }
+}
+
+#com_atmire_scidir_LiveImportResult_div_live-import-result{
+    .pagination-next {
+        float:right;
+    }
+}
+
+.import-record {
+    padding-bottom: 15px;
+}
+
+.record-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.record-checkbox .checkbox {
+    margin:0;
+}
+
+#com_atmire_scidir_LiveImportResult_div_pagination .ds-paragraph,
+#com_atmire_scidir_LiveImportResult_div_navigation-buttons .ds-paragraph,
+#com_atmire_scidir_LiveImportSelected_div_navigation-buttons .ds-paragraph{
+    display: inline;
+}
+
+.records-selected {
+    padding-top:10px;
+}
+
+#elsevier-embed-wrapper .checkmark{
+    color: green;
+    margin-right:5px;
+    margin-left:5px;
+}

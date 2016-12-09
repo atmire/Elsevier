@@ -242,7 +242,8 @@
 	<message key="xmlui.ArtifactBrowser.ItemViewer.withdrawn">This item has been withdrawn and is no longer available.</message>
 	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed">Publisher version</message>
 	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_view">View publisher version</message>
-	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_access">You have access</message>
+	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_access">Access full-text PDF</message>
+	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_openaccess">Open Access</message>
 	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_noaccess">Check access options</message>
 	<message key="xmlui.ArtifactBrowser.ItemViewer.elsevier_entitlement">entitlement</message>
 

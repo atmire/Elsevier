@@ -1495,7 +1495,7 @@ ol.ds-ordered-list ol.ds-ordered-list ol.ds-ordered-list {
 }
 
 .lookup-counter{
-    margin-top:35px
+    margin-top:35px;
     margin-bottom:35px
 }
 
@@ -1593,5 +1593,6 @@ ol.ds-ordered-list ol.ds-ordered-list ol.ds-ordered-list {
 
 #elsevier-embed-wrapper .checkmark{
     color: green;
-    margin-right:3px;
+    margin-right:5px;
+    margin-left:5px;
 }

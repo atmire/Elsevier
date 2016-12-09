@@ -46,7 +46,15 @@
 
                     if (entitledString === 'true' || entitledString === 'open_access') {
                         $('#elsevier-embed-wrapper').find('.noaccess').addClass("hidden");
-                        $('#elsevier-embed-wrapper').find('.access').removeClass("hidden");
+                        var access = $('#elsevier-embed-wrapper').find('.access');
+                        access.removeClass("hidden");
+                        if (entitledString === 'open_access') {
+                            access.find('.open-access').removeClass("hidden");
+                            access.find('.full-text-access').addClass("hidden");
+                        } else if (entitledString === 'true') {
+                            access.find('.open-access').addClass("hidden");
+                            access.find('.full-text-access').removeClass("hidden");
+                        }
                     }
                 }
 
