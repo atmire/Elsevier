@@ -202,7 +202,7 @@
     </bean>
 
     <bean id="scidirDoiContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.identifier"/>
+        <property name="field" ref="elsevier.identifier.doi"/>
         <property name="query" value="prism:doi"/>
     </bean>
 
@@ -242,22 +242,22 @@
     </bean>
 
     <bean id="scidirVolumeContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.relation.isversionof"/>
+        <property name="field" ref="elsevier.volume"/>
         <property name="query" value="prism:volume"/>
     </bean>
 
     <bean id="scidirIssueIdentifierContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.identifier"/>
+        <property name="field" ref="elsevier.issue.identifier"/>
         <property name="query" value="prism:issueIdentifier"/>
     </bean>
 
     <bean id="scidirIssueNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.description"/>
+        <property name="field" ref="elsevier.issue.name"/>
         <property name="query" value="prism:issueName"/>
     </bean>
 
     <bean id="scidirCoverdateContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.date.available"/>
+        <property name="field" ref="elsevier.coverdate"/>
         <property name="query" value="prism:coverDate"/>
     </bean>
 
@@ -267,42 +267,42 @@
     </bean>
 
     <bean id="scidirCoverdisplaydateContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.date.available"/>
+        <property name="field" ref="elsevier.coverdisplaydate"/>
         <property name="query" value="prism:coverDisplayDate"/>
     </bean>
 
     <bean id="scidirStartingpageContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.format.extent"/>
+        <property name="field" ref="elsevier.startingpage"/>
         <property name="query" value="prism:startingPage"/>
     </bean>
 
     <bean id="scidirEndingpageContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.format.extent"/>
+        <property name="field" ref="elsevier.endingpage"/>
         <property name="query" value="prism:endingPage"/>
     </bean>
 
     <bean id="scidirOpenaccessContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.rights"/>
+        <property name="field" ref="elsevier.openaccess"/>
         <property name="query" value="x:openaccess"/>
     </bean>
 
     <bean id="scidirOpenaccessflagContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.rights"/>
+        <property name="field" ref="elsevier.openaccessflag"/>
         <property name="query" value="x:openaccessFlag"/>
     </bean>
 
     <bean id="scidirOpenaccessarticleContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.rights"/>
+        <property name="field" ref="elsevier.openaccessarticle"/>
         <property name="query" value="x:openaccessArticle"/>
     </bean>
 
     <bean id="scidirOpenarchivearticleContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.rights"/>
+        <property name="field" ref="elsevier.openarchivearticle"/>
         <property name="query" value="x:openArchiveArticle"/>
     </bean>
 
     <bean id="scidirOpenaccessuserlicenseContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.rights"/>
+        <property name="field" ref="elsevier.openaccessuserlicense"/>
         <property name="query" value="x:openaccessUserLicense"/>
     </bean>
 
@@ -312,7 +312,7 @@
     </bean>
 
     <bean id="scidirPiiContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.identifier.other"/>
+        <property name="field" ref="elsevier.identifier.pii"/>
         <property name="query" value="x:pii"/>
     </bean>
 
@@ -338,27 +338,27 @@
     </bean>
 
     <bean id="scidirTeaserContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.description"/>
+        <property name="field" ref="elsevier.teaser"/>
         <property name="query" value="prism:teaser"/>
     </bean>
 
     <bean id="scidirurlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.source.uri"/>
+        <property name="field" ref="elsevier.url.scidir"/>
         <property name="query" value="x:link[@ref='scidir']/@href"/>
     </bean>
 
     <bean id="scidirSelfurlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.source.uri"/>
+        <property name="field" ref="elsevier.url.self"/>
         <property name="query" value="x:link[@ref='self']/@href"/>
     </bean>
 
     <bean id="scidirAbstracturlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.description.abstract"/>
+        <property name="field" ref="elsevier.url.abstract"/>
         <property name="query" value="x:link[@ref='abstract']/@href"/>
     </bean>
 
     <bean id="scidirEditionContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.relation.isversionof"/>
+        <property name="field" ref="elsevier.edition"/>
         <property name="query" value="x:link[@ref='self']/@href"/>
     </bean>
 
@@ -368,7 +368,7 @@
     </bean>
 
     <bean id="scidirAggregationtypeContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.relation.isformatof"/>
+        <property name="field" ref="elsevier.aggregationtype"/>
         <property name="query" value="prism:aggregationType"/>
     </bean>
 

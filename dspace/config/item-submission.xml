@@ -237,13 +237,13 @@
        -->
 
       <!--Step 4 will be to Upload the item -->
-      <step>
-        <heading>submit.progressbar.upload</heading>
-        <processing-class>org.dspace.submit.step.UploadStep</processing-class>
-        <jspui-binding>org.dspace.app.webui.submit.step.JSPUploadStep</jspui-binding>
-		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadStep</xmlui-binding>
-        <workflow-editable>true</workflow-editable>
-      </step>
+      <!--<step>-->
+        <!--<heading>submit.progressbar.upload</heading>-->
+        <!--<processing-class>org.dspace.submit.step.UploadStep</processing-class>-->
+        <!--<jspui-binding>org.dspace.app.webui.submit.step.JSPUploadStep</jspui-binding>-->
+		<!--<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.UploadStep</xmlui-binding>-->
+        <!--<workflow-editable>true</workflow-editable>-->
+      <!--</step>-->
       
 
        <!-- Step 4 Upload Item with Embargo Features
@@ -259,14 +259,14 @@
 
 
        <!-- Step 4 Upload Item with ScienceDirect Embargo Features
-            to enable this step, please make sure to comment-out the previous step "UploadStep"
+            to enable this step, please make sure to comment-out the previous step "UploadStep"      -->
        <step>
            <heading>submit.progressbar.upload</heading>
            <processing-class>org.dspace.submit.step.ElsevierUploadStep</processing-class>
            <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.ElsevierUploadStep</xmlui-binding>
            <workflow-editable>true</workflow-editable>
        </step>
-       -->
+
 
  	  <!--Step 5 will be to Verify/Review everything -->
  	  <step>
