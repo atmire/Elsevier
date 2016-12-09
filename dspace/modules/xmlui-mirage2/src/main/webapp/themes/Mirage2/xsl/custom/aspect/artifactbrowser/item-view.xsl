@@ -68,6 +68,8 @@
                         </xsl:choose>
                     </xsl:variable>
 
+                    <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
+
                     <xsl:for-each select="//mets:fileSec/mets:fileGrp[@USE='CONTENT' or @USE='ORIGINAL' or @USE='LICENSE']/mets:file">
                         <xsl:call-template name="itemSummaryView-DIM-file-section-entry">
                             <xsl:with-param name="href" select="mets:FLocat[@LOCTYPE='URL']/@xlink:href" />
@@ -79,8 +81,6 @@
                             <xsl:with-param name="size" select="@SIZE" />
                         </xsl:call-template>
                     </xsl:for-each>
-
-                    <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
                 </div>
             </xsl:when>
             <!-- Special case for handling ORE resource maps stored as DSpace bitstreams -->
