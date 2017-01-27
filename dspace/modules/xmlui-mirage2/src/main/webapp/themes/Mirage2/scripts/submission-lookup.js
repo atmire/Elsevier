@@ -24,7 +24,7 @@
         event.preventDefault();
         var searchInput = "";
 
-        $("input[id^='aspect_submission_StepTransformer_field_'][type='text']").each(function () {
+        $("input[id^='aspect_submission_StepTransformer_field_'][type='text'], input[id^='aspect_submission_StepTransformer_field_'][type='hidden']").each(function () {
             if($(this).val()) {
 
                 if (searchInput != "") {
@@ -59,7 +59,7 @@
                     event.preventDefault();
                     var eid = $(this).attr("id").substring('records-import-'.length);
                     $("#aspect_submission_StepTransformer_field_import_id").val(eid);
-                    $("#aspect_submission_StepTransformer_div_StartSubmissionLookupStep").submit();
+                    $("#aspect_submission_StepTransformer_div_submit-lookup").submit();
                 });
             }
         });

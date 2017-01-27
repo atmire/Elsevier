@@ -28,15 +28,32 @@
             };
 
             var doCall = false;
-
+            var showPublisherVersion = false;
             if (DSpace.item_pii) {
                 doCall = true;
                 url += '/pii/' + DSpace.item_pii;
-            } else if (DSpace.item_doi) {
+                showPublisherVersion=true;
+            } else if (DSpace.item_eid) {
+                doCall = true;
+                url += '/eid/' + DSpace.item_eid;
+            }else if (DSpace.item_doi) {
                 doCall = true;
                 url += '/doi/' + DSpace.item_doi;
+                showPublisherVersion=true;
+            }else if (DSpace.item_scopus_id) {
+                doCall = true;
+                url += '/scopus_id/' + DSpace.item_scopus_id;
+            }else if (DSpace.item_pubmed_id) {
+                doCall = true;
+                url += '/pubmed_id/' + DSpace.item_pubmed_id;
             }
 
+            if(showPublisherVersion){
+                $('.publiserVersionLink').removeClass("hidden");
+                $('.nonPublisherViewerLink').addClass("hidden");
+            } else{
+                $('.nonPublisherViewerLink').removeClass("hidden");
+            }
             if (doCall) {
 
                 function handleSuccess(response) {

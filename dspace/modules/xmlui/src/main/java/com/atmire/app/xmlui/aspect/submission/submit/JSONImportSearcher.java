@@ -1,9 +1,11 @@
 package com.atmire.app.xmlui.aspect.submission.submit;
 
+import com.atmire.import_citations.AbstractImportSource;
 import com.atmire.import_citations.configuration.*;
 import com.atmire.import_citations.configuration.metadatamapping.MetadataField;
 import com.atmire.import_citations.datamodel.*;
 import java.io.*;
+import java.net.URLEncoder;
 import java.sql.*;
 import java.util.Collection;
 import java.util.*;
@@ -33,11 +35,9 @@ import org.xml.sax.*;
 public class JSONImportSearcher extends AbstractGenerator {
 
     private ImportService importService;
-
-    private String url = ConfigurationManager.getProperty("elsevier-sciencedirect", "api.scidir.url");
-
+    private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
     private static Logger log = Logger.getLogger(JSONImportSearcher.class);
-
+    private AbstractImportSource source;
     private Request request;
     private Context context;
 
@@ -45,6 +45,7 @@ public class JSONImportSearcher extends AbstractGenerator {
     public void setup(SourceResolver resolver, Map objectModel, String src, Parameters par) throws ProcessingException, SAXException, IOException {
         super.setup(resolver, objectModel, src, par);
         request = ObjectModelHelper.getRequest(objectModel);
+        source = sources.get(request.getParameter("source"));
         try {
             context = ContextUtil.obtainContext(objectModel);
         } catch (SQLException e) {
@@ -55,20 +56,30 @@ public class JSONImportSearcher extends AbstractGenerator {
 
     @Override
     public void generate() throws IOException, SAXException, ProcessingException {
-        HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
 
-        StringBuilder query = new StringBuilder();
-
-        for (String field : liveImportFields.keySet()) {
+        String query = "";
+        Map<String, String> fields = source.getImportFields();
+        for (String field : fields.keySet()) {
             String queryString = request.getParameter(field);
 
             if(StringUtils.isNotBlank(queryString)){
                 if(StringUtils.isNotBlank(query.toString())) {
-                    query.append(" AND ");
+                    query += " AND ";
                 }
-
-                query.append(liveImportFields.get(field) + "(" + queryString + ")");
+                query += fields.get(field);
+                if (StringUtils.isNotBlank(fields.get(field))) {
+                    query += ("(" + queryString + ")");
+                } else {
+                    query += queryString ;
+                }
             }
+        }
+
+        try {
+            query = URLEncoder.encode(query, "UTF-8");
+            query = query.replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
         }
 
         int start = 0;
@@ -81,8 +92,11 @@ public class JSONImportSearcher extends AbstractGenerator {
         }
 
         try {
-            int total = importService.getNbRecords(url, query.toString());
-            Collection<Record> records = importService.getRecords(url, query.toString(), start, 20);
+            int total = importService.getNbRecords(source.getImportSource(), query);
+            Collection<Record> records = importService.getRecords(source.getImportSource(), query, start, 20);
+
+            MetadataField importIdField = new MetadataField(source.getIdField());
+
 
             DocumentBuilderFactory dbfac = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = dbfac.newDocumentBuilder();
@@ -100,12 +114,15 @@ public class JSONImportSearcher extends AbstractGenerator {
             startNode.setTextContent(String.valueOf(start));
             rootnode.appendChild(startNode);
 
+            Element idFieldNode = document.createElement("identifier");
+            idFieldNode.setTextContent(importIdField.getField());
+            rootnode.appendChild(idFieldNode);
+
             Element recordsNode = document.createElement("records");
             recordsNode.setAttribute("array", "true");
             rootnode.appendChild(recordsNode);
             recordsNode.setAttribute("array", "true");
 
-            MetadataField importIdField = new DSpace().getServiceManager().getServiceByName("importId", MetadataField.class);
 
             for (Record record : records) {
                 Element recordWrapperNode = document.createElement("recordWrapper");

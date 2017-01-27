@@ -53,7 +53,11 @@
             <artifactId>axiom-api</artifactId>
             <version>1.2.14</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-rs-client</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
 
     </dependencies>

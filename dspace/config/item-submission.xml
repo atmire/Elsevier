@@ -197,7 +197,15 @@
 		<xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.InitialQuestionsStep</xmlui-binding>
 	    <workflow-editable>true</workflow-editable>
 	  </step> -->
-      
+
+       <step>
+           <heading>submit.progressbar.sourcechoice</heading>
+           <processing-class>com.atmire.submit.step.SourceChoiceStep</processing-class>
+           <jspui-binding>org.dspace.app.webui.submit.step.JSPInitialQuestionsStep</jspui-binding>
+           <xmlui-binding>com.atmire.app.xmlui.aspect.submission.submit.SourceChoiceStep</xmlui-binding>
+           <workflow-editable>true</workflow-editable>
+       </step>
+
        <step>
            <heading>submit.progressbar.liveimport</heading>
            <processing-class>com.atmire.submit.step.LiveImportStep</processing-class>
