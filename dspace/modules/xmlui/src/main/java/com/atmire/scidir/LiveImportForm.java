@@ -62,11 +62,11 @@ public class LiveImportForm extends AbstractDSpaceTransformer {
 
         div.addPara().addContent(T_hint);
 
-        HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
+        ScidirSource scidirSource = new DSpace().getServiceManager().getServiceByName("ScidirImportService", ScidirSource.class);
 
         List form = div.addList("submit-liveimport", List.TYPE_FORM);
 
-        for (String field : liveImportFields.keySet()) {
+        for (String field : scidirSource.getImportFields().keySet()) {
             Text text = form.addItem().addText(field);
             text.setLabel(message("xmlui.scidir.live-import." + field));
             text.setHelp(message("xmlui.scidir.live-import." + field + "_hint"));

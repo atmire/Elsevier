@@ -1,9 +1,12 @@
 package com.atmire.submit.step;
 
+import com.atmire.import_citations.AbstractImportSource;
 import com.atmire.import_citations.configuration.*;
 import com.atmire.import_citations.datamodel.*;
 import java.io.*;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.apache.commons.lang.*;
@@ -21,8 +24,9 @@ import org.dspace.utils.*;
  * Time: 15:33
  */
 public class LiveImportStep extends AbstractProcessingStep {
-    private String url = ConfigurationManager.getProperty("elsevier-sciencedirect", "api.scidir.url");
     private static Logger log = Logger.getLogger(LiveImportStep.class);
+    private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
+
 
     @Override
     public int doProcessing(Context context, HttpServletRequest request, HttpServletResponse response, SubmissionInfo subInfo) throws ServletException, IOException, SQLException, AuthorizeException {
@@ -39,11 +43,17 @@ public class LiveImportStep extends AbstractProcessingStep {
         if (StringUtils.isNotBlank(importId)) {
             ImportService importService = new DSpace().getServiceManager().getServiceByName(null, ImportService.class);
             Item item = subInfo.getSubmissionItem().getItem();
+
+            String importSourceString = item.getMetadata("workflow.import.source");
+            AbstractImportSource importSource = sources.get(importSourceString);
+
             try {
-                Record record = importService.getRecord(url, "eid(" + importId + ")");
+                Record record = importService.getRecord(importSource.getImportSource(), "eid(" + importId + ")");
 
                 for (Metadatum metadatum : item.getMetadata(Item.ANY, Item.ANY, Item.ANY, Item.ANY)) {
-                    item.clearMetadata(metadatum.schema, metadatum.element, metadatum.qualifier, metadatum.language);
+                    if (!metadatum.getField().equals("workflow.import.source")) {
+                        item.clearMetadata(metadatum.schema, metadatum.element, metadatum.qualifier, metadatum.language);
+                    }
                 }
 
                 for (Metadatum metadatum : record.getValueList()) {

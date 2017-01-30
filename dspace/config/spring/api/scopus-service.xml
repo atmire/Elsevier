@@ -11,25 +11,14 @@
        default-autowire-candidates="*Service,*DAO,javax.sql.DataSource,*Map">
 
     <context:annotation-config/>
-
-    <util:map id="scidirImportFields" value-type="java.lang.String" key-type="java.lang.String">
-        <entry key="affiliation" value="aff"/>
-        <entry key="title" value="ttl"/>
-        <entry key="author" value="aut"/>
+    <util:map id="scopusImportFields">
+        <entry key="affiliation" value="affil"/>
+        <entry key="title" value="title"/>
+        <entry key="author" value="auth"/>
         <entry key="doi" value="doi"/>
     </util:map>
 
-    <bean name="LiveImportUtils" class="com.atmire.util.LiveImportUtils" />
-
-    <util:map id="FullprefixMapping" key-type="java.lang.String" value-type="java.lang.String">
-        <description>Defines the namespace mappin for the SimpleXpathMetadatum contributors</description>
-        <entry key="http://purl.org/dc/elements/1.1/" value="dc"/>
-        <entry key="http://prismstandard.org/namespaces/basic/2.0/" value="prism"/>
-        <entry key="http://a9.com/-/spec/opensearch/1.1/" value="opensearch"/>
-        <entry key="http://www.w3.org/2005/Atom" value="x"/>
-    </util:map>
-
-    <util:map id="scidirMetadataFieldMap" key-type="com.atmire.import_citations.MetadataField"
+    <util:map id="scopusMetadataFieldMap" key-type="com.atmire.import_citations.configuration.metadatamapping.MetadataField"
               value-type="com.atmire.import_citations.configuration.metadatamapping.MetadataContributor">
         <description>Defines which metadatum is mapped on which metadatum. Note that while the key must be unique it
             only matters here for postprocessing of the value. The mapped MetadatumContributor has full control over
@@ -39,6 +28,7 @@
         <entry key-ref="elsevier.identifier.doi" value-ref="doiContrib"/>
         <entry key-ref="dc.identifier" value-ref="identifierContrib"/>
         <entry key-ref="dc.identifier.uri" value-ref="uriContrib"/>
+        <entry key-ref="elsevier.identifier.scopusid" value-ref="scopusIdContrib"/>
         <entry key-ref="elsevier.identifier.eid" value-ref="eidContrib"/>
         <entry key-ref="dc.creator" value-ref="creatorContrib"/>
         <entry key-ref="dc.relation.ispartof" value-ref="publicationContrib"/>
@@ -59,7 +49,7 @@
         <entry key-ref="elsevier.openaccessuserlicense" value-ref="openaccessuserlicenseContrib"/>
         <entry key-ref="dc.type" value-ref="typeContrib"/>
         <entry key-ref="elsevier.identifier.pii" value-ref="piiContrib"/>
-        <entry key-ref="dc.contributor.author" value-ref="authorContrib"/>
+        <entry key-ref="dc.contributor.author" value-ref="scopusAuthorContrib"/>
         <entry key-ref="elsevier.teaser" value-ref="teaserContrib"/>
         <entry key-ref="elsevier.url.scidir" value-ref="scidirurlContrib"/>
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
@@ -70,21 +60,53 @@
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
     </util:map>
 
-    <!--einde!!-->
+    <bean id="scopusIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.identifier.scopusid"/>
+        <property name="query" value="dc:identifier"/>
+    </bean>
 
-    <bean class="com.atmire.scidir.DOIBasedQueryGenerator" id="DOIBasedService">
-        <description>Defines how an org.dspace.content.Item is mapped to a query in ISI. Please note that exactly one of
+    <bean id="scopusAuthorContrib" class="com.atmire.import_citations.configuration.metadatamapping.CombinedMetadatumContributor">
+        <property name="separator" value=", "/>
+        <property name="metadatumContributors" ref="scopusCombinedauthorList"/>
+        <property name="field" ref="dc.contributor.author"/>
+    </bean>
+
+    <util:list id="scopusCombinedauthorList" value-type="com.atmire.import_citations.configuration.metadatamapping.MetadataContributor" list-class="java.util.LinkedList">
+        <ref bean="scopusLastNameContrib"/>
+        <ref bean="scopusFirstNameContrib"/>
+    </util:list>
+
+    <bean id="scopusLastNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:author/x:surname"/>
+    </bean>
+
+    <bean id="scopusFirstNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:author/x:given-name"/>
+    </bean>
+
+    <bean name="identifyingMetadataField" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
+        <description>For autowiring the DOI based service.</description>
+        <constructor-arg ref="identifyingField"/>
+    </bean>
+
+    <bean name="fallbackIdentifyingMetadataField" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
+        <description>For autowiring the DOI based service.</description>
+        <constructor-arg ref="fallbackIdentifyingField"/>
+    </bean>
+
+    <bean class="java.lang.String" id="identifyingField"  autowire-candidate="true"> <constructor-arg value="dc.identifier.other"/></bean>
+    <bean class="java.lang.String" id="fallbackIdentifyingField"  autowire-candidate="true"> <constructor-arg value="dc.identifier.doi"/></bean>
+
+
+    <bean class="com.atmire.import_citations.GenerateDOIQueryForItem_Scopus" id="DOIBasedScopusService">
+        <description>Defines how an org.dspace.content.Item is mapped to a query in scopus. Please note that exactly one of
             these must be present. If multiple are present the result is undefined.
         </description>
     </bean>
 
-    <bean class="java.lang.Long" id="interRequestTime">
-        <description>Defines the throttling interval for requests to scidir</description>
-        <constructor-arg value="1000"/>
-    </bean>
-
-    <bean class="java.lang.Integer" id="maxRetry">
-        <constructor-arg value="2"/>
-    </bean>
+    <bean class="java.lang.String" id="view"  autowire-candidate="true"> <constructor-arg value="${scopus.import.view}"/></bean>
+    <bean class="java.lang.String" id="scopus-baseAddress"  autowire-candidate="true"> <constructor-arg value="${scopus.import.url}"/></bean>
 
 </beans>

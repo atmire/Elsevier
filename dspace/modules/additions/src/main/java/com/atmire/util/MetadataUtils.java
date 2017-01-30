@@ -4,6 +4,8 @@ import com.atmire.util.helper.*;
 import com.atmire.util.subclasses.*;
 import java.util.*;
 import org.apache.commons.lang.*;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.*;
 import org.dspace.content.*;
 import org.dspace.core.*;
 
@@ -204,6 +206,64 @@ public class MetadataUtils {
 
     public static String getDOI(DSpaceObject item) {
         String doiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.doi");
-        return MetadataUtils.getMetadataFirstValueAnyLanguage(item, doiMdField);
+        String doiValue = MetadataUtils.getMetadataFirstValueAnyLanguage(item, doiMdField);
+        if(StringUtils.isNotBlank(doiValue) && StringUtils.startsWithIgnoreCase(doiValue,"doi:")) {
+            doiValue = doiValue.substring(4);
+        }
+        return doiValue;
+    }
+
+    public static String getEID(DSpaceObject item) {
+        String eidMDField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.eid");
+        return MetadataUtils.getMetadataFirstValueAnyLanguage(item, eidMDField);
+    }
+
+    public static String getScopusID(DSpaceObject item) {
+        String scopuMDField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.scopus_id");
+        String scopusField = MetadataUtils.getMetadataFirstValueAnyLanguage(item, scopuMDField);
+        if(StringUtils.startsWithIgnoreCase(scopusField,"SCOPUS_ID:")){
+            scopusField= scopusField.substring("SCOPUS_ID:".length());
+        }
+        return scopusField;
+    }
+
+    public static String getPubmedID(DSpaceObject item) {
+        String pubmedMDField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.pubmed_id");
+        return MetadataUtils.getMetadataFirstValueAnyLanguage(item, pubmedMDField);
+    }
+
+    public enum IdentifierTypes{
+        PII {
+            @Override
+            public String getIdentifier(Item item) {
+                return getPII(item);
+            }
+        },
+        DOI {
+            @Override
+            public String getIdentifier(Item item) {
+                return getDOI(item);
+            }
+        },
+        EID {
+            @Override
+            public String getIdentifier(Item item) {
+                return getEID(item);
+            }
+        },
+        SCOPUS_ID {
+            @Override
+            public String getIdentifier(Item item) {
+                return getScopusID(item);
+            }
+        },
+        PUBMED_ID {
+            @Override
+            public String getIdentifier(Item item) {
+                return getPubmedID(item);
+            }
+        };
+
+      public abstract String getIdentifier(Item item);
     }
 }

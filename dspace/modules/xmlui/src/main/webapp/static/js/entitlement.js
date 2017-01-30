@@ -8,6 +8,21 @@
 (function ($) {
 
 
+    function publisherVersionVisibility(showPublisherVersion) {
+        if (showPublisherVersion) {
+            $('.publiserVersionLink').removeClass("hidden");
+            $('.nonPublisherViewerLink').addClass("hidden");
+            $('a.no_accessThumbnailLinking')
+            $('a.embeddedViewOpenLink').attr('href',$('a.no_accessThumbnailLinking').attr('href'));
+            $('a.embeddedViewOpenLink').removeClass("hidden");
+
+        } else {
+            $('.nonPublisherViewerLink').removeClass("hidden");
+            // Don't link to the embedded page if the entitlement check has failed
+            $('a.embeddedViewOpenLink').addClass("hidden");
+            $('a.no_accessThumbnailLinking').removeAttr("href");
+        }
+    }
     $(document).ready(function () {
         var url;
         var params;
@@ -28,13 +43,24 @@
             };
 
             var doCall = false;
-
+            var showPublisherVersion = false;
             if (DSpace.item_pii) {
                 doCall = true;
                 url += '/pii/' + DSpace.item_pii;
-            } else if (DSpace.item_doi) {
+                showPublisherVersion=true;
+            } else if (DSpace.item_eid) {
+                doCall = true;
+                url += '/eid/' + DSpace.item_eid;
+            }else if (DSpace.item_doi) {
                 doCall = true;
                 url += '/doi/' + DSpace.item_doi;
+                showPublisherVersion=true;
+            }else if (DSpace.item_scopus_id) {
+                doCall = true;
+                url += '/scopus_id/' + DSpace.item_scopus_id;
+            }else if (DSpace.item_pubmed_id) {
+                doCall = true;
+                url += '/pubmed_id/' + DSpace.item_pubmed_id;
             }
 
             if (doCall) {
@@ -45,6 +71,11 @@
                     var link = document['link']['@href'];
 
                     if (entitledString === 'true' || entitledString === 'open_access') {
+                        // If entitled-> Always show publisher version
+                        $('.publiserVersionLink').removeClass("hidden");
+                        $('.nonPublisherViewerLink').removeClass("hidden");
+                        $('.embeddedViewOpenLink').removeClass("hidden");
+
                         $('#elsevier-embed-wrapper').find('.noaccess').addClass("hidden");
                         var access = $('#elsevier-embed-wrapper').find('.access');
                         access.removeClass("hidden");
@@ -55,14 +86,22 @@
                             access.find('.open-access').addClass("hidden");
                             access.find('.full-text-access').removeClass("hidden");
                         }
+                    } else{
+                        // If not entitled, use "default" visibility
+                        publisherVersionVisibility(showPublisherVersion);
                     }
+                }
+
+                function handleError(response) {
+                    publisherVersionVisibility(showPublisherVersion);
                 }
 
                 $.ajax({
                     dataType: 'json',
                     url: url,
                     data: params,
-                    success: handleSuccess
+                    success: handleSuccess,
+                     error: handleError
                 });
             }
         }

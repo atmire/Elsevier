@@ -72,6 +72,7 @@
    Runtime and Compile Time dependencies for DSpace.
    -->
    <dependencies>
+
       <dependency>
          <groupId>org.dspace</groupId>
          <artifactId>dspace-api</artifactId>
@@ -138,6 +139,7 @@
          <artifactId>junit</artifactId>
          <version>4.11</version>
       </dependency>
+
    </dependencies>
 
 </project>
