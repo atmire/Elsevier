@@ -732,7 +732,7 @@
                         <span class="checkmark">
                             <a>
                             <xsl:attribute name="href">
-                                <xsl:call-template name="linkToArticleUrl"/>
+                                <xsl:value-of select="dri:xref/@target"/>
                             </xsl:attribute>
                             <img alt="Icon" src="{concat($theme-path, '/images/greenArrowInBox.svg')}" style="height: 14px;"/>
                             </a>
@@ -742,7 +742,7 @@
                 </div>
                 <div class="noaccess">
                 <div class="thumbnail-wrapper" style="width: {$thumbnail.maxwidth}px;">
-                    <a>
+                    <a class="no_accessThumbnailLinking">
                         <xsl:attribute name="href">
                             <xsl:call-template name="linkToArticleUrl"/>
                         </xsl:attribute>
@@ -766,7 +766,7 @@
                     </div>
                 </div>
             </div>
-            <a>
+            <a class="embeddedViewOpenLink hidden">
                 <xsl:attribute name="href">
                     <xsl:value-of select="dri:xref/@target"/>
                 </xsl:attribute>
