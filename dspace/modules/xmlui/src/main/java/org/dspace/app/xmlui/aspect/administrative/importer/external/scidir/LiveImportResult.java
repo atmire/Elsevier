@@ -26,6 +26,7 @@ import org.dspace.authorize.*;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.metadatamapping.*;
 import org.dspace.importer.external.scidir.util.*;
+import org.dspace.importer.external.service.AbstractImportMetadataSourceService;
 import org.dspace.utils.*;
 import org.xml.sax.*;
 
@@ -53,8 +54,8 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
     public static final String NEXT_BUTTON = "submit_next";
     public static final String BACK_BUTTON = "submit_back";
 
-    private HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
     private LiveImportUtils liveImportUtils = new DSpace().getServiceManager().getServiceByName("LiveImportUtils", LiveImportUtils.class);
+    private Map<String, AbstractImportMetadataSourceService> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     private Request request;
     private String buttonPressed;
@@ -143,7 +144,9 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         Division div = body.addInteractiveDivision("live-import-result", contextPath + "/liveimport/result", Division.METHOD_POST, "");
         div.setHead(T_head);
 
-        HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request);
+        AbstractImportMetadataSourceService importSource = sources.get("science");
+        Map<String, String> importFields = importSource.getImportFields();
+        HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request, importSource);
 
         for (String field : fieldValues.keySet()) {
             div.addHidden(field).setValue(fieldValues.get(field));
@@ -151,11 +154,11 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
 
 
 
-        for (String field : liveImportFields.keySet()) {
+        for (String field : importFields.keySet()) {
             String value = request.getParameter(field);
 
             if(StringUtils.isNotBlank(value)){
-                fieldValues.put(liveImportFields.get(field),value);
+                fieldValues.put(importFields.get(field),value);
                 div.addHidden(field).setValue(value);
             }
         }

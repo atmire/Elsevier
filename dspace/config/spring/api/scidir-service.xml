@@ -13,14 +13,17 @@
     <context:annotation-config/>
 
     <bean id="ScidirImportService" class="org.dspace.importer.external.scidir.ScidirImportSourceServiceImpl" scope="singleton">
-        <constructor-arg ref="DOIBasedService"/>
-        <constructor-arg ref="ScidirMetadataFieldMapping"/>
+        <property name="metadataFieldMapping" ref="ScidirMetadataFieldMapping"/>
         <property name="apiUrl" value="http://api.elsevier.com/content/search/scidir"/>
+        <property name="name" value="ScienceDirect"/>
+        <property name="importFields" ref="scidirImportFields"/>
+        <property name="apiKey" ref="apiKey"/>
+        <property name="idField" value="elsevier.identifier.eid"/>
     </bean>
 
     <bean id="ScidirMetadataFieldMapping" class="org.dspace.importer.external.scidir.ScidirMetadataFieldMapping"/>
 
-    <util:map id="LiveImportFields">
+    <util:map id="scidirImportFields" value-type="java.lang.String" key-type="java.lang.String">
         <entry key="affiliation" value="aff"/>
         <entry key="title" value="ttl"/>
         <entry key="author" value="aut"/>
@@ -37,45 +40,46 @@
         <entry key="http://www.w3.org/2005/Atom" value="x"/>
     </util:map>
 
+
     <util:map id="scidirMetadataFieldMap" key-type="org.dspace.importer.external.metadatamapping.MetadataFieldConfig"
               value-type="org.dspace.importer.external.metadatamapping.contributor.MetadataContributor">
         <description>Defines which metadatum is mapped on which metadatum. Note that while the key must be unique it
             only matters here for postprocessing of the value. The mapped MetadatumContributor has full control over
             what metadatafield is generated.
         </description>
-        <entry key-ref="dc.title" value-ref="scidirTitleContrib"/>
-        <entry key-ref="elsevier.identifier.doi" value-ref="scidirDoiContrib"/>
-        <entry key-ref="dc.identifier.uri" value-ref="scidirUriContrib"/>
-        <entry key-ref="dc.identifier" value-ref="scidirIdentifierContrib"/>
-        <entry key-ref="elsevier.identifier.eid" value-ref="scidirEidContrib"/>
-        <entry key-ref="dc.creator" value-ref="scidirCreatorContrib"/>
-        <entry key-ref="dc.relation.ispartof" value-ref="scidirPublicationContrib"/>
-        <entry key-ref="dc.identifier.issn" value-ref="scidirIssnContrib"/>
-        <entry key-ref="dc.identifier.isbn" value-ref="scidirIsbnContrib"/>
-        <entry key-ref="elsevier.volume" value-ref="scidirVolumeContrib"/>
-        <entry key-ref="elsevier.issue.identifier" value-ref="scidirIssueIdentifierContrib"/>
-        <entry key-ref="elsevier.issue.name" value-ref="scidirIssueNameContrib"/>
-        <entry key-ref="elsevier.coverdate" value-ref="scidirCoverdateContrib"/>
+        <entry key-ref="dc.title" value-ref="titleContrib"/>
+        <entry key-ref="elsevier.identifier.doi" value-ref="doiContrib"/>
+        <entry key-ref="dc.identifier" value-ref="identifierContrib"/>
+        <entry key-ref="dc.identifier.uri" value-ref="uriContrib"/>
+        <entry key-ref="elsevier.identifier.eid" value-ref="eidContrib"/>
+        <entry key-ref="dc.creator" value-ref="creatorContrib"/>
+        <entry key-ref="dc.relation.ispartof" value-ref="publicationContrib"/>
+        <entry key-ref="dc.identifier.issn" value-ref="issnContrib"/>
+        <entry key-ref="dc.identifier.isbn" value-ref="isbnContrib"/>
+        <entry key-ref="elsevier.volume" value-ref="volumeContrib"/>
+        <entry key-ref="elsevier.issue.identifier" value-ref="issueIdentifierContrib"/>
+        <entry key-ref="elsevier.issue.name" value-ref="issueNameContrib"/>
+        <entry key-ref="elsevier.coverdate" value-ref="coverdateContrib"/>
         <entry key-ref="dc.date.issued" value-ref="scidirDateIssuedContrib"/>
-        <entry key-ref="elsevier.coverdisplaydate" value-ref="scidirCoverdisplaydateContrib"/>
-        <entry key-ref="elsevier.startingpage" value-ref="scidirStartingpageContrib"/>
-        <entry key-ref="elsevier.endingpage" value-ref="scidirEndingpageContrib"/>
-        <entry key-ref="elsevier.openaccess" value-ref="scidirOpenaccessContrib"/>
-        <entry key-ref="elsevier.openaccessflag" value-ref="scidirOpenaccessflagContrib"/>
-        <entry key-ref="elsevier.openaccessarticle" value-ref="scidirOpenaccessarticleContrib"/>
-        <entry key-ref="elsevier.openarchivearticle" value-ref="scidirOpenarchivearticleContrib"/>
-        <entry key-ref="elsevier.openaccessuserlicense" value-ref="scidirOpenaccessuserlicenseContrib"/>
-        <entry key-ref="dc.type" value-ref="scidirTypeContrib"/>
-        <entry key-ref="elsevier.identifier.pii" value-ref="scidirPiiContrib"/>
-        <entry key-ref="dc.contributor.author" value-ref="scidirAuthorContrib"/>
-        <entry key-ref="elsevier.teaser" value-ref="scidirTeaserContrib"/>
+        <entry key-ref="elsevier.coverdisplaydate" value-ref="coverdisplaydateContrib"/>
+        <entry key-ref="elsevier.startingpage" value-ref="startingpageContrib"/>
+        <entry key-ref="elsevier.endingpage" value-ref="endingpageContrib"/>
+        <entry key-ref="elsevier.openaccess" value-ref="openaccessContrib"/>
+        <entry key-ref="elsevier.openaccessflag" value-ref="openaccessflagContrib"/>
+        <entry key-ref="elsevier.openaccessarticle" value-ref="openaccessarticleContrib"/>
+        <entry key-ref="elsevier.openarchivearticle" value-ref="openarchivearticleContrib"/>
+        <entry key-ref="elsevier.openaccessuserlicense" value-ref="openaccessuserlicenseContrib"/>
+        <entry key-ref="dc.type" value-ref="typeContrib"/>
+        <entry key-ref="elsevier.identifier.pii" value-ref="piiContrib"/>
+        <entry key-ref="dc.contributor.author" value-ref="authorContrib"/>
+        <entry key-ref="elsevier.teaser" value-ref="teaserContrib"/>
         <entry key-ref="elsevier.url.scidir" value-ref="scidirurlContrib"/>
-        <entry key-ref="elsevier.url.self" value-ref="scidirSelfurlContrib"/>
-        <entry key-ref="elsevier.url.abstract" value-ref="scidirAbstracturlContrib"/>
-        <entry key-ref="elsevier.edition" value-ref="scidirEditionContrib"/>
-        <entry key-ref="dc.description.abstract" value-ref="scidirAbstractContrib"/>
-        <entry key-ref="elsevier.aggregationtype" value-ref="scidirAggregationtypeContrib"/>
-        <entry key-ref="dc.rights.license" value-ref="scidirCopyrightContrib"/>
+        <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
+        <entry key-ref="elsevier.url.abstract" value-ref="abstracturlContrib"/>
+        <entry key-ref="elsevier.edition" value-ref="editionContrib"/>
+        <entry key-ref="dc.description.abstract" value-ref="abstractContrib"/>
+        <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
+        <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
     </util:map>
 
     <bean class="org.dspace.importer.external.scidir.GenerateQueryForItem" id="DOIBasedService">

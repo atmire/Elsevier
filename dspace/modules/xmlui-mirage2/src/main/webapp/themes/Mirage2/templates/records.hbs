@@ -24,7 +24,7 @@
                     {{/each}}
                 </li>
                 <li {{#if record.[imported]}}class="imported"{{/if}}>
-                    <button id="records-import-{{record.[elsevier.identifier.eid]}}" class="ds-button-field btn btn-default records-import-btn float-right" name="import" type="submit">Import</button>
+                    <button id="records-import-{{lookup record ../identifier}}" class="ds-button-field btn btn-default records-import-btn float-right" name="import" type="submit">Import</button>
                 </li>
             {{/each}}
         </ul>

@@ -135,11 +135,8 @@
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']"/>
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply" >
         <div id="elsevier-embed-wrapper">
-
-            <xsl:variable name="pii-url">
-                <xsl:value-of select="confman:getProperty('elsevier-sciencedirect.ui.article.url')"/>
-                <xsl:text>/pii/</xsl:text>
-                <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
+            <xsl:variable name="embeddedLink">
+                <xsl:value-of select="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']/dri:field[@n='embeddedLink']"/>
             </xsl:variable>
 
             <div class="access hidden">
@@ -167,9 +164,9 @@
             </div>
             <div class="noaccess">
                 <div>
-                    <a>
+                    <a class="publiserVersionLink hidden">
                         <xsl:attribute name="href">
-                            <xsl:value-of select="$pii-url"/>
+                            <xsl:value-of select="$embeddedLink"/>
                         </xsl:attribute>
                         <i aria-hidden="true" class="glyphicon  glyphicon-lock"></i>
                         <xsl:text> </xsl:text>
@@ -178,6 +175,9 @@
                         <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_noaccess</i18n:text>
                         <xsl:text>)</xsl:text>
                     </a>
+                    <div class="nonPublisherViewerLink">
+                        <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_noaccess</i18n:text>
+                    </div>
                 </div>
             </div>
         </div>

@@ -27,7 +27,6 @@ import org.dspace.content.service.*;
 import org.dspace.fileaccess.factory.*;
 import org.dspace.fileaccess.service.*;
 import org.dspace.importer.external.scidir.entitlement.*;
-import org.dspace.services.factory.*;
 import org.xml.sax.*;
 
 /**
@@ -143,14 +142,14 @@ public class EditFileStep extends AbstractStep
         FileAccessUI.addEmbargoDateField(edit, fileAccess);
 
         // if AdvancedAccessPolicy=false: add simmpleFormEmbargo in UploadStep
-        boolean isAdvancedFormEnabled= DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("webui.submission.restrictstep.enableAdvancedForm", false);
-        if(!isAdvancedFormEnabled){
-            AccessStepUtil asu = new AccessStepUtil(context);
-            // this step is possible only in case of AdvancedForm
-            asu.addEmbargoDateSimpleForm(bitstream, edit, errorFlag);
-            // Reason
-            asu.addReason(null, edit, errorFlag);
-        }
+//        boolean isAdvancedFormEnabled= DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("webui.submission.restrictstep.enableAdvancedForm", false);
+//        if(!isAdvancedFormEnabled){
+//            AccessStepUtil asu = new AccessStepUtil(context);
+//            // this step is possible only in case of AdvancedForm
+//            asu.addEmbargoDateSimpleForm(bitstream, edit, errorFlag);
+//            // Reason
+//            asu.addReason(null, edit, errorFlag);
+//        }
         
         edit.addItem(T_info1);
         if (guessedFormat != null)

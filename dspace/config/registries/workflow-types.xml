@@ -40,4 +40,11 @@
     <scope_note>Metadata field used to indicate if the Elsevier permissions were manually overruled during the upload step </scope_note>
   </dc-type>
 
+
+  <dc-type>
+    <schema>workflow</schema>
+    <element>import</element>
+    <qualifier>source</qualifier>
+    <scope_note></scope_note>
+  </dc-type>
 </dspace-dc-types>

@@ -13,6 +13,6 @@
     <context:component-scan base-package="org.dspace.app.xmlui.objectmanager.plugins.adapter.decorators"/>
     <context:component-scan base-package="org.dspace.app.xmlui.aspect.administrative.plugins"/>
 
-    <!--<bean id="FileAccessEditBitstreamFormService" class="org.dspace.app.xmlui.aspect.administrative.plugins.FileAccesEditBitstreamForm" autowire="byType"/>-->
+    <bean id="FileAccessEditBitstreamFormService" class="org.dspace.app.xmlui.aspect.administrative.plugins.FileAccesEditBitstreamForm" autowire="byType"/>
 
 </beans>

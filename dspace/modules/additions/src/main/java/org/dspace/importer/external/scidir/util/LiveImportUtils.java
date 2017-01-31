@@ -7,6 +7,8 @@
  */
 package org.dspace.importer.external.scidir.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 import javax.servlet.http.*;
 import org.apache.commons.lang.*;
@@ -26,9 +28,7 @@ import org.springframework.beans.factory.annotation.*;
 public class LiveImportUtils {
     @Autowired
     private ImportService importService;
-
-    private HashMap<String, String> liveImportFields;
-    private String url;
+    private AbstractImportMetadataSourceService importSource;
 
     Logger log = Logger.getLogger(LiveImportUtils.class);
 
@@ -56,26 +56,41 @@ public class LiveImportUtils {
     }
 
     public String getQuery(HashMap<String, String> fieldValues) {
-        StringBuilder query = new StringBuilder();
+        String query = "";
 
         for (String fieldName : fieldValues.keySet()) {
             if(query.length()>0) {
-                query.append(" AND ");
+                query += (" AND ");
+            }
+            query += (fieldName);
+            String field = fieldValues.get(fieldName);
+            if (StringUtils.isNotBlank(fieldName)) {
+                query += ("(" + field + ")");
+            } else {
+                query +=(field);
+            }
             }
 
-            query.append(fieldName + "(" + fieldValues.get(fieldName) + ")");
+        try {
+            query = URLEncoder.encode(query, "UTF-8");
+            query = query.replace("+", "%20");
+        } catch (UnsupportedEncodingException e) {
+            log.error(e.getMessage(), e);
         }
 
-        return query.toString();
+
+        return query;
     }
 
-    public HashMap<String, String> getFieldValues(HttpServletRequest request){
+    public HashMap<String, String> getFieldValues(HttpServletRequest request, AbstractImportMetadataSourceService source) {
+        importSource = source;
         HashMap<String,String> fieldValues = new HashMap<>();
-        for (String field : getLiveImportFields().keySet()) {
+        Map<String, String> importFields = source.getImportFields();
+        for (String field : importFields.keySet()) {
             String value = request.getParameter(field);
 
             if(StringUtils.isNotBlank(value)){
-                fieldValues.put(getLiveImportFields().get(field), value);
+                fieldValues.put(importFields.get(field), value);
 
             }
         }
@@ -83,17 +98,6 @@ public class LiveImportUtils {
     }
 
     public String getUrl() {
-        if(url==null){
-            url = ConfigurationManager.getProperty("elsevier-sciencedirect.api.scidir.url");
-        }
-        return url;
-    }
-
-    public HashMap<String, String> getLiveImportFields() {
-        if(liveImportFields==null){
-            liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
-        }
-
-        return liveImportFields;
+        return importSource.getImportSource();
     }
 }

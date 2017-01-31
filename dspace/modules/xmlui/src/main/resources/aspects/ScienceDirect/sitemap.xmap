@@ -50,7 +50,7 @@
                     <map:match type="HandleTypeMatcher" pattern="item">
                         <map:transform type="ElsevierEmbed">
                             <map:parameter name="handle" value="{../../1}/{../../2}"/>
-                            <map:parameter name="pii" value="{../../3}"/>
+                            <map:parameter name="identifier" value="{../../3}"/>
                             <!-- 1x ../ per map:match parent-->
                         </map:transform>
                         <map:serialize type="xml"/>

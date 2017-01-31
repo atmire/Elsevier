@@ -34,6 +34,7 @@ import org.dspace.content.*;
 import org.dspace.content.Item;
 import org.dspace.content.crosswalk.*;
 import org.dspace.content.factory.*;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.*;
 import org.dspace.core.factory.*;
 import org.dspace.fileaccess.factory.*;
@@ -85,7 +86,9 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
 
     protected SFXFileReaderService sfxFileReaderService = SfxServiceFactory.getInstance().getSfxFileReaderService();
 
-        protected static ItemMetadataService itemMetadataService = FileAccessServiceFactory.getInstance().getItemMetadataService();
+    protected static ItemMetadataService itemMetadataService = FileAccessServiceFactory.getInstance().getItemMetadataService();
+    protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
+
 
     /**
      * Generate the unique caching key.
@@ -321,12 +324,30 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         boolean entitlementCheck = DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("elsevier-sciencedirect.entitlement.check.enabled", false);
         if(entitlementCheck) {
             pageMeta.addMetadata("window.DSpace", "item_pii").addContent(itemMetadataService.getPII(item));
-            pageMeta.addMetadata("window.DSpace", "item_doi").addContent(itemMetadataService.getDOI(item));
-            pageMeta.addMetadata("window.DSpace", "elsevier_apikey").addContent(DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("elsevier-sciencedirect.api.key"));
-            pageMeta.addMetadata("window.DSpace", "elsevier_entitlement_url").addContent(DSpaceServicesFactory.getInstance().getConfigurationService().getProperty("elsevier-sciencedirect.api.entitlement.url"));
+            pageMeta.addMetadata("window.DSpace", "item_eid").addContent(itemMetadataService.getEID(item));
+            String doi = itemMetadataService.getDOI(item);
+            if (StringUtils.startsWith(doi, "10.1016")) {
+                pageMeta.addMetadata("window.DSpace", "item_doi").addContent(doi);
+            }
+            if (publisherIsElsevier(item)) {
+                pageMeta.addMetadata("window.DSpace", "item_pubmed_id").addContent(itemMetadataService.getPubmedID(item));
+                pageMeta.addMetadata("window.DSpace", "item_scopus_id").addContent(itemMetadataService.getScopusID(item));
+    }
+            pageMeta.addMetadata("window.DSpace", "elsevier_apikey").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.key"));
+            pageMeta.addMetadata("window.DSpace", "elsevier_entitlement_url").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.entitlement.url"));
         }
     }
 
+    private boolean publisherIsElsevier(Item item) {
+        List<MetadataValue> publisherMetadata = itemService.getMetadataByMetadataString(item,"dc.publisher");
+        boolean publisherIsElsevier = false;
+        for(MetadataValue metadatum : publisherMetadata){
+            if(metadatum.getValue().matches("^(?i)elsevier.*")){
+                publisherIsElsevier =true;
+            }
+        }
+        return publisherIsElsevier;
+    }
     /**
      * Display a single item
      * @throws SAXException passed through.
@@ -412,13 +433,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         division.addPara("entitlement", "entitlement-wrapper hidden").addXref("", T_elsevier_entitlement, "entitlement-link");
 
 
-        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect.embed.display");
-        String pii = itemMetadataService.getPII(item);
-        if (embedDisplay && StringUtils.isNotBlank(pii) && StringUtils.isNotBlank(item.getHandle())) {
-            String link = contextPath + "/handle/" + item.getHandle() + "/elsevier-embed/" + pii;
-            Para para = division.addPara("elsevier-embed-page", "elsevier-embed-page");
-            para.addXref(link, T_elsevier_embed);
-        }
+        addEmbeddedDisplayLink(item, division);
 
 
         showfullPara = division.addPara(null,"item-view-toggle item-view-toggle-bottom");
@@ -433,6 +448,47 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             String link = contextPath + "/handle/" + item.getHandle()
                     + "?show=full";
             showfullPara.addXref(link).addContent(T_show_full);
+        }
+    }
+
+    private void addEmbeddedDisplayLink(Item item, Division division) throws WingException {
+        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "embed.display");
+
+        if (embedDisplay) {
+            String pii = itemMetadataService.getPII(item);
+            String doi = itemMetadataService.getDOI(item);
+            String eid = itemMetadataService.getEID(item);
+            String scopus_id = itemMetadataService.getScopusID(item);
+            String pubmed_ID = itemMetadataService.getPubmedID(item);
+            String link = null;
+            String embeddedLink = null;
+            String baseLink = contextPath + "/handle/" + item.getHandle() + "/elsevier-embed/";
+            String embedURLBase = ConfigurationManager.getProperty("elsevier-sciencedirect", "ui.article.url");
+            String doiURLBase = "http://dx.doi.org/";
+
+            if (StringUtils.isNotBlank(pii)) {
+                link = baseLink + pii + "?embeddedType=pii";
+                embeddedLink = embedURLBase + "/pii/" + pii;
+            } else if (StringUtils.isNotBlank(eid)) {
+                link = baseLink + eid + "?embeddedType=eid";
+                embeddedLink = embedURLBase + "/eid/" + eid;
+            } else if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
+                link = baseLink + doi + "?embeddedType=doi";
+                embeddedLink=doiURLBase+doi;
+            } else if (publisherIsElsevier(item)) {
+                if (StringUtils.isNotBlank(scopus_id)) {
+                    link = baseLink + scopus_id + "?embeddedType=scopus_id";
+                    embeddedLink = embedURLBase + "/scopus_id/" + scopus_id;
+                } else if (StringUtils.isNotBlank(pubmed_ID)) {
+                    link = baseLink + doi+"?embeddedType=pubmed_id";
+                    embeddedLink=embedURLBase+"/pubmed_ID/"+pubmed_ID;
+                }
+            }
+            if (StringUtils.isNotBlank(link)) {
+                Para para = division.addPara("elsevier-embed-page", "elsevier-embed-page");
+                para.addXref(link, T_elsevier_embed);
+                para.addHidden("embeddedLink").setValue(embeddedLink);
+            }
         }
     }
 

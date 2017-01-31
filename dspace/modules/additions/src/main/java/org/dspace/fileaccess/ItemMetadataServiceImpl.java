@@ -25,4 +25,19 @@ public class ItemMetadataServiceImpl implements ItemMetadataService {
     public String getDOI(Item item) {
         return null;
     }
+
+    @Override
+    public String getEID(Item item) {
+        return null;
+    }
+
+    @Override
+    public String getScopusID(Item item) {
+        return null;
+    }
+
+    @Override
+    public String getPubmedID(Item item) {
+        return null;
+    }
 }

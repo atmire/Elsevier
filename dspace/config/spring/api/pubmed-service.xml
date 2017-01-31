@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
@@ -9,18 +10,19 @@
        default-autowire-candidates="*Service,*DAO,javax.sql.DataSource">
 
     <context:annotation-config/>
-    <!-- allows us to use spring annotations in beans -->
-
-    <bean id="importService" class="org.dspace.importer.external.service.ImportService" scope="singleton"
+    <util:map id="pubmedImportFields">
+        <entry key="pubmedsearch" value=""/>
+    </util:map>
+<bean id="importService" class="org.dspace.importer.external.service.ImportService" scope="singleton"
           lazy-init="false" autowire="byType" destroy-method="destroy">
 
     </bean>
-
     <bean id="PubmedImportService" class="org.dspace.importer.external.pubmed.service.PubmedImportMetadataSourceServiceImpl" scope="singleton">
-        <constructor-arg ref="pubmedService"/>
-        <constructor-arg ref="PubmedMetadataFieldMapping"/>
-        <property name="baseAddress" value="https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"/>
-
+        <property name="metadataFieldMapping" ref="PubmedMetadataFieldMapping"/>
+        <property name="baseAddress" ref="pubmed-baseAddress"/>
+        <property name="name" value="PubMed"/>
+        <property name="importFields" ref="pubmedImportFields"/>
+        <property name="idField" value="elsevier.identifier.pubmedid"/>
     </bean>
     <bean id="PubmedMetadataFieldMapping"
           class="org.dspace.importer.external.pubmed.metadatamapping.PubmedFieldMapping">
@@ -40,11 +42,12 @@
         </description>
         <entry key-ref="dc.title" value-ref="pubmedTitleContrib"/>
         <entry key-ref="dc.description.abstract" value-ref="pubmedAbstractContrib"/>
-        <entry key-ref="dc.identifier.other" value-ref="pubmedContrib"/>
+        <entry key-ref="elsevier.identifier.pubmedid" value-ref="pubmedContrib"/>
         <entry key-ref="dc.contributor.author" value-ref="pubmedAuthorContrib"/>
         <entry key-ref="dc.date.issued" value-ref="pubmedDateContrib"/>
         <entry key-ref="dc.language.iso" value-ref="pubmedLanguageContrib"/>
         <entry key-ref="dc.subject" value-ref="pubmedKeywordContrib"/>
+        <entry key-ref="elsevier.identifier.doi" value-ref="pubmedDoiContrib"/>
 
     </util:map>
 
@@ -67,20 +70,17 @@
         <property name="field" ref="dc.date.issued"/>
     </bean>
     <bean id="pubmedContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="dc.identifier.other"/>
+        <property name="field" ref="elsevier.identifier.pubmedid"/>
         <property name="query" value="descendant::MedlineCitation/PMID"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
     <bean id="pubmedTitleContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.title"/>
         <property name="query" value="descendant::ArticleTitle"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.description.abstract"/>
         <property name="query" value="descendant::AbstractText"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedAuthorContrib" class="org.dspace.importer.external.metadatamapping.contributor.CombinedMetadatumContributor">
@@ -97,49 +97,41 @@
     <bean id="pubmedLastNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
         <property name="query" value="descendant::Author/LastName"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedFirstNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
         <property name="query" value="descendant::Author/ForeName"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedKeywordContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.subject"/>
         <property name="query" value="descendant::Keyword"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
     <bean id="pubmedYearContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.date.issued"/>
         <property name="query" value="descendant::PubDate/Year"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedMonthContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.date.issued"/>
         <property name="query" value="descendant::PubDate/Month"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedDayContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.date.issued"/>
         <property name="query" value="descendant::PubDate/Day"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
     <bean id="pubmedLanguageContribField" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.language.iso"/>
         <property name="query" value="descendant::Language"/>
-        <property name="prefixToNamespaceMapping" ref="prefixToNamespaceMapping"/>
     </bean>
 
-
-
-    <util:map id="prefixToNamespaceMapping">
-    </util:map>
-
+    <bean id="pubmedDoiContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.identifier.doi"/>
+        <property name="query" value="descendant::ELocationID[@EIdType='doi']"/>
+    </bean>
 
     <bean class="java.lang.Integer" id="maxRetry">
         <constructor-arg value="2"/>
@@ -150,6 +142,7 @@
             these must be present. If multiple are present the result is undefined.
         </description>
     </bean>
-    
-
+    <bean class="java.lang.String" id="pubmed-baseAddress" autowire-candidate="true">
+        <constructor-arg value="${pubmed.import.url}"/>
+    </bean>
 </beans>

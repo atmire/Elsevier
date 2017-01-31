@@ -9,6 +9,8 @@ package org.dspace.submit.step;
 
 import java.io.*;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import org.apache.commons.lang.*;
@@ -32,8 +34,8 @@ import org.dspace.utils.*;
  * Time: 15:33
  */
 public class LiveImportStep extends AbstractProcessingStep {
-    private String url = ConfigurationManager.getProperty("elsevier-sciencedirect.api.scidir.url");
     private static Logger log = Logger.getLogger(LiveImportStep.class);
+    private Map<String, AbstractImportMetadataSourceService> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     protected static ItemService itemService = ContentServiceFactory.getInstance().getItemService();
 
@@ -52,10 +54,20 @@ public class LiveImportStep extends AbstractProcessingStep {
         if (StringUtils.isNotBlank(importId)) {
             ImportService importService = new DSpace().getServiceManager().getServiceByName("importService", ImportService.class);
             Item item = subInfo.getSubmissionItem().getItem();
-            try {
-                ImportRecord record = importService.getRecord(url, "eid(" + importId + ")");
 
-                itemService.clearMetadata(context,item, Item.ANY, Item.ANY, Item.ANY, Item.ANY);
+            String importSourceString = itemService.getMetadata(item, "workflow.import.source");
+            AbstractImportMetadataSourceService importSource = sources.get(importSourceString);
+
+            try {
+                ImportRecord record = importService.getRecord(importSource.getImportSource(), "eid(" + importId + ")");
+
+
+                for (MetadataValue value : itemService.getMetadata(item, Item.ANY, Item.ANY, Item.ANY, Item.ANY)) {
+                    MetadataField metadatum = value.getMetadataField();
+                    if (!metadatum.toString('.').equals("workflow.import.source")) {
+                        itemService.clearMetadata(context, item, metadatum.getMetadataSchema().getName(), metadatum.getElement(), metadatum.getQualifier(), value.getLanguage());
+                    }
+                }
 
                 for (MetadatumDTO metadatum : record.getValueList()) {
                     itemService.addMetadata(context, item, metadatum.getSchema(), metadatum.getElement(), metadatum.getQualifier(), metadatum.getLanguage(), metadatum.getValue());

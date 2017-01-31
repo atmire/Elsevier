@@ -28,6 +28,7 @@ import org.dspace.content.service.*;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.metadatamapping.*;
 import org.dspace.importer.external.scidir.util.*;
+import org.dspace.importer.external.service.AbstractImportMetadataSourceService;
 import org.dspace.utils.*;
 import org.xml.sax.*;
 
@@ -54,10 +55,12 @@ public class LiveImportStep extends AbstractSubmissionStep {
             message("xmlui.Submission.submit.LiveImportStep.records-found");
     protected static final Message T_no_records =
             message("xmlui.Submission.submit.LiveImportStep.no-records");
+    protected static final Message T_missing_import_source =
+            message("xmlui.Submission.submit.LiveImportStep..missing_import_source");
 
 
     private LiveImportUtils liveImportUtils = new DSpace().getServiceManager().getServiceByName("LiveImportUtils", LiveImportUtils.class);
-    private HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
+    private Map<String, AbstractImportMetadataSourceService> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     public static final String PAGINATION_NEXT_BUTTON = "submit_pagination_next";
     public static final String PAGINATION_PREVIOUS_BUTTON = "submit_pagination_previous";
@@ -99,17 +102,23 @@ public class LiveImportStep extends AbstractSubmissionStep {
     {
         org.dspace.content.Collection collection = submission.getCollection();
         String actionURL = contextPath + "/handle/"+collection.getHandle() + "/submit/" + knot.getId() + ".continue";
-        Division div = body.addInteractiveDivision("StartSubmissionLookupStep", actionURL, Division.METHOD_POST, "primary submission");
+        Division div = body.addInteractiveDivision("submit-lookup", actionURL, Division.METHOD_POST, "primary submission");
         div.setHead(T_submission_head);
         addSubmissionProgressList(div);
 
         List form = div.addList("submit-lookup", List.TYPE_FORM);
 
         form.setHead(T_title);
-
+        String importSourceString = itemService.getMetadata(submission.getItem(), "workflow.import.source");
+        if (StringUtils.isNotBlank(importSourceString)) {
         form.addItem().addContent(T_lookup_help);
 
-        for (String field : liveImportFields.keySet()) {
+
+            AbstractImportMetadataSourceService importSource = sources.get(importSourceString);
+
+            if (importSource != null) {
+                Map<String, String> fields = importSource.getImportFields();
+                for (String field : fields.keySet()) {
             Text text = form.addItem().addText(field);
             text.setLabel(message("xmlui.scidir.live-import." + field));
             text.setHelp(message("xmlui.scidir.live-import." + field + "_hint"));
@@ -118,12 +127,14 @@ public class LiveImportStep extends AbstractSubmissionStep {
                 text.setValue(request.getParameter(field));
             }
         }
+                form.addItem().addHidden("source").setValue(importSourceString);
+            }
 
         Item item = form.addItem();
         item.addButton("submit_lookup").setValue(T_submit_lookup);
 
 
-        HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request);
+            HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request, importSource);
 
         // field import_id is only used by mirage2. If the field is blank, show the search results in the page.
         if(fieldValues.size()>0 && StringUtils.isBlank(request.getParameter("import_id"))) {
@@ -138,7 +149,8 @@ public class LiveImportStep extends AbstractSubmissionStep {
             List result = form.addList("result");
 
             for (ImportRecord record : records) {
-                java.util.Collection<MetadatumDTO> eid = record.getValue("elsevier", "identifier", "eid");
+
+                java.util.Collection<MetadatumDTO> eid = record.getValue(importSource.getIdField());
 
                 if(eid.size()>0) {
                     String eidString = eid.iterator().next().getValue();
@@ -185,7 +197,7 @@ public class LiveImportStep extends AbstractSubmissionStep {
         }
 
         org.dspace.content.Item submissionItem = submission.getItem();
-        MetadataFieldConfig importIdField = new DSpace().getServiceManager().getServiceByName("importId", MetadataFieldConfig.class);
+        MetadataFieldConfig importIdField = new MetadataFieldConfig(importSource.getIdField());
         java.util.List<MetadataValue> importId = itemService.getMetadata(submissionItem, importIdField.getSchema(), importIdField.getElement(), importIdField.getQualifier(), org.dspace.content.Item.ANY);
 
         if(importId.size() > 0) {
@@ -224,7 +236,9 @@ public class LiveImportStep extends AbstractSubmissionStep {
         div.addDivision("lookup-modal");
 
         div.addHidden("import_id");
-
+        } else {
+            form.addItem().addContent(T_missing_import_source);
+        }
         addControlButtons(form);
     }
 

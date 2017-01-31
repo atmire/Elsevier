@@ -8,6 +8,8 @@
 package org.dspace.fileaccess;
 
 import java.util.*;
+
+import org.apache.commons.lang.StringUtils;
 import org.dspace.content.*;
 import org.dspace.content.service.*;
 import org.dspace.core.*;
@@ -55,5 +57,49 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
         }
 
         return doi;
+    }
+
+    @Override
+    public String getEID(Item item) {
+        String doiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect.metadata.field.eid");
+
+        List<MetadataValue> eidMetadata = itemService.getMetadataByMetadataString(item, doiMdField);
+        String eid = null;
+        if(eidMetadata.size()>0) {
+            eid = eidMetadata.get(0).getValue();
+        }
+
+        return eid;
+    }
+
+    @Override
+    public String getScopusID(Item item) {
+        String scopusMDField = ConfigurationManager.getProperty("elsevier-sciencedirect.metadata.field.scopus_id");
+
+        List<MetadataValue> scopusMetadata = itemService.getMetadataByMetadataString(item, scopusMDField);
+
+        String scopus_id = null;
+        if(scopusMetadata.size()>0) {
+            scopus_id = scopusMetadata.get(0).getValue();
+            if(StringUtils.startsWith(scopus_id, "SCOPUS_ID:")){
+                scopus_id= scopus_id.substring("SCOPUS_ID:".length());
+            }
+        }
+
+        return scopus_id;
+    }
+
+    @Override
+    public String getPubmedID(Item item) {
+        String pubmedMDField = ConfigurationManager.getProperty("elsevier-sciencedirect.metadata.field.pubmed_id");
+
+        List<MetadataValue> pubmedMetadata = itemService.getMetadataByMetadataString(item, pubmedMDField);
+
+        String pubmed_id = null;
+        if(pubmedMetadata.size()>0) {
+            pubmed_id = pubmedMetadata.get(0).getValue();
+        }
+
+        return pubmed_id;
     }
 }

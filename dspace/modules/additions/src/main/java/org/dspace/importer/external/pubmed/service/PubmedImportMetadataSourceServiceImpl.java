@@ -30,140 +30,9 @@ import org.jaxen.*;
  * @author Roeland Dillen (roeland at atmire dot com)
  */
 public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadataSourceService<OMElement> {
+    private WebTarget pubmedWebTarget;
     private String baseAddress;
 
-    private WebTarget pubmedWebTarget;
-
-    public PubmedImportMetadataSourceServiceImpl(GenerateQueryService generateQueryService, MetadataFieldMapping metadataFieldMapping) {
-        super(generateQueryService, metadataFieldMapping);
-    }
-
-    public PubmedImportMetadataSourceServiceImpl() {
-    }
-
-    /** Find the number of records matching a query;
-     *
-     * @param query a query string to base the search on.
-     * @return the sum of the matching records over this import source
-     * @throws MetadataSourceException
-     */
-    @Override
-    public int getNbRecords(String query) throws MetadataSourceException {
-        return retry(new GetNbRecords(query));
-    }
-
-    /** Find the number of records matching a query;
-     *
-     * @param query a query object to base the search on.
-     * @return the sum of the matching records over this import source
-     * @throws MetadataSourceException
-     */    @Override
-    public int getNbRecords(Query query) throws MetadataSourceException {
-        return retry(new GetNbRecords(query));
-    }
-
-    /**  Find the number of records matching a string query. Supports pagination
-     *
-     * @param query a query string to base the search on.
-     * @param start offset to start at
-     * @param count number of records to retrieve.
-     * @return a set of records. Fully transformed.
-     * @throws MetadataSourceException
-     */
-    @Override
-    public Collection<ImportRecord> getRecords(String query, int start, int count) throws MetadataSourceException {
-        return retry(new GetRecords(query, start, count));
-    }
-
-    /** Find records based on a object query.
-     *
-     * @param query a query object to base the search on.
-     * @return a set of records. Fully transformed.
-     * @throws MetadataSourceException
-     */
-    @Override
-    public Collection<ImportRecord> getRecords(Query query) throws MetadataSourceException {
-        return retry(new GetRecords(query));
-    }
-
-    /** Get a single record from the source.
-     * The first match will be returned
-     * @param id identifier for the record
-     * @return a matching record
-     * @throws MetadataSourceException
-     */
-    @Override
-    public ImportRecord getRecord(String id) throws MetadataSourceException {
-        return retry(new GetRecord(id));
-    }
-
-    /** Get a single record from the source.
-     * The first match will be returned
-     * @param query a query matching a single record
-     * @return a matching record
-     * @throws MetadataSourceException
-     */
-    @Override
-    public ImportRecord getRecord(Query query) throws MetadataSourceException {
-        return retry(new GetRecord(query));
-    }
-
-    /**
-     * The string that identifies this import implementation. Preferable a URI
-     * @return the identifying uri
-     */
-    @Override
-    public String getImportSource() {
-        return "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
-    }
-
-    /** Finds records based on an item
-     * @param item an item to base the search on
-     * @return a collection of import records. Only the identifier of the found records may be put in the record.
-     * @throws MetadataSourceException if the underlying methods throw any exception.
-     */
-    @Override
-    public Collection<ImportRecord> findMatchingRecords(Item item) throws MetadataSourceException {
-        return retry(new FindMatchingRecords(item));
-    }
-
-    /** Finds records based on query object.
-     *  Delegates to one or more MetadataSource implementations based on the uri.  Results will be aggregated.
-     * @param query a query object to base the search on.
-     * @return a collection of import records. Only the identifier of the found records may be put in the record.
-     * @throws MetadataSourceException
-     */
-    @Override
-    public Collection<ImportRecord> findMatchingRecords(Query query) throws MetadataSourceException {
-        return retry(new FindMatchingRecords(query));
-    }
-
-    /**
-     * Initialize the class
-     * @throws Exception
-     */
-    @Override
-    public void init() throws Exception {
-        Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(baseAddress);
-        pubmedWebTarget = webTarget.queryParam("db", "pubmed");
-    }
-
-    /**
-     * Return the baseAddress set to this object
-     * @return The String object that represents the baseAddress of this object
-     */
-    public String getBaseAddress() {
-        return baseAddress;
-    }
-
-    /**
-     * Set the baseAddress to this object
-     * @param baseAddress The String object that represents the baseAddress of this object
-     */
-    public void setBaseAddress(String baseAddress) {
-        this.baseAddress = baseAddress;
-    }
 
     private class GetNbRecords implements Callable<Integer> {
 
@@ -196,23 +65,16 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
         }
     }
 
-
-    private String getSingleElementValue(String src, String elementName){
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(src));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
-        String value = null;
-        try {
-            xpath = new AXIOMXPath("//" + elementName);
-            List<OMElement> recordsList = xpath.selectNodes(element);
-            if(!recordsList.isEmpty()) {
-                value = recordsList.get(0).getText();
-            }
-        } catch (JaxenException e) {
-            value = null;
-        }
-        return value;
+    @Override
+    public int getNbRecords(String queryString) throws MetadataSourceException {
+        return retry(new GetNbRecords(queryString));
     }
+
+    @Override
+    public int getNbRecords(Query query) throws MetadataSourceException {
+        return retry(new GetNbRecords(query));
+    }
+
 
     private class GetRecords implements Callable<Collection<ImportRecord>> {
 
@@ -220,9 +82,9 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
         private GetRecords(String queryString, int start, int count) {
             query = new Query();
-            query.addParameter("query",queryString);
-            query.addParameter("start",start);
-            query.addParameter("count",count);
+            query.addParameter("query", queryString);
+            query.addParameter("start", start);
+            query.addParameter("count", count);
         }
 
         private GetRecords(Query q) {
@@ -231,15 +93,15 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
         @Override
         public Collection<ImportRecord> call() throws Exception {
-            String queryString = query.getParameterAsClass("query",String.class);
-            Integer start = query.getParameterAsClass("start",Integer.class);
-            Integer count = query.getParameterAsClass("count",Integer.class);
+            String queryString = query.getParameterAsClass("query", String.class);
+            Integer start = query.getParameterAsClass("start", Integer.class);
+            Integer count = query.getParameterAsClass("count", Integer.class);
 
-            if(count==null || count < 0){
+            if (count == null || count < 0) {
                 count = 10;
             }
 
-            if(start==null || start < 0){
+            if (start == null || start < 0) {
                 start = 0;
             }
 
@@ -278,17 +140,15 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
             return records;
         }
     }
-    private List<OMElement> splitToRecords(String recordsSrc) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
-        try {
-            xpath = new AXIOMXPath("//PubmedArticle");
-            List<OMElement> recordsList = xpath.selectNodes(element);
-            return recordsList;
-        } catch (JaxenException e) {
-            return null;
-        }
+
+    @Override
+    public Collection<ImportRecord> getRecords(String query, int start, int count) throws MetadataSourceException {
+        return retry(new GetRecords(query, start, count));
+    }
+
+    @Override
+    public Collection<ImportRecord> getRecords(Query q) throws MetadataSourceException {
+        return retry(new GetRecords(q));
     }
 
     private class GetRecord implements Callable<ImportRecord> {
@@ -324,6 +184,21 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
             return transformSourceRecords(omElements.get(0));
         }
+    }
+
+    @Override
+    public ImportRecord getRecord(String id) throws MetadataSourceException {
+        return retry(new GetRecord(id));
+    }
+
+    @Override
+    public ImportRecord getRecord(Query q) throws MetadataSourceException {
+        return retry(new GetRecord(q));
+    }
+
+    @Override
+    public String getImportSource() {
+        return baseAddress;
     }
 
     private class FindMatchingRecords implements Callable<Collection<ImportRecord>> {
@@ -372,4 +247,49 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
             return records;
         }
     }
+
+
+    @Override
+    public Collection<ImportRecord> findMatchingRecords(Item item) throws MetadataSourceException {
+        return retry(new FindMatchingRecords(item));
+}
+
+    @Override
+    public Collection<ImportRecord> findMatchingRecords(Query q) throws MetadataSourceException {
+        return retry(new FindMatchingRecords(q));
+    }
+
+    @Override
+    public void init() throws Exception {
+        Client client = ClientBuilder.newClient();
+        WebTarget webTarget = client.target(baseAddress);
+        pubmedWebTarget = webTarget.queryParam("db", "pubmed");
+
+//        invocationBuilder = pubmedWebTarget.request(MediaType.TEXT_PLAIN_TYPE);
+    }
+
+
+    public String getBaseAddress() {
+        return baseAddress;
+    }
+
+    public void setBaseAddress(String baseAddress) {
+        this.baseAddress = baseAddress;
+    }
+
+
+    @Override
+    public List<OMElement> splitToRecords(String recordsSrc) {
+        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
+        OMElement element = records.getDocumentElement();
+        AXIOMXPath xpath = null;
+        try {
+            xpath = new AXIOMXPath("//PubmedArticle");
+            List<OMElement> recordsList = xpath.selectNodes(element);
+            return recordsList;
+        } catch (JaxenException e) {
+            return null;
+        }
+    }
+
 }

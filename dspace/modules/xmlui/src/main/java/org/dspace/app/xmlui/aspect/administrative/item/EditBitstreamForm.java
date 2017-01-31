@@ -141,14 +141,13 @@ public class EditBitstreamForm extends AbstractDSpaceTransformer
 		if( editFormAddition!=null){
 			editFormAddition.addBodyHook(context, bitstream, edit);
 		}
-
-        // EMBARGO FIELD
-        // if AdvancedAccessPolicy=false: add Embargo Fields.
-        if(!isAdvancedFormEnabled){
-            AccessStepUtil asu = new AccessStepUtil(context);
-            // if the item is embargoed default value will be displayed.
-            asu.addEmbargoDateDisplayOnly(bitstream, edit);
-        }
+		else {
+			if(!isAdvancedFormEnabled){
+				AccessStepUtil asu = new AccessStepUtil(context);
+				// if the item is embargoed default value will be displayed.
+				asu.addEmbargoDateDisplayOnly(bitstream, edit);
+			}
+		}
 
 		edit.addItem(T_para1);
 

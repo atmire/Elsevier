@@ -9,6 +9,8 @@ package org.dspace.app.xmlui.aspect.ScienceDirect;
 
 import java.io.*;
 import java.sql.*;
+
+import org.apache.cocoon.environment.ObjectModelHelper;
 import org.apache.log4j.*;
 import org.dspace.app.xmlui.cocoon.*;
 import org.dspace.app.xmlui.utils.*;
@@ -20,6 +22,7 @@ import org.dspace.content.Item;
 import org.dspace.core.*;
 import org.dspace.fileaccess.factory.*;
 import org.dspace.fileaccess.service.*;
+import org.dspace.fileaccess.service.ItemMetadataService.IdentifierTypes;
 import org.xml.sax.*;
 
 /**
@@ -61,20 +64,21 @@ public class ElsevierEmbed extends AbstractDSpaceTransformer {
     public void addBody(Body body) throws SAXException, WingException, UIException, SQLException, IOException, AuthorizeException {
         DSpaceObject dso = HandleUtil.obtainHandle(objectModel);
 
-        String pii = parameters.getParameter("pii", null);
+        String embeddedType = ObjectModelHelper.getRequest(objectModel).getParameter("embeddedType");
+        String identifier = parameters.getParameter("identifier", null);
         Message errorMessage = validPage(dso);
         if (errorMessage == null) {
             Division division = body.addDivision("ElsevierEmbed", "ElsevierEmbed");
             division.setHead(T_title);
 
             List list = division.addList("embed-info");
-            list.addItem().addHidden("pii").setValue(pii);
+            list.addItem().addHidden("identifier").setValue(identifier);
+            list.addItem().addHidden("embeddedType").setValue(embeddedType);
         } else {
             Division division = body.addDivision("general-message", "failure");
             division.setHead(T_title_error);
             division.addPara(errorMessage);
         }
-
     }
 
     private Message validPage(DSpaceObject dso) {
@@ -88,12 +92,17 @@ public class ElsevierEmbed extends AbstractDSpaceTransformer {
             errorMessage = message("com.atmire.sciencedirect.embed.ElsevierEmbed.error.not_an_item");
         } else {
             Item item = (Item) dso;
+            String embeddedType = ObjectModelHelper.getRequest(objectModel).getParameter("embeddedType");
 
-            String itemPII = itemMetadataService.getPII(item);
-            String paramPii = parameters.getParameter("pii", null);
-
-            if (paramPii == null || !paramPii.equals(itemPII)) {
-                errorMessage = message("com.atmire.sciencedirect.embed.ElsevierEmbed.error.invalid_pii");
+            String identifier = parameters.getParameter("identifier", null);
+            IdentifierTypes identifierType=null;
+            try{
+                identifierType = IdentifierTypes.valueOf(embeddedType.toUpperCase());
+            }catch (IllegalArgumentException e){
+                errorMessage = message("com.atmire.sciencedirect.embed.ElsevierEmbed.error.invalid_type");
+            }
+            if (identifierType == null || identifier == null || !identifier.equals(identifierType.getIdentifier(item))) {
+                errorMessage = message("com.atmire.sciencedirect.embed.ElsevierEmbed.error.invalid_identifier");
             }
 
         }

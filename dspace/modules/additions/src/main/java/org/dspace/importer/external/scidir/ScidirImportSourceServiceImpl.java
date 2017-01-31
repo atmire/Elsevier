@@ -37,10 +37,6 @@ public class ScidirImportSourceServiceImpl extends AbstractImportMetadataSourceS
 
     private static Logger log = Logger.getLogger(ScidirImportSourceServiceImpl.class);
 
-    public ScidirImportSourceServiceImpl(GenerateQueryService generateQueryService, MetadataFieldMapping<OMElement, MetadataContributor<OMElement>> metadataFieldMapping) {
-        super(generateQueryService, metadataFieldMapping);
-    }
-
     public String getApiUrl() {
         return apiUrl;
     }
@@ -245,47 +241,9 @@ public class ScidirImportSourceServiceImpl extends AbstractImportMetadataSourceS
     @Override
     public void init() throws Exception {
         String baseAddress = apiUrl;
-        String apiKey = ConfigurationManager.getProperty("elsevier-sciencedirect.api.key");
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(baseAddress);
         scidirWebTarget = webTarget.queryParam("httpAccept", "application/xml");
-        scidirWebTarget = scidirWebTarget.queryParam("apiKey", apiKey);
-    }
-
-    private String getSingleElementValue(String src, String elementName){
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(src));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
-        String value = null;
-        try {
-            xpath = new AXIOMXPath("//" + elementName);
-            xpath.addNamespace("dc", "http://purl.org/dc/elements/1.1/");
-            xpath.addNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
-            List<OMElement> recordsList = xpath.selectNodes(element);
-            if(!recordsList.isEmpty()) {
-                value = recordsList.get(0).getText();
-            }
-        } catch (JaxenException e) {
-            value = null;
-        }
-        return value;
-    }
-
-    private List<OMElement> splitToRecords(String recordsSrc) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-        OMElement element = records.getDocumentElement();
-
-        Iterator childElements = element.getChildElements();
-
-        List<OMElement> recordsList = new ArrayList<>();
-
-        while (childElements.hasNext()){
-            OMElement next = (OMElement) childElements.next();
-
-            if(next.getLocalName().equals("entry")){
-                recordsList.add(next);
-            }
-        }
-        return recordsList;
+        scidirWebTarget = scidirWebTarget.queryParam("apiKey", getApiKey());
     }
 }

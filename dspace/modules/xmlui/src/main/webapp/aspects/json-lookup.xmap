@@ -69,21 +69,22 @@
 
             <map:match pattern="**">
 
-                <map:select type="request-parameter">
-                    <map:parameter name="parameter-name" value="type"/>
-                    <map:when test="pubmed">
-                        <map:generate type="JSONLookupSearcher"/>
+                <!--<map:select type="request-parameter">-->
+                    <!--<map:parameter name="parameter-name" value="source"/>-->
+                    <!--<map:when test="pubmed">-->
+                        <!--<map:generate type="JSONLookupSearcher"/>-->
 
-                        <map:act type="locale">
-                            <map:transform type="i18n">
-                                <map:parameter name="locale" value="{locale}"/>
-                            </map:transform>
-                        </map:act>
-                        <map:transform src="translatedxml2text.xslt"/>
-                        <map:transform src="xml2json.xslt"/>
-                        <map:serialize type="text"/>
-                    </map:when>
-                    <map:when test="scidir">
+                        <!--<map:act type="locale">-->
+                            <!--<map:transform type="i18n">-->
+                                <!--<map:parameter name="locale" value="{locale}"/>-->
+
+                            <!--</map:transform>-->
+                        <!--</map:act>-->
+                        <!--<map:transform src="translatedxml2text.xslt"/>-->
+                        <!--<map:transform src="xml2json.xslt"/>-->
+                        <!--<map:serialize type="text"/>-->
+                    <!--</map:when>-->
+                    <!--<map:when test="science">-->
                         <map:generate type="JSONImportSearcher"/>
 
                         <map:act type="locale">
@@ -95,8 +96,8 @@
                         <map:transform src="xml2json.xslt"/>
 
                         <map:serialize type="text"/>
-                    </map:when>
-                </map:select>
+                    <!--</map:when>-->
+                <!--</map:select>-->
 
 
             </map:match>

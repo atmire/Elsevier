@@ -7,17 +7,20 @@
  */
 package org.dspace.storage.rdbms;
 
-import java.io.*;
-import java.sql.*;
-import org.dspace.administer.*;
-import org.dspace.core.*;
-import org.dspace.services.*;
-import org.dspace.services.factory.*;
-import org.dspace.workflow.factory.*;
-import org.dspace.xmlworkflow.service.*;
-import org.flywaydb.core.api.*;
-import org.flywaydb.core.api.callback.*;
-import org.slf4j.*;
+import org.dspace.administer.MetadataImporter;
+import org.dspace.administer.RegistryLoader;
+import org.dspace.core.Context;
+import org.dspace.services.ConfigurationService;
+import org.dspace.services.factory.DSpaceServicesFactory;
+import org.dspace.workflow.factory.WorkflowServiceFactory;
+import org.dspace.xmlworkflow.service.XmlWorkflowService;
+import org.flywaydb.core.api.MigrationInfo;
+import org.flywaydb.core.api.callback.FlywayCallback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.sql.Connection;
 
 /**
  * This is a FlywayCallback class which automatically updates the
@@ -71,13 +74,8 @@ public class DatabaseRegistryUpdater implements FlywayCallback
             MetadataImporter.loadRegistry(base + "local-types.xml", true);
             MetadataImporter.loadRegistry(base + "eperson-types.xml", true);
             MetadataImporter.loadRegistry(base + "sword-metadata.xml", true);
-
-            // Check if XML Workflow is enabled in workflow.cfg
-            if (WorkflowServiceFactory.getInstance().getWorkflowService() instanceof XmlWorkflowService)
-            {
-                // If so, load in the workflow metadata types as well
-                MetadataImporter.loadRegistry(base + "workflow-types.xml", true);
-            }
+            MetadataImporter.loadRegistry(base + "elsevier-types.xml", true);
+            MetadataImporter.loadRegistry(base + "workflow-types.xml", true);
 
             context.restoreAuthSystemState();
             // Commit changes and close context
@@ -165,6 +163,6 @@ public class DatabaseRegistryUpdater implements FlywayCallback
 
     @Override
     public void afterInfo(Connection connection) {
-
+        updateRegistries();
     }
 }

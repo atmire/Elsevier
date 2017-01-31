@@ -18,6 +18,8 @@ import org.apache.log4j.*;
 import org.dspace.authority.rest.*;
 import org.dspace.authority.util.XMLUtils;
 import org.dspace.content.*;
+import org.dspace.content.factory.ContentServiceFactory;
+import org.dspace.content.service.ItemService;
 import org.dspace.core.*;
 import org.dspace.fileaccess.factory.*;
 import org.dspace.fileaccess.service.*;
@@ -40,6 +42,7 @@ public abstract class CheckItem {
     protected boolean useApiKey = true;
 
     protected static ItemMetadataService itemMetadataService = FileAccessServiceFactory.getInstance().getItemMetadataService();
+    protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
 
     /**
      * Sends a rest request to the elsevier api
@@ -57,12 +60,22 @@ public abstract class CheckItem {
 
         String pii = itemMetadataService.getPII(item);
         String doi = itemMetadataService.getDOI(item);
+        String eid = itemMetadataService.getEID(item);
+        String scopus_id = itemMetadataService.getScopusID(item);
+        String pubmed_ID = itemMetadataService.getPubmedID(item);
 
         if (StringUtils.isNotBlank(pii)) {
             response = connect.get("hostingpermission/pii/" + pii + getQueryString());
-
-        } else if (StringUtils.isNotBlank(doi)) {
+        }  else if (StringUtils.isNotBlank(eid)) {
+            response = connect.get("hostingpermission/eid/" + eid + getQueryString());
+        } else if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
             response = connect.get("hostingpermission/doi/" + doi + getQueryString());
+        } else if (publisherIsElsevier(item)) {
+            if (StringUtils.isNotBlank(scopus_id)) {
+                response = connect.get("hostingpermission/scopus_id/" + scopus_id + getQueryString());
+            } else if (StringUtils.isNotBlank(pubmed_ID)) {
+                response = connect.get("hostingpermission/pubmed_id/" + pubmed_ID + getQueryString());
+            }
         }
 
         if (response != null) {
@@ -140,7 +153,16 @@ public abstract class CheckItem {
 
         return articleAccess;
     }
-
+    private boolean publisherIsElsevier(Item item) {
+        List<MetadataValue> publisherMetadata = itemService.getMetadataByMetadataString(item,"dc.publisher");
+        boolean publisherIsElsevier = false;
+        for(MetadataValue metadatum : publisherMetadata){
+            if(metadatum.getValue().matches("^(?i)elsevier.*")){
+                publisherIsElsevier =true;
+            }
+        }
+        return publisherIsElsevier;
+    }
 
     /**
      * Initializes when check(Item) is called.
