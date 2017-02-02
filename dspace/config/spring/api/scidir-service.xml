@@ -100,11 +100,6 @@
 
     <!-- Metadatafields-->
 
-
-    <bean id="elsevier.identifier.doi" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
-        <constructor-arg value="dc.identifier"/>
-    </bean>
-
     <bean id="elsevier.identifier.eid" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig" name="importId">
         <constructor-arg value="elsevier.identifier.eid"/>
     </bean>
@@ -193,9 +188,6 @@
         <constructor-arg value="dc.identifier"/>
     </bean>
 
-    <bean id="elsevier.identifier.pubmedid" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
-        <constructor-arg value="dc.identifier"/>
-    </bean>
 
 
     <!-- Metadata Contributors-->

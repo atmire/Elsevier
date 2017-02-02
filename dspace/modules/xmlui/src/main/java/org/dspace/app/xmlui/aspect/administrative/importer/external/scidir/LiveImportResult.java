@@ -2,7 +2,7 @@
  * The contents of this file are subject to the license and copyright
  * detailed in the LICENSE and NOTICE files at the root of the source
  * tree and available online at
- *
+ * <p>
  * http://www.dspace.org/license/
  */
 package org.dspace.app.xmlui.aspect.administrative.importer.external.scidir;
@@ -11,6 +11,7 @@ import java.io.*;
 import java.sql.*;
 import java.util.*;
 import javax.servlet.http.*;
+
 import org.apache.avalon.framework.parameters.*;
 import org.apache.cocoon.*;
 import org.apache.cocoon.environment.*;
@@ -61,16 +62,15 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
     private String buttonPressed;
     private int total = 0;
 
-    private HashMap<String,SessionRecord> selected;
-    private HashMap<String,SessionRecord> currentRecords;
+    private HashMap<String, SessionRecord> selected;
+    private HashMap<String, SessionRecord> currentRecords;
 
     Logger log = Logger.getLogger(LiveImportResult.class);
 
     @Override
     public void addPageMeta(PageMeta pageMeta) throws SAXException,
             WingException, UIException, SQLException, IOException,
-            AuthorizeException
-    {
+            AuthorizeException {
         pageMeta.addMetadata("title").addContent(T_head);
 
         pageMeta.addTrailLink(contextPath + "/", T_DSPACE_HOME);
@@ -85,13 +85,13 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         buttonPressed = Util.getSubmitButton(request, "");
 
         selected = new HashMap<>();
-        if(request.getSession().getAttribute("selected")!=null) {
-            selected = (HashMap<String,SessionRecord>) request.getSession().getAttribute("selected");
+        if (request.getSession().getAttribute("selected") != null) {
+            selected = (HashMap<String, SessionRecord>) request.getSession().getAttribute("selected");
         }
 
         currentRecords = new HashMap<>();
-        if(request.getSession().getAttribute("currentRecords")!=null) {
-            currentRecords = (HashMap<String,SessionRecord>) request.getSession().getAttribute("currentRecords");
+        if (request.getSession().getAttribute("currentRecords") != null) {
+            currentRecords = (HashMap<String, SessionRecord>) request.getSession().getAttribute("currentRecords");
         }
     }
 
@@ -99,18 +99,18 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
     public void addBody(Body body) throws SAXException, WingException,
             UIException, SQLException, IOException, AuthorizeException {
 
-        if(buttonPressed.equals(BACK_BUTTON)){
+        if (buttonPressed.equals(BACK_BUTTON)) {
 
             ((HttpServletResponse) objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT)).sendRedirect(request.getContextPath() + "/liveimport");
         }
 
-        if(buttonPressed.equals(NEXT_BUTTON) || buttonPressed.equals(PAGINATION_NEXT_BUTTON) || buttonPressed.equals(PAGINATION_PREVIOUS_BUTTON)){
+        if (buttonPressed.equals(NEXT_BUTTON) || buttonPressed.equals(PAGINATION_NEXT_BUTTON) || buttonPressed.equals(PAGINATION_PREVIOUS_BUTTON)) {
             Enumeration parameterNames = request.getParameterNames();
 
-            while(parameterNames.hasMoreElements()){
+            while (parameterNames.hasMoreElements()) {
                 String parameter = (String) parameterNames.nextElement();
 
-                if(parameter.startsWith("record-eid-")){
+                if (parameter.startsWith("record-eid-")) {
                     SessionRecord record = new SessionRecord();
 
                     String eidString = parameter.substring("record-eid-".length());
@@ -122,12 +122,12 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
                     String authors = request.getParameter(eidString + "-record-authors");
                     record.setAuthors(authors);
 
-                    selected.put(eidString,record);
+                    selected.put(eidString, record);
                 }
             }
 
             for (String eid : currentRecords.keySet()) {
-                if(selected.containsKey(eid) && StringUtils.isBlank(request.getParameter("record-eid-" + eid))){
+                if (selected.containsKey(eid) && StringUtils.isBlank(request.getParameter("record-eid-" + eid))) {
                     selected.remove(eid);
                 }
             }
@@ -137,38 +137,42 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
             request.getSession().setAttribute("selected", selected);
         }
 
-        if(buttonPressed.equals(NEXT_BUTTON)){
+        if (buttonPressed.equals(NEXT_BUTTON)) {
             ((HttpServletResponse) objectModel.get(HttpEnvironment.HTTP_RESPONSE_OBJECT)).sendRedirect(request.getContextPath() + "/liveimport/selected");
         }
 
         Division div = body.addInteractiveDivision("live-import-result", contextPath + "/liveimport/result", Division.METHOD_POST, "");
         div.setHead(T_head);
+        String importSourceString = request.getSession(true).getAttribute("source").toString();
 
-        AbstractImportMetadataSourceService importSource = sources.get("science");
+        AbstractImportMetadataSourceService importSource = sources.get(importSourceString);
         Map<String, String> importFields = importSource.getImportFields();
         HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request, importSource);
 
         for (String field : fieldValues.keySet()) {
+            if (StringUtils.isBlank(field)) {
+
+                field = "search";
+
+            }
             div.addHidden(field).setValue(fieldValues.get(field));
         }
-
 
 
         for (String field : importFields.keySet()) {
             String value = request.getParameter(field);
 
-            if(StringUtils.isNotBlank(value)){
-                fieldValues.put(importFields.get(field),value);
+            if (StringUtils.isNotBlank(value)) {
+                fieldValues.put(importFields.get(field), value);
                 div.addHidden(field).setValue(value);
             }
         }
 
-        if(fieldValues.size()==0){
+        if (fieldValues.size() == 0) {
             div.addPara().addContent(T_no_fields_error);
-        }
-        else {
+        } else {
             total = liveImportUtils.getNbRecords(fieldValues);
-            renderRecords(div, fieldValues);
+            renderRecords(div, fieldValues, importSource);
         }
 
         Para para = div.addDivision("navigation-buttons").addPara();
@@ -176,62 +180,63 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         para.addButton(NEXT_BUTTON).setValue(T_submit_next);
     }
 
-    private void renderRecords(Division div, HashMap<String, String> fieldValues) throws WingException, SQLException {
+    private void renderRecords(Division div, HashMap<String, String> fieldValues, AbstractImportMetadataSourceService importSource) throws WingException, SQLException {
         Collection<ImportRecord> records = liveImportUtils.getRecords(fieldValues, getStart(), rpp);
 
         if (records.size() > 0) {
-            div.addPara().addContent(T_records_found.parameterize(total,getStart() + 1, getStart() + records.size()));
+            div.addPara().addContent(T_records_found.parameterize(total, getStart() + 1, getStart() + records.size()));
 
             for (ImportRecord record : records) {
                 if (record.getValueList().size() > 0) {
                     SessionRecord currentRecord = new SessionRecord();
                     Division result = div.addDivision("result", "row import-record");
-                    Collection<MetadatumDTO> eid = record.getValue("elsevier", "identifier", "eid");
+                    Collection<MetadatumDTO> eid = record.getValue(importSource.getIdField());
 
                     Division leftDiv = result.addDivision("record-left", "record-leftdiv");
                     Division rightDiv = result.addDivision("record-right", "record-rightdiv");
+                    if (eid.size() > 0) {
+                        String eidString = eid.iterator().next().getValue();
+                        currentRecord.setEid(eidString);
 
-                    String eidString = eid.iterator().next().getValue();
-                    currentRecord.setEid(eidString);
+                        boolean isSelected = selected.containsKey(eidString);
 
-                    boolean isSelected = selected.containsKey(eidString);
+                        leftDiv.addPara().addCheckBox("record-eid-" + eidString, "record-checkbox").addOption(isSelected, "record-checkbox-" + eid.iterator().next().getValue());
 
-                    leftDiv.addPara().addCheckBox("record-eid-" + eidString, "record-checkbox").addOption(isSelected, "record-checkbox-" + eid.iterator().next().getValue());
+                        Collection<MetadatumDTO> values = record.getValue("dc", "title", null);
 
-                    Collection<MetadatumDTO> values = record.getValue("dc", "title", null);
+                        if (values.size() > 0) {
+                            String title = values.iterator().next().getValue();
+                            Para para = rightDiv.addPara("", "record-title");
+                            para.addContent(title);
+                            para.addHidden(eidString + "-record-title").setValue(title);
+                            currentRecord.setTitle(title);
+                        }
 
-                    if (values.size() > 0) {
-                        String title = values.iterator().next().getValue();
-                        Para para = rightDiv.addPara("", "record-title");
-                        para.addContent(title);
-                        para.addHidden(eidString + "-record-title").setValue(title);
-                        currentRecord.setTitle(title);
-                    }
+                        values = record.getValue("dc", "contributor", "author");
 
-                    values = record.getValue("dc", "contributor", "author");
-
-                    if (values.size() > 0) {
-                        StringBuilder sb = new StringBuilder();
-                        for (MetadatumDTO value : values) {
-                            if (StringUtils.isNotBlank(sb.toString())) {
-                                sb.append(", ");
+                        if (values.size() > 0) {
+                            StringBuilder sb = new StringBuilder();
+                            for (MetadatumDTO value : values) {
+                                if (StringUtils.isNotBlank(sb.toString())) {
+                                    sb.append(", ");
+                                }
+                                sb.append(value.getValue());
                             }
-                            sb.append(value.getValue());
+
+                            String authorString = sb.toString();
+
+                            if (authorString.length() > author_string_max_length) {
+                                authorString = authorString.substring(0, author_string_max_length) + "...";
+                            }
+
+                            Para para = rightDiv.addPara("", "record-authors");
+                            para.addContent(authorString);
+                            para.addHidden(eidString + "-record-authors").setValue(authorString);
+                            currentRecord.setAuthors(authorString);
                         }
 
-                        String authorString = sb.toString();
-
-                        if (authorString.length() > author_string_max_length) {
-                            authorString = authorString.substring(0, author_string_max_length) + "...";
-                        }
-
-                        Para para = rightDiv.addPara("", "record-authors");
-                        para.addContent(authorString);
-                        para.addHidden(eidString + "-record-authors").setValue(authorString);
-                        currentRecord.setAuthors(authorString);
+                        currentRecords.put(eidString, currentRecord);
                     }
-
-                    currentRecords.put(eidString, currentRecord);
                 }
             }
 
@@ -239,34 +244,32 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
 
             addPagination(div);
 
-            div.addPara("records-selected","records-selected").addContent(T_records_selected.parameterize(selected.size()));
-        }
-        else {
+            div.addPara("records-selected", "records-selected").addContent(T_records_selected.parameterize(selected.size()));
+        } else {
             div.addPara().addContent(T_no_records_found);
         }
     }
 
 
-
-    private int getStart(){
+    private int getStart() {
         int start = 0;
 
         String startPara = request.getParameter("start");
 
-        if(StringUtils.isNotBlank(startPara)){
+        if (StringUtils.isNotBlank(startPara)) {
             start = Integer.parseInt(startPara);
         }
 
-        if(buttonPressed.equals(PAGINATION_PREVIOUS_BUTTON)){
+        if (buttonPressed.equals(PAGINATION_PREVIOUS_BUTTON)) {
             start -= rpp;
 
-            if(start<0){
+            if (start < 0) {
                 start = 0;
             }
         }
 
-        if(buttonPressed.equals(PAGINATION_NEXT_BUTTON)){
-            start+=rpp;
+        if (buttonPressed.equals(PAGINATION_NEXT_BUTTON)) {
+            start += rpp;
         }
 
         return start;
@@ -285,11 +288,11 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         Button next = pagination.addButton(PAGINATION_NEXT_BUTTON, "pagination-next");
         next.setValue("»");
 
-        if(getStart()==0){
+        if (getStart() == 0) {
             previous.setDisabled(true);
         }
 
-        if(getStart() + rpp >= total){
+        if (getStart() + rpp >= total) {
             next.setDisabled(true);
         }
 

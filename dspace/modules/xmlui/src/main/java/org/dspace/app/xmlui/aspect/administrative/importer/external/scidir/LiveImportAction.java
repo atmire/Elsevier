@@ -35,8 +35,8 @@ import org.dspace.workflow.factory.*;
  * Time: 10:49
  */
 public class LiveImportAction extends AbstractAction {
-    private String url = ConfigurationManager.getProperty("elsevier-sciencedirect.api.scidir.url");
-    ImportService importService = new DSpace().getServiceManager().getServiceByName("importService", ImportService.class);
+    private Map<String, AbstractImportMetadataSourceService> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
+    private ImportService importService = new DSpace().getServiceManager().getServiceByName("importService", ImportService.class);
     private static Logger log = Logger.getLogger(LiveImportAction.class);
 
     protected ItemService itemService = ContentServiceFactory.getInstance().getItemService();
@@ -61,10 +61,11 @@ public class LiveImportAction extends AbstractAction {
 
         HandleService handleService = HandleServiceFactory.getInstance().getHandleService();
         Collection collection = (Collection) handleService.resolveToObject(context, collectionHandle);
-
+        String importSourceString = request.getSession(true).getAttribute("source").toString();
+        AbstractImportMetadataSourceService importSource = sources.get(importSourceString);
         for (String eid : selected.keySet()) {
             try {
-                ImportRecord record = importService.getRecord(url, eid);
+                ImportRecord record = importService.getRecord(importSource.getImportSource(), eid);
 
                 if (record != null) {
 
