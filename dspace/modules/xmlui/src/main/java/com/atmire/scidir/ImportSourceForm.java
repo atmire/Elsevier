@@ -30,8 +30,9 @@ public class ImportSourceForm extends AbstractDSpaceTransformer {
     private static final Message T_title = message("xmlui.scidir.import-source.title");
     private static final Message T_submit = message("xmlui.scidir.import-source.submit");
 
-    protected static final Message T_lookup_help =
-            message("xmlui.Submission.submit.LiveImportStep.lookup_help");
+    protected static final Message T_select_help =
+            message("xmlui.Submission.submit.LiveImportStep.select_help");
+
     private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     @Override
@@ -64,7 +65,7 @@ public class ImportSourceForm extends AbstractDSpaceTransformer {
 
         List form = div.addList("submit-lookup", List.TYPE_FORM);
 
-        form.addItem().addContent(T_lookup_help);
+        form.addItem().addContent(T_select_help);
 
         Select select = form.addItem().addSelect("source", "ImportSourceSelect");
         for (Map.Entry<String, AbstractImportSource> source : sources.entrySet()) {
