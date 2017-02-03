@@ -20,7 +20,6 @@ import org.dspace.content.Collection;
 import org.dspace.content.*;
 import org.dspace.content.factory.*;
 import org.dspace.content.service.*;
-import org.dspace.core.*;
 import org.dspace.handle.factory.*;
 import org.dspace.handle.service.*;
 import org.dspace.importer.external.datamodel.*;
@@ -65,7 +64,7 @@ public class LiveImportAction extends AbstractAction {
         AbstractImportMetadataSourceService importSource = sources.get(importSourceString);
         for (String eid : selected.keySet()) {
             try {
-                ImportRecord record = importService.getRecord(importSource.getImportSource(), eid);
+                ImportRecord record = importService.getRecord(importSource.getImportSource(), "eid(" + eid + ")");
 
                 if (record != null) {
 
