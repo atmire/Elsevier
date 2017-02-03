@@ -56,7 +56,7 @@ public class LiveImportAction extends AbstractAction {
 
         for (String eid : selected.keySet()) {
             try {
-                Record record = importService.getRecord(importSource.getImportSource(), eid);
+                Record record = importService.getRecord(importSource.getImportSource(), "eid(" + eid + ")");
 
                 if (record != null) {
 
