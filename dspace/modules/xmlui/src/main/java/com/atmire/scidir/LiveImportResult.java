@@ -137,12 +137,16 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
 
         Division div = body.addInteractiveDivision("live-import-result", contextPath + "/liveimport/result", Division.METHOD_POST, "");
         div.setHead(T_head);
+        String importSourceString = request.getSession(true).getAttribute("source").toString();
 
-        AbstractImportSource importSource = sources.get("science");
+        AbstractImportSource importSource = sources.get(importSourceString);
         Map<String, String> importFields = importSource.getImportFields();
         HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request, importSource);
 
         for (String field : fieldValues.keySet()) {
+            if (StringUtils.isBlank(field)) {
+                field = "search";
+            }
             div.addHidden(field).setValue(fieldValues.get(field));
         }
 
@@ -162,15 +166,14 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         }
         else {
             total = liveImportUtils.getNbRecords(fieldValues);
-            renderRecords(div, fieldValues);
+            renderRecords(div, fieldValues, importSource);
         }
-
         Para para = div.addDivision("navigation-buttons").addPara();
         para.addButton(BACK_BUTTON).setValue(T_submit);
         para.addButton(NEXT_BUTTON).setValue(T_submit_next);
     }
 
-    private void renderRecords(Division div, HashMap<String, String> fieldValues) throws WingException {
+    private void renderRecords(Division div, HashMap<String, String> fieldValues, AbstractImportSource importSource) throws WingException {
         Collection<Record> records = liveImportUtils.getRecords(fieldValues,getStart(),rpp);
 
         if (records.size() > 0) {
@@ -179,7 +182,7 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
             for (Record record : records) {
                 SessionRecord currentRecord = new SessionRecord();
                 Division result = div.addDivision("result", "row import-record");
-                Collection<Metadatum> eid = record.getValue("elsevier", "identifier", "eid");
+                Collection<Metadatum> eid = record.getValue(importSource.getIdField());
 
                 Division leftDiv = result.addDivision("record-left", "col-xs-1 record-leftdiv");
                 Division rightDiv = result.addDivision("record-right", "col-xs-11 record-rightdiv");

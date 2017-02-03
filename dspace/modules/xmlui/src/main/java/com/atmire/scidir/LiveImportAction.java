@@ -1,5 +1,6 @@
 package com.atmire.scidir;
 
+import com.atmire.import_citations.AbstractImportSource;
 import com.atmire.import_citations.configuration.*;
 import com.atmire.import_citations.datamodel.*;
 import java.util.*;
@@ -25,9 +26,11 @@ import org.dspace.xmlworkflow.*;
  * Time: 10:49
  */
 public class LiveImportAction extends AbstractAction {
-    private String url = ConfigurationManager.getProperty("elsevier-sciencedirect", "api.scidir.url");
-    ImportService importService = new DSpace().getServiceManager().getServiceByName(null, ImportService.class);
+
+    private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
     private static Logger log = Logger.getLogger(LiveImportAction.class);
+    private ImportService importService = new DSpace().getServiceManager().getServiceByName(null, ImportService.class);
+
 
     @Override
     public Map act(Redirector redirector, SourceResolver resolver, Map objectModel, String source, Parameters parameters) throws Exception {
@@ -47,9 +50,13 @@ public class LiveImportAction extends AbstractAction {
 
         Collection collection = (Collection) HandleManager.resolveToObject(context, collectionHandle);
 
+        String importSourceString = request.getSession(true).getAttribute("source").toString();
+
+        AbstractImportSource importSource = sources.get(importSourceString);
+
         for (String eid : selected.keySet()) {
             try {
-                Record record = importService.getRecord(url, eid);
+                Record record = importService.getRecord(importSource.getImportSource(), "eid(" + eid + ")");
 
                 if (record != null) {
 

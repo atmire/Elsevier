@@ -2527,6 +2527,12 @@
     <message key="xmlui.scidir.live-import.pubmedsearch">Search</message>
     <message key="xmlui.scidir.live-import.pubmedsearch_hint"><p>Fill in a publication ID, DOI, Title or Author and then press “Search”. A list of all matching publications will be shown to you to select in order to proceed with the submission process.</p></message>
 
+    <message key="xmlui.scidir.import-source.trail">Elsevier Import</message>
+    <message key="xmlui.scidir.import-source.head">Choose an Import Source</message>
+    <message key="xmlui.scidir.import-source.title">Choose a source</message>
+    <message key="xmlui.scidir.import-source.submit">Next</message>
+
+
     <message key="xmlui.scidir.live-import-result.submit">Back</message>
     <message key="xmlui.scidir.live-import-result.submit-next">Next</message>
     <message key="xmlui.scidir.live-import-result.no-fields-error">You must fill in one of the fields before starting the import.</message>
