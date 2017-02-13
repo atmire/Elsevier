@@ -3,9 +3,12 @@ package com.atmire.scidir;
 import java.io.*;
 import java.sql.*;
 import java.util.*;
+
+import com.atmire.import_citations.AbstractImportSource;
 import org.apache.avalon.framework.parameters.*;
 import org.apache.cocoon.*;
 import org.apache.cocoon.environment.*;
+import org.apache.commons.lang.StringUtils;
 import org.dspace.app.xmlui.cocoon.*;
 import org.dspace.app.xmlui.utils.*;
 import org.dspace.app.xmlui.wing.*;
@@ -31,12 +34,14 @@ public class LiveImportForm extends AbstractDSpaceTransformer {
     private static final Message T_author = message("xmlui.scidir.live-import.author");
     private static final Message T_doi = message("xmlui.scidir.live-import.doi");
     private static final Message T_submit = message("xmlui.scidir.live-import.submit");
+    protected static final Message T_lookup_help =
+            message("xmlui.Submission.submit.LiveImportStep.lookup_help");
+    private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     @Override
     public void addPageMeta(PageMeta pageMeta) throws SAXException,
             WingException, UIException, SQLException, IOException,
-            AuthorizeException
-    {
+            AuthorizeException {
         pageMeta.addMetadata("title").addContent(T_head);
 
         pageMeta.addTrailLink(contextPath + "/", T_DSPACE_HOME);
@@ -56,22 +61,42 @@ public class LiveImportForm extends AbstractDSpaceTransformer {
     @Override
     public void addBody(Body body) throws SAXException, WingException,
             UIException, SQLException, IOException, AuthorizeException {
+        Request request = ObjectModelHelper.getRequest(objectModel);
 
         Division div = body.addInteractiveDivision("live-import", contextPath + "/liveimport/result", Division.METHOD_POST, "");
         div.setHead(T_head);
 
         div.addPara().addContent(T_hint);
 
-        HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
 
         List form = div.addList("submit-liveimport", List.TYPE_FORM);
 
-        for (String field : liveImportFields.keySet()) {
+        String importSourceString = request.getParameter("source");
+        if (StringUtils.isBlank(importSourceString)) {
+            importSourceString = request.getSession(true).getAttribute("source").toString();
+        }
+        if (StringUtils.isNotBlank(importSourceString)) {
+            form.addItem().addContent(T_lookup_help);
+
+
+            AbstractImportSource importSource = sources.get(importSourceString);
+
+            if (importSource != null) {
+                Map<String, String> fields = importSource.getImportFields();
+                for (String field : fields.keySet()) {
             Text text = form.addItem().addText(field);
             text.setLabel(message("xmlui.scidir.live-import." + field));
             text.setHelp(message("xmlui.scidir.live-import." + field + "_hint"));
-        }
 
-        form.addItem().addButton("submit").setValue(T_submit);
+                    if (StringUtils.isNotBlank(request.getParameter(field))) {
+                        text.setValue(request.getParameter(field));
+        }
+                }
+                request.getSession(true).removeAttribute("source");
+                request.getSession().setAttribute("source", importSourceString);
+
+    }
+            form.addItem().addButton("submit-search").setValue(T_submit);
+}
     }
 }

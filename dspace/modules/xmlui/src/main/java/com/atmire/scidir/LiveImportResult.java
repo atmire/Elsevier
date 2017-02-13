@@ -1,5 +1,6 @@
 package com.atmire.scidir;
 
+import com.atmire.import_citations.AbstractImportSource;
 import com.atmire.import_citations.datamodel.*;
 import com.atmire.util.*;
 import java.io.*;
@@ -47,8 +48,8 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
     public static final String NEXT_BUTTON = "submit_next";
     public static final String BACK_BUTTON = "submit_back";
 
-    private HashMap<String, String> liveImportFields = new DSpace().getServiceManager().getServiceByName("LiveImportFields", HashMap.class);
     private LiveImportUtils liveImportUtils = new DSpace().getServiceManager().getServiceByName("LiveImportUtils", LiveImportUtils.class);
+    private Map<String, AbstractImportSource> sources = new DSpace().getServiceManager().getServiceByName("ImportServices", HashMap.class);
 
     private Request request;
     private String buttonPressed;
@@ -136,20 +137,26 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
 
         Division div = body.addInteractiveDivision("live-import-result", contextPath + "/liveimport/result", Division.METHOD_POST, "");
         div.setHead(T_head);
+        String importSourceString = request.getSession(true).getAttribute("source").toString();
 
-        HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request);
+        AbstractImportSource importSource = sources.get(importSourceString);
+        Map<String, String> importFields = importSource.getImportFields();
+        HashMap<String, String> fieldValues = liveImportUtils.getFieldValues(request, importSource);
 
         for (String field : fieldValues.keySet()) {
+            if (StringUtils.isBlank(field)) {
+                field = "search";
+            }
             div.addHidden(field).setValue(fieldValues.get(field));
         }
 
 
 
-        for (String field : liveImportFields.keySet()) {
+        for (String field : importFields.keySet()) {
             String value = request.getParameter(field);
 
             if(StringUtils.isNotBlank(value)){
-                fieldValues.put(liveImportFields.get(field),value);
+                fieldValues.put(importFields.get(field),value);
                 div.addHidden(field).setValue(value);
             }
         }
@@ -159,15 +166,14 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
         }
         else {
             total = liveImportUtils.getNbRecords(fieldValues);
-            renderRecords(div, fieldValues);
+            renderRecords(div, fieldValues, importSource);
         }
-
         Para para = div.addDivision("navigation-buttons").addPara();
         para.addButton(BACK_BUTTON).setValue(T_submit);
         para.addButton(NEXT_BUTTON).setValue(T_submit_next);
     }
 
-    private void renderRecords(Division div, HashMap<String, String> fieldValues) throws WingException {
+    private void renderRecords(Division div, HashMap<String, String> fieldValues, AbstractImportSource importSource) throws WingException {
         Collection<Record> records = liveImportUtils.getRecords(fieldValues,getStart(),rpp);
 
         if (records.size() > 0) {
@@ -176,52 +182,54 @@ public class LiveImportResult extends AbstractDSpaceTransformer {
             for (Record record : records) {
                 SessionRecord currentRecord = new SessionRecord();
                 Division result = div.addDivision("result", "row import-record");
-                Collection<Metadatum> eid = record.getValue("elsevier", "identifier", "eid");
+                Collection<Metadatum> eid = record.getValue(importSource.getIdField());
 
                 Division leftDiv = result.addDivision("record-left", "col-xs-1 record-leftdiv");
                 Division rightDiv = result.addDivision("record-right", "col-xs-11 record-rightdiv");
 
-                String eidString = eid.iterator().next().value;
-                currentRecord.setEid(eidString);
+                if (eid.size() > 0) {
+                    String eidString = eid.iterator().next().value;
+                    currentRecord.setEid(eidString);
 
-                boolean isSelected = selected.containsKey(eidString);
+                    boolean isSelected = selected.containsKey(eidString);
 
-                leftDiv.addPara().addCheckBox("record-eid-" + eidString, "record-checkbox").addOption(isSelected,"record-checkbox-" + eid.iterator().next().value);
+                    leftDiv.addPara().addCheckBox("record-eid-" + eidString, "record-checkbox").addOption(isSelected,"record-checkbox-" + eid.iterator().next().value);
 
-                Collection<Metadatum> values = record.getValue("dc", "title", null);
+                    Collection<Metadatum> values = record.getValue("dc", "title", null);
 
-                if (values.size() > 0) {
-                    String title = values.iterator().next().value;
-                    Para para = rightDiv.addPara("", "record-title");
-                    para.addContent(title);
-                    para.addHidden(eidString + "-record-title").setValue(title);
-                    currentRecord.setTitle(title);
-                }
+                    if (values.size() > 0) {
+                        String title = values.iterator().next().value;
+                        Para para = rightDiv.addPara("", "record-title");
+                        para.addContent(title);
+                        para.addHidden(eidString + "-record-title").setValue(title);
+                        currentRecord.setTitle(title);
+                    }
 
-                values = record.getValue("dc", "contributor", "author");
+                    values = record.getValue("dc", "contributor", "author");
 
-                if (values.size() > 0) {
-                    StringBuilder sb = new StringBuilder();
-                    for (Metadatum value : values) {
-                        if(StringUtils.isNotBlank(sb.toString())){
-                            sb.append(", ");
+                    if (values.size() > 0) {
+                        StringBuilder sb = new StringBuilder();
+                        for (Metadatum value : values) {
+                            if(StringUtils.isNotBlank(sb.toString())){
+                                sb.append(", ");
+                            }
+                            sb.append(value.value);
                         }
-                        sb.append(value.value);
+
+                        String authorString = sb.toString();
+
+                        if(authorString.length()> author_string_max_length){
+                            authorString = authorString.substring(0,author_string_max_length) + "...";
+                        }
+
+                        Para para = rightDiv.addPara("", "record-authors");
+                        para.addContent(authorString);
+                        para.addHidden(eidString + "-record-authors").setValue(authorString);
+                        currentRecord.setAuthors(authorString);
                     }
 
-                    String authorString = sb.toString();
-
-                    if(authorString.length()> author_string_max_length){
-                        authorString = authorString.substring(0,author_string_max_length) + "...";
-                    }
-
-                    Para para = rightDiv.addPara("", "record-authors");
-                    para.addContent(authorString);
-                    para.addHidden(eidString + "-record-authors").setValue(authorString);
-                    currentRecord.setAuthors(authorString);
+                    currentRecords.put(eidString, currentRecord);
                 }
-
-                currentRecords.put(eidString, currentRecord);
             }
 
             request.getSession().setAttribute("currentRecords", currentRecords);

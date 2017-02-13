@@ -40,8 +40,10 @@
                 </xsl:choose>
             </xsl:attribute>
             <xsl:attribute name="src">
-                <xsl:text>//api.elsevier.com/content/article/pii/</xsl:text>
-                <xsl:value-of select="descendant::dri:field[@n='pii']/dri:value"/>
+                <xsl:text>//api.elsevier.com/content/article/</xsl:text>
+                <xsl:value-of select="//dri:field[@id='com.atmire.sciencedirect.embed.ElsevierEmbed.field.embeddedType']"/>
+                <xsl:text>/</xsl:text>
+                <xsl:value-of select="//dri:field[@id='com.atmire.sciencedirect.embed.ElsevierEmbed.field.identifier']"/>
                 <xsl:text>?httpAccept=application/pdf&amp;apiKey=</xsl:text>
                 <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.key')"/>
                 <xsl:text>&amp;cdnRedirect=true</xsl:text>

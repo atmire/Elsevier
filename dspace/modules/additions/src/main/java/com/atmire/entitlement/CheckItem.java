@@ -46,16 +46,22 @@ public abstract class CheckItem {
 
         String pii = MetadataUtils.getPII(item);
         String doi = MetadataUtils.getDOI(item);
+        String eid = MetadataUtils.getEID(item);
+        String scopus_id = MetadataUtils.getScopusID(item);
+        String pubmed_ID = MetadataUtils.getPubmedID(item);
 
         if (StringUtils.isNotBlank(pii)) {
             response = connect.get("hostingpermission/pii/" + pii + getQueryString());
-
-        } else if (StringUtils.isNotBlank(doi)) {
-	        if(doi.startsWith("DOI:")){
-		        doi = doi.substring(4);
-	        }
-
+        }  else if (StringUtils.isNotBlank(eid)) {
+            response = connect.get("hostingpermission/eid/" + eid + getQueryString());
+        } else if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
             response = connect.get("hostingpermission/doi/" + doi + getQueryString());
+        } else if (publisherIsElsevier(item)) {
+            if (StringUtils.isNotBlank(scopus_id)) {
+                response = connect.get("hostingpermission/scopus_id/" + scopus_id + getQueryString());
+            } else if (StringUtils.isNotBlank(pubmed_ID)) {
+                response = connect.get("hostingpermission/pubmed_id/" + pubmed_ID + getQueryString());
+            }
         }
 
         if (response != null) {
@@ -137,6 +143,17 @@ public abstract class CheckItem {
         }
 
         return articleAccess;
+    }
+
+    private boolean publisherIsElsevier(Item item) {
+        Metadatum[] publisherMetadata = item.getMetadataByMetadataString("dc.publisher");
+        boolean publisherIsElsevier = false;
+        for(Metadatum metadatum : publisherMetadata){
+            if(metadatum.value.matches("^(?i)elsevier.*")){
+                publisherIsElsevier =true;
+            }
+        }
+        return publisherIsElsevier;
     }
 
 

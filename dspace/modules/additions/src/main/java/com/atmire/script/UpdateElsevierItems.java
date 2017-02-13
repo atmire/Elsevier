@@ -149,10 +149,6 @@ public class UpdateElsevierItems {
         String pii = MetadataUtils.getPII(item);
         String doi = MetadataUtils.getDOI(item);
 
-        if(doi.startsWith("DOI:")){
-            doi = doi.substring(4);
-        }
-
         String piiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.pii");
 
         String[] split = piiMdField.split("\\.");
@@ -215,10 +211,6 @@ public class UpdateElsevierItems {
     private static void importMetadata(Item item) throws SourceException {
         String pii = MetadataUtils.getPII(item);
         String doi = MetadataUtils.getDOI(item);
-
-        if(doi.startsWith("DOI:")){
-            doi = doi.substring(4);
-        }
 
         if(force){
             Record record = null;

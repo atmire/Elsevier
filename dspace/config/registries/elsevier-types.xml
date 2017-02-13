@@ -61,13 +61,6 @@
   <dc-type>
     <schema>elsevier</schema>
     <element>identifier</element>
-    <qualifier>scopuseid</qualifier>
-    <scope_note></scope_note>
-  </dc-type>
-
-  <dc-type>
-    <schema>elsevier</schema>
-    <element>identifier</element>
     <qualifier>pubmedid</qualifier>
     <scope_note></scope_note>
   </dc-type>

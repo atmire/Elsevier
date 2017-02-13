@@ -642,6 +642,7 @@
     <message key="xmlui.Submission.general.submission.previous">&lt; Previous</message>
     <message key="xmlui.Submission.general.submission.save">Save &amp; Exit</message>
     <message key="xmlui.Submission.general.submission.next">Next &gt;</message>
+    <message key="xmlui.Submission.general.submission.skip">Skip import &gt;&gt;</message>
     <message key="xmlui.Submission.general.submission.complete">Complete submission</message>
     <message key="xmlui.Submission.general.workflow.title">Item submission</message>
     <message key="xmlui.Submission.general.workflow.trail">Item submission</message>
@@ -2523,6 +2524,14 @@
     <message key="xmlui.scidir.live-import.doi">DOI</message>
     <message key="xmlui.scidir.live-import.doi_hint"><p>The publication's doi.</p><p>Example: "10.1016/j.tig.2014.11.002"</p></message>
     <message key="xmlui.scidir.live-import.submit">Search</message>
+    <message key="xmlui.scidir.live-import.pubmedsearch">Search</message>
+    <message key="xmlui.scidir.live-import.pubmedsearch_hint"><p>Fill in a publication ID, DOI, Title or Author and then press “Search”. A list of all matching publications will be shown to you to select in order to proceed with the submission process.</p></message>
+
+    <message key="xmlui.scidir.import-source.trail">Elsevier Import</message>
+    <message key="xmlui.scidir.import-source.head">Choose an Import Source</message>
+    <message key="xmlui.scidir.import-source.title">Choose a source</message>
+    <message key="xmlui.scidir.import-source.submit">Next</message>
+
 
     <message key="xmlui.scidir.live-import-result.submit">Back</message>
     <message key="xmlui.scidir.live-import-result.submit-next">Next</message>
@@ -2547,20 +2556,21 @@
     <message key="xmlui.Submission.submit.LiveImportStep.submit_skip">Skip Import</message>
     <message key="xmlui.Submission.submit.LiveImportStep.title">Search</message>
     <message key="xmlui.Submission.submit.LiveImportStep.lookup_help"><p>Fill in at least one of the following fields and press "Search". A list of all matching publications will be shown. Import a publication by clicking "import".</p><p>Importing a publication will detele all metadata that was already added to this item!</p></message>
-    <message key="xmlui.Submission.submit.LiveImportStep.lookup_help2">Use the "Search" button to search publications in Elsevier. Continue without importing using the "Next" button.</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.lookup_help2">Use the "Search" button to search publications in the chosen import source. Continue without importing using the "Next" button.</message>
     <message key="xmlui.Submission.submit.LiveImportStep.submit_import_item">Imported Publication:</message>
     <message key="xmlui.Submission.submit.LiveImportStep.records-found">{0} records found, now showing {1} to {2}:</message>
     <message key="xmlui.Submission.submit.LiveImportStep.no-records">No records found</message>
     <message key="xmlui.Submission.submit.LiveImportStep.submit_results">Search results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep..missing_import_source">Please return to the previous step to select an import source.</message>
     <message key="xmlui.Submission.submit.progressbar.liveimport">Elsevier Import</message>
-
+    <message key="xmlui.Submission.submit.LiveImportStep.select_help"><p>The Elsevier batch import allows you to import items from multiple sources.</p><p>Select the preferred source in the dropdown and click "Next" to continue to the search page</p></message>
 
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title">Elsevier embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.trail">Elsevier embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title_error">The embed page cannot be rendered</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.error.embed_page_disabled">The embed pages have been disabled</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.error.not_an_item">There is no item associated with this URL</message>
-    <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.error.invalid_pii">The given PII does not match with the item</message>
+    <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.error.invalid_identifier">The given identifier does not match with the item</message>
 
     <message key="xmlui.file-access.FileAccessUI.label">File access</message>
     <message key="xmlui.file-access.FileAccessUI.embargo_date">Embargo end date</message>
@@ -2571,5 +2581,11 @@
     
     <message key="xmlui.Submission.submit.ElsevierUploadStep.open_access">The Elsevier lookup identified the record as open access</message>
     <message key="xmlui.Submission.submit.ElsevierUploadStep.restricted_access">The Elsevier lookup identified the record as restricted access</message>
+
+
+    <message key="xmlui.Submission.submit.SourceChoiceStep.title">Choose an Import Source</message>
+    <message key="xmlui.Submission.submit.SourceChoiceStep.choose_source">Choose import source</message>
+    <message key="xmlui.Submission.submit.progressbar.sourcechoice">Import Source</message>
+
 
 </catalogue>

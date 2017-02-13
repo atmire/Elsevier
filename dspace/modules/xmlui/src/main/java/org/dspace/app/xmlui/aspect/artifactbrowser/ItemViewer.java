@@ -124,7 +124,6 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
     public SourceValidity getValidity()
     {
         DSpaceObject dso = null;
-
         if (this.validity == null)
     	{
 	        try {
@@ -317,12 +316,30 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         boolean entitlementCheck = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "entitlement.check.enabled", false);
         if(entitlementCheck) {
             pageMeta.addMetadata("window.DSpace", "item_pii").addContent(MetadataUtils.getPII(item));
-            pageMeta.addMetadata("window.DSpace", "item_doi").addContent(MetadataUtils.getDOI(item));
+            pageMeta.addMetadata("window.DSpace", "item_eid").addContent(MetadataUtils.getEID(item));
+            String doi = MetadataUtils.getDOI(item);
+            if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
+                pageMeta.addMetadata("window.DSpace", "item_doi").addContent(doi);
+            }
+            if (publisherIsElsevier(item)) {
+                pageMeta.addMetadata("window.DSpace", "item_pubmed_id").addContent(MetadataUtils.getPubmedID(item));
+                pageMeta.addMetadata("window.DSpace", "item_scopus_id").addContent(MetadataUtils.getScopusID(item));
+            }
             pageMeta.addMetadata("window.DSpace", "elsevier_apikey").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.key"));
             pageMeta.addMetadata("window.DSpace", "elsevier_entitlement_url").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.entitlement.url"));
         }
     }
 
+    private boolean publisherIsElsevier(Item item) {
+        Metadatum[] publisherMetadata = item.getMetadataByMetadataString("dc.publisher");
+        boolean publisherIsElsevier = false;
+        for(Metadatum metadatum : publisherMetadata){
+            if(metadatum.value.matches("^(?i)elsevier.*")){
+                publisherIsElsevier =true;
+            }
+        }
+        return publisherIsElsevier;
+    }
     /**
      * Display a single item
      */
@@ -340,7 +357,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         Item item = (Item) dso;
 
         // Build the item viewer division.
-        Division division = body.addDivision("item-view","primary");
+        Division division = body.addDivision("item-view", "primary");
         String title = getItemTitle(item);
         if (title != null)
         {
@@ -390,7 +407,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         }
 
         // Reference the actual Item
-        ReferenceSet appearsInclude = referenceSet.addReference(item).addReferenceSet(ReferenceSet.TYPE_DETAIL_LIST,null,"hierarchy");
+        ReferenceSet appearsInclude = referenceSet.addReference(item).addReferenceSet(ReferenceSet.TYPE_DETAIL_LIST, null, "hierarchy");
         appearsInclude.setHead(T_head_parent_collections);
 
         // Reference all collections the item appears in.
@@ -402,13 +419,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
         division.addPara("entitlement", "entitlement-wrapper hidden").addXref("", "entitlement", "entitlement-link");
 
 
-        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "embed.display");
-        String pii = MetadataUtils.getPII(item);
-        if (embedDisplay && StringUtils.isNotBlank(pii)) {
-            String link = contextPath + "/handle/" + item.getHandle() + "/elsevier-embed/" + pii;
-            Para para = division.addPara("elsevier-embed-page", "elsevier-embed-page");
-            para.addXref(link, T_elsevier_embed);
-        }
+        addEmbeddedDisplayLink(item, division);
 
 
         showfullPara = division.addPara(null,"item-view-toggle item-view-toggle-bottom");
@@ -423,6 +434,46 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             String link = contextPath + "/handle/" + item.getHandle()
                     + "?show=full";
             showfullPara.addXref(link).addContent(T_show_full);
+        }
+    }
+
+    private void addEmbeddedDisplayLink(Item item, Division division) throws WingException {
+        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "embed.display");
+
+        if (embedDisplay) {
+            String pii = MetadataUtils.getPII(item);
+            String doi = MetadataUtils.getDOI(item);
+            String eid = MetadataUtils.getEID(item);
+            String scopus_id = MetadataUtils.getScopusID(item);
+            String pubmed_ID= MetadataUtils.getPubmedID(item);
+            String link = null;
+            String embeddedLink = null;
+            String baseLink = contextPath + "/handle/" + item.getHandle() + "/elsevier-embed/";
+            String embedURLBase = ConfigurationManager.getProperty("elsevier-sciencedirect", "ui.article.url");
+            String doiURLBase = "http://dx.doi.org/";
+            if (StringUtils.isNotBlank(pii)) {
+                link = baseLink + pii+"?embeddedType=pii";
+                embeddedLink=embedURLBase+"/pii/"+pii;
+            }  else if (StringUtils.isNotBlank(eid)) {
+                link = baseLink + eid+"?embeddedType=eid";
+                embeddedLink=embedURLBase+"/eid/"+eid;
+            } else if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
+                link = baseLink + doi+"?embeddedType=doi";
+                embeddedLink=doiURLBase+doi;
+            } else if (publisherIsElsevier(item)) {
+                if (StringUtils.isNotBlank(scopus_id)) {
+                    link = baseLink + scopus_id+"?embeddedType=scopus_id";
+                    embeddedLink=embedURLBase+"/scopus_id/"+scopus_id;
+                } else if (StringUtils.isNotBlank(pubmed_ID)) {
+                    link = baseLink + doi+"?embeddedType=pubmed_id";
+                    embeddedLink=embedURLBase+"/pubmed_ID/"+pubmed_ID;
+                }
+            }
+            if (StringUtils.isNotBlank(link)) {
+                Para para = division.addPara("elsevier-embed-page", "elsevier-embed-page");
+                para.addXref(link, T_elsevier_embed);
+                para.addHidden("embeddedLink").setValue(embeddedLink);
+            }
         }
     }
 

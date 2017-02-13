@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+ http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd"
+       default-autowire-candidates="*Service,*DAO,javax.sql.DataSource,*Map">
+
+    <context:annotation-config/>
+    <util:map id="scopusImportFields">
+        <entry key="affiliation" value="affil"/>
+        <entry key="title" value="title"/>
+        <entry key="author" value="auth"/>
+        <entry key="doi" value="doi"/>
+    </util:map>
+
+    <util:map id="scopusMetadataFieldMap" key-type="com.atmire.import_citations.configuration.metadatamapping.MetadataField"
+              value-type="com.atmire.import_citations.configuration.metadatamapping.MetadataContributor">
+        <description>Defines which metadatum is mapped on which metadatum. Note that while the key must be unique it
+            only matters here for postprocessing of the value. The mapped MetadatumContributor has full control over
+            what metadatafield is generated.
+        </description>
+        <entry key-ref="dc.title" value-ref="titleContrib"/>
+        <entry key-ref="elsevier.identifier.doi" value-ref="doiContrib"/>
+        <entry key-ref="dc.identifier" value-ref="identifierContrib"/>
+        <entry key-ref="dc.identifier.uri" value-ref="uriContrib"/>
+        <entry key-ref="elsevier.identifier.scopusid" value-ref="scopusIdContrib"/>
+        <entry key-ref="elsevier.identifier.eid" value-ref="eidContrib"/>
+        <entry key-ref="dc.creator" value-ref="creatorContrib"/>
+        <entry key-ref="dc.relation.ispartof" value-ref="publicationContrib"/>
+        <entry key-ref="dc.identifier.issn" value-ref="issnContrib"/>
+        <entry key-ref="dc.identifier.isbn" value-ref="isbnContrib"/>
+        <entry key-ref="elsevier.volume" value-ref="volumeContrib"/>
+        <entry key-ref="elsevier.issue.identifier" value-ref="issueIdentifierContrib"/>
+        <entry key-ref="elsevier.issue.name" value-ref="issueNameContrib"/>
+        <entry key-ref="elsevier.coverdate" value-ref="coverdateContrib"/>
+        <entry key-ref="dc.date.issued" value-ref="scidirDateIssuedContrib"/>
+        <entry key-ref="elsevier.coverdisplaydate" value-ref="coverdisplaydateContrib"/>
+        <entry key-ref="elsevier.startingpage" value-ref="startingpageContrib"/>
+        <entry key-ref="elsevier.endingpage" value-ref="endingpageContrib"/>
+        <entry key-ref="elsevier.openaccess" value-ref="openaccessContrib"/>
+        <entry key-ref="elsevier.openaccessflag" value-ref="openaccessflagContrib"/>
+        <entry key-ref="elsevier.openaccessarticle" value-ref="openaccessarticleContrib"/>
+        <entry key-ref="elsevier.openarchivearticle" value-ref="openarchivearticleContrib"/>
+        <entry key-ref="elsevier.openaccessuserlicense" value-ref="openaccessuserlicenseContrib"/>
+        <entry key-ref="dc.type" value-ref="typeContrib"/>
+        <entry key-ref="elsevier.identifier.pii" value-ref="piiContrib"/>
+        <entry key-ref="dc.contributor.author" value-ref="scopusAuthorContrib"/>
+        <entry key-ref="elsevier.teaser" value-ref="teaserContrib"/>
+        <entry key-ref="elsevier.url.scidir" value-ref="scidirurlContrib"/>
+        <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
+        <entry key-ref="elsevier.url.abstract" value-ref="abstracturlContrib"/>
+        <entry key-ref="elsevier.edition" value-ref="editionContrib"/>
+        <entry key-ref="dc.description.abstract" value-ref="abstractContrib"/>
+        <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
+        <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
+    </util:map>
+
+    <bean id="scopusIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.identifier.scopusid"/>
+        <property name="query" value="dc:identifier"/>
+    </bean>
+
+    <bean id="scopusAuthorContrib" class="com.atmire.import_citations.configuration.metadatamapping.CombinedMetadatumContributor">
+        <property name="separator" value=", "/>
+        <property name="metadatumContributors" ref="scopusCombinedauthorList"/>
+        <property name="field" ref="dc.contributor.author"/>
+    </bean>
+
+    <util:list id="scopusCombinedauthorList" value-type="com.atmire.import_citations.configuration.metadatamapping.MetadataContributor" list-class="java.util.LinkedList">
+        <ref bean="scopusLastNameContrib"/>
+        <ref bean="scopusFirstNameContrib"/>
+    </util:list>
+
+    <bean id="scopusLastNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:author/x:surname"/>
+    </bean>
+
+    <bean id="scopusFirstNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:author/x:given-name"/>
+    </bean>
+
+    <bean name="identifyingMetadataField" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
+        <description>For autowiring the DOI based service.</description>
+        <constructor-arg ref="identifyingField"/>
+    </bean>
+
+    <bean name="fallbackIdentifyingMetadataField" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
+        <description>For autowiring the DOI based service.</description>
+        <constructor-arg ref="fallbackIdentifyingField"/>
+    </bean>
+
+    <bean class="java.lang.String" id="identifyingField"  autowire-candidate="true"> <constructor-arg value="dc.identifier.other"/></bean>
+    <bean class="java.lang.String" id="fallbackIdentifyingField"  autowire-candidate="true"> <constructor-arg value="dc.identifier.doi"/></bean>
+
+
+    <bean class="com.atmire.import_citations.GenerateDOIQueryForItem_Scopus" id="DOIBasedScopusService">
+        <description>Defines how an org.dspace.content.Item is mapped to a query in scopus. Please note that exactly one of
+            these must be present. If multiple are present the result is undefined.
+        </description>
+    </bean>
+
+    <bean class="java.lang.String" id="view"  autowire-candidate="true"> <constructor-arg value="${scopus.import.view}"/></bean>
+    <bean class="java.lang.String" id="scopus-baseAddress"  autowire-candidate="true"> <constructor-arg value="${scopus.import.url}"/></bean>
+
+</beans>

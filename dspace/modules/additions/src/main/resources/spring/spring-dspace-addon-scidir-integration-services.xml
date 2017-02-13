@@ -26,6 +26,10 @@
     <bean id="ScidirImportService" class="com.atmire.scidir.ScidirSource" scope="singleton">
         <property name="metadataFieldMapping" ref="ScidirMetadataFieldMapping"/>
         <property name="apiUrl" value="http://api.elsevier.com/content/search/scidir"/>
+        <property name="name" value="ScienceDirect"/>
+        <property name="importFields" ref="scidirImportFields"/>
+        <property name="apiKey" ref="apiKey"/>
+        <property name="idField" value="elsevier.identifier.eid"/>
     </bean>
 
     <bean id="ScidirMetadataFieldMapping" class="com.atmire.scidir.ScidirMetadataFieldMapping"/>

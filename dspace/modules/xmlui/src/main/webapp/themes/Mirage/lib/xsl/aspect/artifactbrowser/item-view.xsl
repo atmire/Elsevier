@@ -703,13 +703,7 @@
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']"/>
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply" >
 
-        <xsl:variable name="pii-url">
-            <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.article.url')"/>
-            <xsl:text>/pii/</xsl:text>
-            <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
-        </xsl:variable>
-
-        <div id="elsevier-embed-wrapper" class="clearfix">
+           <div id="elsevier-embed-wrapper" class="clearfix">
             <div class="access hidden">
             <div class="thumbnail-wrapper" style="width: {$thumbnail.maxwidth}px;">
                     <a>
@@ -721,7 +715,7 @@
             </div>
             <div class="file-metadata" style="max-height: {$thumbnail.maxheight}px;">
                     <div>
-                        <a>
+                        <a class="publiserVersionLink hidden">
                             <xsl:attribute name="href">
                                 <xsl:value-of select="dri:xref/@target"/>
                             </xsl:attribute>
@@ -738,7 +732,7 @@
                         <span class="checkmark">
                             <a>
                             <xsl:attribute name="href">
-                                <xsl:call-template name="linkToArticleUrl"/>
+                                <xsl:value-of select="dri:xref/@target"/>
                             </xsl:attribute>
                             <img alt="Icon" src="{concat($theme-path, '/images/greenArrowInBox.svg')}" style="height: 14px;"/>
                             </a>
@@ -748,7 +742,7 @@
                 </div>
                 <div class="noaccess">
                 <div class="thumbnail-wrapper" style="width: {$thumbnail.maxwidth}px;">
-                    <a>
+                    <a class="no_accessThumbnailLinking">
                         <xsl:attribute name="href">
                             <xsl:call-template name="linkToArticleUrl"/>
                         </xsl:attribute>
@@ -758,7 +752,7 @@
                 </div>
                 <div class="file-metadata" style="max-height: {$thumbnail.maxheight}px;">
                     <div>
-                        <a>
+                        <a class="publiserVersionLink hidden">
                             <xsl:attribute name="href">
                                 <xsl:call-template name="linkToArticleUrl"/>
                             </xsl:attribute>
@@ -772,7 +766,7 @@
                     </div>
                 </div>
             </div>
-            <a>
+            <a class="embeddedViewOpenLink hidden">
                 <xsl:attribute name="href">
                     <xsl:value-of select="dri:xref/@target"/>
                 </xsl:attribute>
@@ -784,8 +778,6 @@
     </xsl:template>
 
     <xsl:template name="linkToArticleUrl">
-        <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'ui.article.url')"/>
-        <xsl:text>/pii/</xsl:text>
-        <xsl:value-of select="$DRI//dri:metadata[@element='window.DSpace' and @qualifier='item_pii']"/>
+        <xsl:value-of select="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']/dri:field[@n='embeddedLink']"/>
     </xsl:template>
 </xsl:stylesheet>
