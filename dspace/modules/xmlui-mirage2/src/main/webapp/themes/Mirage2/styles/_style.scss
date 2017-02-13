@@ -39,7 +39,7 @@
   background-color: #E2E2E2;
 }
 
-#aspect_submission_StepTransformer_div_StartSubmissionLookupStep {
+#aspect_submission_StepTransformer_div_submit-lookup {
 
   #aspect_submission_StepTransformer_field_search {
     width: 81%;
@@ -55,7 +55,56 @@
     overflow-y: auto;
   }
 
-  #aspect_submission_StepTransformer_item_publication-title{
+  #aspect_submission_StepTransformer_item_import-title
+  {
     margin-bottom:5px;
   }
+}
+
+.modal-open  {
+    #main-container {
+        overflow: visible;
+    }
+    .navbar {
+        z-index:0;
+    }
+}
+
+#com_atmire_scidir_LiveImportResult_div_live-import-result{
+    .pagination-next {
+        float:right;
+    }
+}
+
+.import-record {
+    padding-bottom: 15px;
+}
+
+.record-title {
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.record-checkbox .checkbox {
+    margin:0;
+}
+
+#com_atmire_scidir_LiveImportResult_div_pagination .ds-paragraph,
+#com_atmire_scidir_LiveImportResult_div_navigation-buttons .ds-paragraph,
+#com_atmire_scidir_LiveImportSelected_div_navigation-buttons .ds-paragraph{
+    display: inline;
+}
+
+.records-selected {
+    padding-top:10px;
+}
+
+#elsevier-embed-wrapper .checkmark{
+    color: green;
+    margin-right:5px;
+    margin-left:5px;
+}
+
+#aspect_administrative_importer_external_scidir_ImportSourceForm_field_submit {
+  margin-top: 15px;
 }
