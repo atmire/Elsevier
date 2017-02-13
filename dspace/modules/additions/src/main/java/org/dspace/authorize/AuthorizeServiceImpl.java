@@ -88,7 +88,7 @@ public class AuthorizeServiceImpl implements AuthorizeService
     @Override
     public void authorizeAction(Context c, DSpaceObject o, int action, boolean useInheritance) throws AuthorizeException, SQLException
     {
-    	authorizeAction(c, c.getCurrentUser(), o, action, useInheritance);
+        authorizeAction(c, c.getCurrentUser(), o, action, useInheritance);
     }
     
     @Override
