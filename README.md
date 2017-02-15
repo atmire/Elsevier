@@ -170,7 +170,7 @@ To ensure your users see the import source lookup steps at the start of submissi
 </step>
 <step>
     <heading>submit.progressbar.liveimport</heading>
-    <processing-class>org.dspace.submit.step.LiveImportStep</processing-class>
+    <processing-class>com.atmire.submit.step.LiveImportStep</processing-class>
     <jspui-binding>org.dspace.app.webui.submit.step.JSPStartSubmissionLookupStep</jspui-binding>
     <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.LiveImportStep</xmlui-binding>
     <workflow-editable>true</workflow-editable>
