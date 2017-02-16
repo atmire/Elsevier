@@ -1,6 +1,7 @@
 **Table of Contents**  
 
 - [Introduction](#Introduction)
+	- [Watch a demo](#Demo)
 	- [Conditions for use](#Conditions)
 	- [Contribution to DSpace mainline code](#Contribution)
 	- [Branches in this repository](#Branches)
@@ -43,6 +44,10 @@ This code repository offers enhancements for DSpace 5 and 6 that leverage PubMed
 * Embedded viewing of the publication in the repository. A user can read the publication without leaving the repository.
 * See the publication open access status automatically on the repository item page.
 * Enhancement of the DSpace file upload step to more easily enter embargo information.
+
+## Watch a demo<a name="Demo"></a> ##
+
+https://youtu.be/ye2V-nU5qbw 
 
 ## Conditions for use<a name="Conditions"></a> ##
 
