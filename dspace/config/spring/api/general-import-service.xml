@@ -358,4 +358,10 @@
         <property name="query" value="prism:copyright"/>
     </bean>
 
+    <bean id="keywordContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleSeparatedXpathMetadatumContributor">
+        <property name="field" ref="dc.subject"/>
+        <property name="query" value="x:authkeywords"/>
+        <property name="separator" value="|"/>
+    </bean>
+
 </beans>

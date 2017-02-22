@@ -4,6 +4,7 @@ import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.commons.lang3.StringUtils;
 import org.dspace.content.Metadatum;
 import org.jaxen.JaxenException;
 import org.springframework.beans.factory.annotation.Required;
@@ -70,31 +71,40 @@ public class SimpleXpathMetadatumContributor implements MetadataContributor<OMEl
 
     @Override
     public Collection<Metadatum> contributeMetadata(OMElement t) {
-        List<Metadatum> values=new LinkedList<Metadatum>();
+        List<Metadatum> values=new LinkedList<>();
         try {
             AXIOMXPath xpath=new AXIOMXPath(query);
             for(String ns:prefixToNamespaceMapping.keySet()){
                 xpath.addNamespace(prefixToNamespaceMapping.get(ns),ns);
             }
             List<Object> nodes=xpath.selectNodes(t);
-            for(Object el:nodes)
+            for(Object el:nodes){
+                String value=null;
                 if(el instanceof OMElement)
-                    values.add(metadataFieldMapping.toDCValue(field, ((OMElement) el).getText()));
+                    value= ((OMElement) el).getText();
                 else if(el instanceof OMAttribute){
-                    values.add(metadataFieldMapping.toDCValue(field, ((OMAttribute) el).getAttributeValue()));
+                    value= ((OMAttribute) el).getAttributeValue();
                 } else if(el instanceof String){
-                    values.add(metadataFieldMapping.toDCValue(field, (String) el));
+                    value= (String) el;
                 } else if(el instanceof OMText)
-                    values.add(metadataFieldMapping.toDCValue(field, ((OMText) el).getText()));
+                    value= ((OMText) el).getText();
                 else
                 {
                     System.err.println("node of type: "+el.getClass());
                 }
+                if(StringUtils.isNotBlank(value)){
+                    addRetrievedValueToMetadata(values, value);
+                }
+            }
             return values;
         } catch (JaxenException e) {
             System.err.println(query);
             throw new RuntimeException(e);
         }
 
+    }
+
+    protected void addRetrievedValueToMetadata(List<Metadatum> values, String value) {
+        values.add(metadataFieldMapping.toDCValue(field, value));
     }
 }

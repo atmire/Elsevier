@@ -68,6 +68,7 @@
         <entry key-ref="dc.description.abstract" value-ref="abstractContrib"/>
         <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
+        <entry key-ref="dc.subject" value-ref="keywordContrib"/>
     </util:map>
 
     <!--einde!!-->
