@@ -3,18 +3,14 @@ package com.atmire.scidir;
 import com.atmire.import_citations.*;
 import com.atmire.import_citations.configuration.*;
 import com.atmire.import_citations.datamodel.*;
-import java.io.*;
-import java.util.*;
 import java.util.Collection;
+import java.util.*;
 import java.util.concurrent.*;
 import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
 import org.apache.axiom.om.*;
-import org.apache.axiom.om.xpath.*;
 import org.apache.log4j.*;
 import org.dspace.content.*;
-import org.dspace.core.*;
-import org.jaxen.*;
 
 /**
  * Created by Philip Vissenaekens (philip at atmire dot com)
@@ -65,7 +61,7 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
             try {
                 return Integer.parseInt(count);
             } catch(NumberFormatException e) {
-                log.error(e.getMessage(), e);
+                log.error("ScidirSource: failed to parse number of results, server response: " + responseString);
                 return 0;
             }
         }

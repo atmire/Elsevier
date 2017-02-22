@@ -1,29 +1,19 @@
 package com.atmire.import_citations;
 
-import com.atmire.import_citations.configuration.Query;
-import com.atmire.import_citations.configuration.SourceException;
-import com.atmire.import_citations.configuration.metadatamapping.MetadataContributor;
-import com.atmire.import_citations.configuration.metadatamapping.MetadataFieldMapping;
-import com.atmire.import_citations.datamodel.Record;
-import com.atmire.wadl.IndexScopusResource;
-import com.atmire.wadl.ScopusidResource;
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.apache.log4j.Logger;
-import org.dspace.content.Item;
-import org.dspace.content.Metadatum;
-import org.jaxen.JaxenException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
-
-import javax.ws.rs.core.Response;
-import java.io.InputStream;
-import java.io.StringReader;
+import com.atmire.import_citations.configuration.*;
+import com.atmire.import_citations.datamodel.*;
+import com.atmire.wadl.*;
+import java.io.*;
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.Collection;
+import java.util.concurrent.*;
+import javax.ws.rs.core.*;
+import org.apache.axiom.om.*;
+import org.apache.axiom.om.xpath.*;
+import org.apache.cxf.jaxrs.client.*;
+import org.apache.log4j.*;
+import org.dspace.content.*;
+import org.springframework.beans.factory.annotation.*;
 
 /**
  * @author lotte.hofstede at atmire.com
@@ -129,7 +119,7 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
             try {
                 return Integer.parseInt(count);
             } catch (NumberFormatException e) {
-                log.error(e.getMessage(), e);
+                log.error("ScopusSource: failed to parse number of results, server response: " + responseString);
                 return 0;
             }
         }
