@@ -16,11 +16,10 @@ import javax.ws.rs.client.*;
 import javax.ws.rs.core.*;
 import org.apache.axiom.om.*;
 import org.apache.axiom.om.xpath.*;
+import org.apache.log4j.*;
 import org.dspace.content.*;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.exception.*;
-import org.dspace.importer.external.metadatamapping.*;
-import org.dspace.importer.external.metadatamapping.transform.*;
 import org.dspace.importer.external.service.*;
 import org.jaxen.*;
 
@@ -33,6 +32,7 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
     private WebTarget pubmedWebTarget;
     private String baseAddress;
 
+    private static Logger log = Logger.getLogger(PubmedImportMetadataSourceServiceImpl.class);
 
     private class GetNbRecords implements Callable<Integer> {
 
@@ -61,7 +61,12 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
             String count = getSingleElementValue(responseString, "Count");
 
-            return Integer.parseInt(count);
+            try {
+                return Integer.parseInt(count);
+            } catch (NumberFormatException e) {
+                log.error("PubmedImportMetadataSourceServiceImpl: failed to parse number of results, server response: " + responseString);
+                return 0;
+            }
         }
     }
 
