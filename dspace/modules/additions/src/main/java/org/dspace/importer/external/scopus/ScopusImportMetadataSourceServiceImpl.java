@@ -125,7 +125,7 @@ public class ScopusImportMetadataSourceServiceImpl extends AbstractImportMetadat
             try {
                 return Integer.parseInt(count);
             } catch (NumberFormatException e) {
-                log.error(e.getMessage(), e);
+                log.error("ScopusImportMetadataSourceServiceImpl: failed to parse number of results, server response: " + responseString);
                 return 0;
             }
         }
