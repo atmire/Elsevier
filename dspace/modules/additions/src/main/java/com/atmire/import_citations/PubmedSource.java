@@ -7,6 +7,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.*;
 import org.dspace.content.Item;
 import org.jaxen.JaxenException;
 
@@ -29,9 +30,9 @@ import java.util.concurrent.Callable;
  */
 public class PubmedSource extends AbstractImportSource<OMElement> {
     private WebTarget pubmedWebTarget;
-
     private String baseAddress;
 
+    private static Logger log = Logger.getLogger(PubmedSource.class);
 
     private class GetNbRecords implements Callable<Integer> {
 
@@ -60,7 +61,12 @@ public class PubmedSource extends AbstractImportSource<OMElement> {
 
             String count = getSingleElementValue(responseString, "Count");
 
-            return Integer.parseInt(count);
+            try {
+                return Integer.parseInt(count);
+            } catch (NumberFormatException e) {
+                log.error("PubmedSource: failed to parse number of results, server response: " + responseString);
+                return 0;
+            }
         }
     }
 
