@@ -13,6 +13,12 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## February 22th, 2017
+
+- API change: Support separating a record value from an import source into multiple DSpace metadata values
+- API change: Extra logging in import sources
+- Fix: Java class ThemeResourceReader is now included in the patch to prevent errors in DSpace 5.4 to 5.0
+
 ## February 3rd, 2017
 
 - API change: Added a batch item import step to select the import source
