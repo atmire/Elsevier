@@ -204,7 +204,7 @@
   <dc-type>
     <schema>elsevier</schema>
     <element>description</element>
-    <qualifier>abstract</qualifier>
+    <qualifier>scopusabstract</qualifier>
     <scope_note></scope_note>
   </dc-type>
 
