@@ -13,6 +13,13 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## February 24th, 2017
+
+- API change: Import source URL configuration for Scopus and Pubmed has been moved to config file elsevier-sciencedirect.cfg
+- API change: Scopus import source view configuration has been moved to config file elsevier-sciencedirect.cfg
+- API change: Scopus abstracts are mapped to DSpace metadata field elsevier.description.scopusabstract
+- API fix: According to the Scopus policies the Scopus abstracts are not allowed to be displayed publicly. Scopus abstracts are hidden for all users except DSpace administrators. 
+
 ## February 22th, 2017
 
 - API change: Support separating a record value from an import source into multiple DSpace metadata values
