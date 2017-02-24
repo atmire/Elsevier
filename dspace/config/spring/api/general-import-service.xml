@@ -18,6 +18,8 @@
         <entry key="pubmed" value-ref="PubmedImportService"/>
     </util:map>
 
+    <bean id="importService" class="org.dspace.importer.external.service.ImportService" scope="singleton"
+          lazy-init="false" autowire="byType" destroy-method="destroy"/>
 
     <bean class="java.lang.String" id="apiKey" autowire-candidate="true">
         <constructor-arg value="${elsevier.api.key}"/>
@@ -126,6 +128,10 @@
 
     <bean id="dc.description.abstract" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
         <constructor-arg value="dc.description.abstract"/>
+    </bean>
+
+    <bean id="elsevier.description.abstract" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
+        <constructor-arg value="elsevier.description.abstract"/>
     </bean>
 
     <bean id="elsevier.url.scidir" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
