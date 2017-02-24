@@ -55,7 +55,7 @@
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
         <entry key-ref="elsevier.url.abstract" value-ref="abstracturlContrib"/>
         <entry key-ref="elsevier.edition" value-ref="editionContrib"/>
-        <entry key-ref="dc.description.abstract" value-ref="abstractContrib"/>
+        <entry key-ref="elsevier.description.abstract" value-ref="scopusAbstractContrib"/>
         <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
     </util:map>
@@ -86,6 +86,11 @@
         <property name="query" value="x:author/x:given-name"/>
     </bean>
 
+    <bean id="scopusAbstractContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.description.abstract"/>
+        <property name="query" value="dc:description"/>
+    </bean>
+
     <bean name="identifyingMetadataField" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
         <description>For autowiring the DOI based service.</description>
         <constructor-arg ref="identifyingField"/>
@@ -105,8 +110,5 @@
             these must be present. If multiple are present the result is undefined.
         </description>
     </bean>
-
-    <bean class="java.lang.String" id="view"  autowire-candidate="true"> <constructor-arg value="${scopus.import.view}"/></bean>
-    <bean class="java.lang.String" id="scopus-baseAddress"  autowire-candidate="true"> <constructor-arg value="${scopus.import.url}"/></bean>
 
 </beans>

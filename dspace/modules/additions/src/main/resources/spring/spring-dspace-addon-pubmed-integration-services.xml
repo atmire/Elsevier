@@ -14,11 +14,8 @@
     <!--  allows us to use spring annotations in beans  -->
     <context:component-scan base-package="com.atmire.import_citations"/>
 
-
-    <bean id="importService" class="com.atmire.import_citations.configuration.ImportService" scope="singleton" lazy-init="false" autowire="byType" destroy-method="destroy"/>
     <bean id="PubmedImportService" class="com.atmire.import_citations.PubmedSource" scope="singleton">
         <property name="metadataFieldMapping" ref="PubmedMetadataFieldMapping"/>
-        <property name="baseAddress" ref="pubmed-baseAddress"/>
         <property name="name" value="PubMed"/>
         <property name="importFields" ref="pubmedImportFields"/>
         <property name="idField" value="elsevier.identifier.pubmedid"/>
