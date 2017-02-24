@@ -29,6 +29,7 @@
 		- [Live import](#Live-import-detail)
 			- [Configuration](#Live-import-configuration)
 		- [Batch import](#Batch-import)
+		- [Import views](#import-views)
 		- [File Upload Step](#File-upload-step)
 	- [Plugin for the Entitlements check](#Entitlements)
 	- [Embedding of the PDFs](#Embedding-of-the-PDFs)
@@ -267,6 +268,54 @@ In-Depth documentation about the APIs is available from Elsevier at http://dev.e
 ### Configuration <a name="Configuration"></a> ###
 
 The basic API configuration can be found in file *dspace/config/modules/elsevier-sciencedirect.cfg*. This file contains the API key and the API urls. You can either fill out the API key manually in this file, or include in your maven/puppet/ansible configuration profiles.
+
+###### DSpace 5 configuration ######
+
+```
+# Api key to be able to make the calls to retrieve the articles, this will need to be requested by the appropriate instance
+api.key = ${elsevier.api.key}
+
+# This represents the base url to use for the retrieval of an article
+api.article.url=http://api.elsevier.com/content/article
+# The base of rest endpoints to represent identifiers and entitlement status associated with requested full text articles
+api.entitlement.url=http://api.elsevier.com/content/article/entitlement
+# The search interfaces associated with ScienceDirect
+api.scidir.url=http://api.elsevier.com/content/search/scidir
+# The search interfaces associated with pubmed
+api.pubmed.url=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
+# The search interfaces associated with Scopus
+api.scopus.url=http://api.elsevier.com/content/search/scopus
+# The scopus search view. The view can be either STANDARD or COMPLETE.
+api.scopus.view = STANDARD
+# Url to base later rest calls on, such as retrieval based on PII etc
+ui.article.url=http://www.sciencedirect.com/science/article
+# Check statuses associated with the requested articles
+entitlement.check.enabled=true
+```
+
+###### DSpace 6 configuration ######
+
+```
+# Api key to be able to make the calls to retrieve the articles, this will need to be requested by the appropriate instance
+elsevier-sciencedirect.api.key = ${elsevier.api.key}
+
+# This represents the base url to use for the retrieval of an article
+elsevier-sciencedirect.api.article.url=http://api.elsevier.com/content/article
+# The base of rest endpoints to represent identifiers and entitlement status associated with requested full text articles
+elsevier-sciencedirect.api.entitlement.url=http://api.elsevier.com/content/article/entitlement
+# The search interfaces associated with ScienceDirect
+elsevier-sciencedirect.api.scidir.url=http://api.elsevier.com/content/search/scidir
+# The search interfaces associated with pubmed
+elsevier-sciencedirect.api.pubmed.url=https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
+# The search interfaces associated with Scopus
+elsevier-sciencedirect.api.scopus.url=http://api.elsevier.com/content/search/scopus
+# The scopus search view. The view can be either STANDARD or COMPLETE.
+elsevier-sciencedirect.api.scopus.view = STANDARD
+# Url to base later rest calls on, such as retrieval based on PII etc
+elsevier-sciencedirect.ui.article.url=http://www.sciencedirect.com/science/article
+# Check statuses associated with the requested articles
+elsevier-sciencedirect.entitlement.check.enabled=true
+```
 
 ### Mapping <a name="Mapping"></a> ###
 
@@ -533,6 +582,36 @@ One of the "Select action" options must be chosen to specify what will happen to
 A collection to which the items are added must be selected from the "Select collection" dropdown. Click on "Import" to start the import.
 
 ![Elsevier Batch Import](../../raw/master/images/elsevier-batchimport-3.png "Elsevier Batch Import")
+
+### Import views <a name="import-views"></a> ###
+
+The Scopus import source supports a standard and a complete view. If your Elsevier API key allows the use of the Scopus complete view, activate it in the elsevier-sciencedirect.cfg configuration by replacing "STANDARD" with "COMPLETE":
+
+###### DSpace 5 configuration ######
+
+```
+# The scopus search view. The view can be either STANDARD or COMPLETE.
+api.scopus.view = COMPLETE
+```
+
+###### DSpace 6 configuration ######
+
+```
+# The scopus search view. The view can be either STANDARD or COMPLETE.
+elsevier-sciencedirect.api.scopus.view = COMPLETE
+```
+
+The Scopus complete view will expose more article fields than the standard view. 
+
+According to the Scopus policies some of these fields are not allowed to be displayed publicly. These fields are also hidden in DSpace using the "metadata.hide.*" configuration in dspace.cfg.
+
+##### For example: #####
+
+Scopus abstracts are mapped to DSpace metadata field elsevier.description.scopusabstract, this field is configured in dspace/config/dspace.cfg to only be visible to DSpace administrators, just like the default dc.description.provenance field:
+
+```
+metadata.hide.elsevier.description.scopusabstract = true
+```
 
 ### File Upload Step <a name="File-Upload-Step"></a> ###
 
