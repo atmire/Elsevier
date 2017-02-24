@@ -130,8 +130,8 @@
         <constructor-arg value="dc.description.abstract"/>
     </bean>
 
-    <bean id="elsevier.description.abstract" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
-        <constructor-arg value="elsevier.description.abstract"/>
+    <bean id="elsevier.description.scopusabstract" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
+        <constructor-arg value="elsevier.description.scopusabstract"/>
     </bean>
 
     <bean id="elsevier.url.scidir" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">

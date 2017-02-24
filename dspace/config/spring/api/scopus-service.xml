@@ -66,7 +66,7 @@
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
         <entry key-ref="elsevier.url.abstract" value-ref="abstracturlContrib"/>
         <entry key-ref="elsevier.edition" value-ref="editionContrib"/>
-        <entry key-ref="elsevier.description.abstract" value-ref="scopusAbstractContrib"/>
+        <entry key-ref="elsevier.description.scopusabstract" value-ref="scopusAbstractContrib"/>
         <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
     </util:map>
@@ -98,7 +98,7 @@
     </bean>
 
     <bean id="scopusAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
-        <property name="field" ref="elsevier.description.abstract"/>
+        <property name="field" ref="elsevier.description.scopusabstract"/>
         <property name="query" value="dc:description"/>
     </bean>
 
