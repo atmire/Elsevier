@@ -9,6 +9,7 @@ import org.apache.axiom.om.OMXMLParserWrapper;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.*;
 import org.dspace.content.Item;
+import org.dspace.core.*;
 import org.jaxen.JaxenException;
 
 import javax.ws.rs.client.Client;
@@ -203,7 +204,7 @@ public class PubmedSource extends AbstractImportSource<OMElement> {
 
     @Override
     public String getImportSource() {
-        return baseAddress;
+        return getBaseAddress();
     }
 
     private class FindMatchingRecords implements Callable<Collection<Record>> {
@@ -267,21 +268,11 @@ public class PubmedSource extends AbstractImportSource<OMElement> {
     @Override
     public void init() throws Exception {
         Client client = ClientBuilder.newClient();
-        WebTarget webTarget = client.target(baseAddress);
+        WebTarget webTarget = client.target(getBaseAddress());
         pubmedWebTarget = webTarget.queryParam("db", "pubmed");
 
 //        invocationBuilder = pubmedWebTarget.request(MediaType.TEXT_PLAIN_TYPE);
     }
-
-
-    public String getBaseAddress() {
-        return baseAddress;
-    }
-
-    public void setBaseAddress(String baseAddress) {
-        this.baseAddress = baseAddress;
-    }
-
 
     @Override
     public List<OMElement> splitToRecords(String recordsSrc) {
@@ -297,4 +288,11 @@ public class PubmedSource extends AbstractImportSource<OMElement> {
         }
     }
 
+    public String getBaseAddress() {
+        if(baseAddress == null){
+            baseAddress = ConfigurationManager.getProperty("elsevier-sciencedirect","api.pubmed.url");
+        }
+
+        return baseAddress;
+    }
 }

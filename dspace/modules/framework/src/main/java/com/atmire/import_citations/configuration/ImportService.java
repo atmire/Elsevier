@@ -1,11 +1,11 @@
 package com.atmire.import_citations.configuration;
 
-import com.atmire.import_citations.datamodel.Record;
-import org.apache.log4j.Logger;
-import org.dspace.content.Item;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.atmire.import_citations.datamodel.*;
+import java.util.Collection;
 import java.util.*;
+import org.apache.log4j.*;
+import org.dspace.content.*;
+import org.dspace.utils.*;
 
 /**
  * Created by Roeland Dillen (roeland at atmire dot com)
@@ -13,7 +13,7 @@ import java.util.*;
  * Time: 14:19
  */
 public class ImportService implements Destroyable {
-    private HashMap<String, Imports> importSources = new HashMap<String, Imports>();
+    private HashMap<String, Imports> importSources;
 
     Logger log = Logger.getLogger(ImportService.class);
 
@@ -23,25 +23,25 @@ public class ImportService implements Destroyable {
 
     protected static final String ANY = "*";
 
-    @Autowired(required = true)
-    public void setImportSources(List<Imports> importSources) throws SourceException {
-        log.info("Loading " + importSources.size() + " import sources.");
-        for (Imports imports : importSources) {
-            this.importSources.put(imports.getImportSource(), imports);
-        }
-
-    }
-
     protected Map<String, Imports> getImportSources() {
-        return Collections.unmodifiableMap(importSources);
+        if(importSources == null) {
+			importSources = new HashMap<>();
+			List<Imports> importSources = new DSpace().getServiceManager().getServicesByType(Imports.class);
+
+			for (Imports imports : importSources) {
+				this.importSources.put(imports.getImportSource(), imports);
+			}
+		}
+
+    	return Collections.unmodifiableMap(importSources);
     }
 
     protected Collection<Imports> matchingImports(String url) {
         if (ANY.equals(url)) {
-            return importSources.values();
+            return getImportSources().values();
         } else {
-			if(importSources.containsKey(url))
-				return Collections.singletonList(importSources.get(url));
+			if(getImportSources().containsKey(url))
+				return Collections.singletonList(getImportSources().get(url));
 			else
 				return Collections.emptyList();
 		}
@@ -149,13 +149,13 @@ public class ImportService implements Destroyable {
 	}
 
     public Collection<String> getImportUrls() {
-        return importSources.keySet();
+        return getImportSources().keySet();
     }
 
 
     @Override
     public void destroy() throws Exception {
-        for (Imports imports : importSources.values()) {
+        for (Imports imports : getImportSources().values()) {
             if (imports instanceof Destroyable) ((Destroyable) imports).destroy();
         }
     }

@@ -201,5 +201,12 @@
     <scope_note></scope_note>
   </dc-type>
 
+  <dc-type>
+    <schema>elsevier</schema>
+    <element>description</element>
+    <qualifier>abstract</qualifier>
+    <scope_note></scope_note>
+  </dc-type>
+
 
 </dspace-dc-types>

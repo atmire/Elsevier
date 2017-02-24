@@ -21,12 +21,9 @@
     <!-- allows us to use spring annotations in beans -->
     <context:component-scan base-package="com.atmire.import_citations"/>
 
-    <bean id="importService" class="com.atmire.import_citations.configuration.ImportService" scope="singleton" lazy-init="false" autowire="byType" destroy-method="destroy"/>
     <bean id="ScopusImportService" class="com.atmire.import_citations.ScopusSource" scope="singleton">
         <property name="metadataFieldMapping" ref="ScopusMetadataFieldMapping"/>
-        <property name="view" ref="view"/>
         <property name="apiKey" ref="apiKey"/>
-        <property name="baseAddress" ref="scopus-baseAddress"/>
         <property name="name" value="Scopus"/>
         <property name="importFields" ref="scopusImportFields"/>
         <property name="idField" value="elsevier.identifier.eid"/>

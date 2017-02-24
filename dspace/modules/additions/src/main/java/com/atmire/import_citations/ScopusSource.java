@@ -13,6 +13,7 @@ import org.apache.axiom.om.xpath.*;
 import org.apache.cxf.jaxrs.client.*;
 import org.apache.log4j.*;
 import org.dspace.content.*;
+import org.dspace.core.*;
 import org.springframework.beans.factory.annotation.*;
 
 /**
@@ -25,16 +26,6 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
     protected String view;
 
     private GenerateQueryForItem_Scopus generateQueryForItem = null;
-
-    @Autowired(required = false)
-    public void setView(String view) {
-        this.view = view;
-    }
-
-    @Autowired(required = false)
-    public void setBaseAddress(String baseAddress) {
-        this.baseAddress = baseAddress;
-    }
 
     @Autowired
     public void setGenerateQueryForItem(GenerateQueryForItem_Scopus generateQueryForItem) {
@@ -73,7 +64,7 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
 
     @Override
     public String getImportSource() {
-        return baseAddress;
+        return getBaseAddress();
     }
 
     @Override
@@ -263,16 +254,16 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
 
 
         protected Response getSearchResponse(String query, String fields) {
-            IndexScopusResource scopusResource = JAXRSClientFactory.create(baseAddress, IndexScopusResource.class);
+            IndexScopusResource scopusResource = JAXRSClientFactory.create(getBaseAddress(), IndexScopusResource.class);
             //      http://api.elsevier.com/content/search/index:SCOPUS?query=DOI(10.1007/s10439-010-0201-5)&field=citedby-count&apiKey=7f8c024a802ae228658bb08c974dbefb
-            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, view, fields,
+            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, getView(), fields,
                     null, null, null, null, null, null, null, null);
         }
 
         protected Response getSearchResponse(String query, String fields, int start, int count) {
-            IndexScopusResource scopusResource = JAXRSClientFactory.create(baseAddress, IndexScopusResource.class);
+            IndexScopusResource scopusResource = JAXRSClientFactory.create(getBaseAddress(), IndexScopusResource.class);
             //      http://api.elsevier.com/content/search/index:SCOPUS?query=DOI(10.1007/s10439-010-0201-5)&field=citedby-count&apiKey=7f8c024a802ae228658bb08c974dbefb
-            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, view, fields,
+            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, getView(), fields,
                     null, Integer.toString(start), Integer.toString(count), null, null, null, null, null);
         }
 
@@ -283,4 +274,20 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
         }
     }
 
+
+    public String getBaseAddress() {
+        if(baseAddress == null){
+            baseAddress = ConfigurationManager.getProperty("elsevier-sciencedirect","api.scopus.url");
+        }
+
+        return baseAddress;
+    }
+
+    public String getView() {
+        if(view == null){
+            view = ConfigurationManager.getProperty("elsevier-sciencedirect","api.scopus.view");
+        }
+
+        return view;
+    }
 }

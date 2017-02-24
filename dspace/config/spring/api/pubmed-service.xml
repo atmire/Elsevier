@@ -120,7 +120,4 @@
         </description>
     </bean>
 
-    <bean class="java.lang.String" id="pubmed-baseAddress" autowire-candidate="true">
-        <constructor-arg value="${pubmed.import.url}"/>
-    </bean>
 </beans>

@@ -18,6 +18,7 @@
         <entry key="pubmed" value-ref="PubmedImportService"/>
     </util:map>
 
+    <bean id="importService" class="com.atmire.import_citations.configuration.ImportService" scope="singleton" lazy-init="false" autowire="byType" destroy-method="destroy"/>
 
     <bean class="java.lang.String" id="apiKey" autowire-candidate="true">
         <constructor-arg value="${elsevier.api.key}"/>
@@ -126,6 +127,10 @@
 
     <bean id="dc.description.abstract" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
         <constructor-arg value="dc.description.abstract"/>
+    </bean>
+
+    <bean id="elsevier.description.abstract" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
+        <constructor-arg value="elsevier.description.abstract"/>
     </bean>
 
     <bean id="elsevier.url.scidir" class="com.atmire.import_citations.configuration.metadatamapping.MetadataField">
