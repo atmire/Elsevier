@@ -1,25 +1,22 @@
 package org.dspace.importer.external.scopus;
 
-import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
-import org.apache.axiom.om.xpath.AXIOMXPath;
-import org.apache.cxf.jaxrs.client.JAXRSClientFactory;
-import org.apache.log4j.Logger;
-import org.dspace.content.Item;
-import org.dspace.importer.external.datamodel.ImportRecord;
-import org.dspace.importer.external.datamodel.Query;
-import org.dspace.importer.external.exception.MetadataSourceException;
-import org.dspace.importer.external.metadatamapping.MetadatumDTO;
-import org.dspace.importer.external.scopus.wadl.IndexScopusResource;
-import org.dspace.importer.external.service.AbstractImportMetadataSourceService;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.ws.rs.core.Response;
-import java.io.InputStream;
-import java.io.StringReader;
+import java.io.*;
 import java.util.*;
-import java.util.concurrent.Callable;
+import java.util.Collection;
+import java.util.concurrent.*;
+import javax.ws.rs.core.*;
+import org.apache.axiom.om.*;
+import org.apache.axiom.om.xpath.*;
+import org.apache.cxf.jaxrs.client.*;
+import org.apache.log4j.*;
+import org.dspace.content.*;
+import org.dspace.core.*;
+import org.dspace.importer.external.datamodel.*;
+import org.dspace.importer.external.exception.*;
+import org.dspace.importer.external.metadatamapping.*;
+import org.dspace.importer.external.scopus.wadl.*;
+import org.dspace.importer.external.service.*;
+import org.springframework.beans.factory.annotation.*;
 
 /**
  * @author lotte.hofstede at atmire.com
@@ -31,16 +28,6 @@ public class ScopusImportMetadataSourceServiceImpl extends AbstractImportMetadat
     protected String view;
 
     private GenerateQueryForItem_Scopus generateQueryForItem = null;
-
-    @Autowired(required = false)
-    public void setView(String view) {
-        this.view = view;
-    }
-
-    @Autowired(required = false)
-    public void setBaseAddress(String baseAddress) {
-        this.baseAddress = baseAddress;
-    }
 
     @Autowired
     public void setGenerateQueryForItem(GenerateQueryForItem_Scopus generateQueryForItem) {
@@ -79,7 +66,7 @@ public class ScopusImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
     @Override
     public String getImportSource() {
-        return baseAddress;
+        return getBaseAddress();
     }
 
     @Override
@@ -269,16 +256,16 @@ public class ScopusImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
 
         protected Response getSearchResponse(String query, String fields) {
-            IndexScopusResource scopusResource = JAXRSClientFactory.create(baseAddress, IndexScopusResource.class);
+            IndexScopusResource scopusResource = JAXRSClientFactory.create(getBaseAddress(), IndexScopusResource.class);
             //      http://api.elsevier.com/content/search/index:SCOPUS?query=DOI(10.1007/s10439-010-0201-5)&field=citedby-count&apiKey=7f8c024a802ae228658bb08c974dbefb
-            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, view, fields,
+            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, getView(), fields,
                     null, null, null, null, null, null, null, null);
         }
 
         protected Response getSearchResponse(String query, String fields, int start, int count) {
-            IndexScopusResource scopusResource = JAXRSClientFactory.create(baseAddress, IndexScopusResource.class);
+            IndexScopusResource scopusResource = JAXRSClientFactory.create(getBaseAddress(), IndexScopusResource.class);
             //      http://api.elsevier.com/content/search/index:SCOPUS?query=DOI(10.1007/s10439-010-0201-5)&field=citedby-count&apiKey=7f8c024a802ae228658bb08c974dbefb
-            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, view, fields,
+            return scopusResource.simple("application/xml", null, null, null, null, null, null, getApiKey(), null, null, query, getView(), fields,
                     null, Integer.toString(start), Integer.toString(count), null, null, null, null, null);
         }
 
@@ -287,5 +274,22 @@ public class ScopusImportMetadataSourceServiceImpl extends AbstractImportMetadat
             OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(inputStream);
             return records.getDocumentElement();
         }
+    }
+
+
+    public String getBaseAddress() {
+        if(baseAddress == null){
+            baseAddress = ConfigurationManager.getProperty("elsevier-sciencedirect","api.scopus.url");
+        }
+
+        return baseAddress;
+    }
+
+    public String getView() {
+        if(view == null){
+            view = ConfigurationManager.getProperty("elsevier-sciencedirect","api.scopus.view");
+        }
+
+        return view;
     }
 }

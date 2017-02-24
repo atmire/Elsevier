@@ -13,13 +13,9 @@
     <util:map id="pubmedImportFields">
         <entry key="pubmedsearch" value=""/>
     </util:map>
-<bean id="importService" class="org.dspace.importer.external.service.ImportService" scope="singleton"
-          lazy-init="false" autowire="byType" destroy-method="destroy">
 
-    </bean>
     <bean id="PubmedImportService" class="org.dspace.importer.external.pubmed.service.PubmedImportMetadataSourceServiceImpl" scope="singleton">
         <property name="metadataFieldMapping" ref="PubmedMetadataFieldMapping"/>
-        <property name="baseAddress" ref="pubmed-baseAddress"/>
         <property name="name" value="PubMed"/>
         <property name="importFields" ref="pubmedImportFields"/>
         <property name="idField" value="elsevier.identifier.pubmedid"/>
@@ -141,8 +137,5 @@
         <description>Defines how an org.dspace.content.Item is mapped to a query in scopus. Please note that exactly one of
             these must be present. If multiple are present the result is undefined.
         </description>
-    </bean>
-    <bean class="java.lang.String" id="pubmed-baseAddress" autowire-candidate="true">
-        <constructor-arg value="${pubmed.import.url}"/>
     </bean>
 </beans>

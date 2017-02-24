@@ -21,9 +21,7 @@
 
     <bean id="ScopusImportService" class="org.dspace.importer.external.scopus.ScopusImportMetadataSourceServiceImpl" scope="singleton">
         <property name="metadataFieldMapping" ref="ScopusMetadataFieldMapping"/>
-        <property name="view" ref="view"/>
         <property name="apiKey" ref="apiKey"/>
-        <property name="baseAddress" ref="scopus-baseAddress"/>
         <property name="name" value="Scopus"/>
         <property name="importFields" ref="scopusImportFields"/>
         <property name="idField" value="elsevier.identifier.eid"/>
@@ -68,7 +66,7 @@
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
         <entry key-ref="elsevier.url.abstract" value-ref="abstracturlContrib"/>
         <entry key-ref="elsevier.edition" value-ref="editionContrib"/>
-        <entry key-ref="dc.description.abstract" value-ref="abstractContrib"/>
+        <entry key-ref="elsevier.description.scopusabstract" value-ref="scopusAbstractContrib"/>
         <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
     </util:map>
@@ -99,6 +97,11 @@
         <property name="query" value="x:author/x:given-name"/>
     </bean>
 
+    <bean id="scopusAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.description.scopusabstract"/>
+        <property name="query" value="dc:description"/>
+    </bean>
+
     <bean name="identifyingMetadataField" class="org.dspace.importer.external.metadatamapping.MetadataFieldConfig">
         <description>For autowiring the DOI based service.</description>
         <constructor-arg ref="identifyingField"/>
@@ -118,8 +121,5 @@
             these must be present. If multiple are present the result is undefined.
         </description>
     </bean>
-
-    <bean class="java.lang.String" id="view"  autowire-candidate="true"> <constructor-arg value="${scopus.import.view}"/></bean>
-    <bean class="java.lang.String" id="scopus-baseAddress"  autowire-candidate="true"> <constructor-arg value="${scopus.import.url}"/></bean>
 
 </beans>
