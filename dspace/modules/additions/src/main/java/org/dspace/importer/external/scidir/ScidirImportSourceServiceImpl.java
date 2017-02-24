@@ -15,6 +15,7 @@ import javax.ws.rs.core.*;
 import org.apache.axiom.om.*;
 import org.apache.log4j.*;
 import org.dspace.content.*;
+import org.dspace.core.*;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.exception.*;
 import org.dspace.importer.external.service.*;
@@ -29,14 +30,6 @@ public class ScidirImportSourceServiceImpl extends AbstractImportMetadataSourceS
     private String apiUrl;
 
     private static Logger log = Logger.getLogger(ScidirImportSourceServiceImpl.class);
-
-    public String getApiUrl() {
-        return apiUrl;
-    }
-
-    public void setApiUrl(String apiUrl) {
-        this.apiUrl = apiUrl;
-    }
 
     private class GetNbRecords implements Callable<Integer> {
 
@@ -187,8 +180,7 @@ public class ScidirImportSourceServiceImpl extends AbstractImportMetadataSourceS
 
     @Override
     public String getImportSource() {
-        return apiUrl;
-//        return ConfigurationManager.getProperty("elsevier-sciencedirect","api.url");
+        return getApiUrl();
     }
 
     private class FindMatchingRecords implements Callable<Collection<ImportRecord>> {
@@ -233,10 +225,18 @@ public class ScidirImportSourceServiceImpl extends AbstractImportMetadataSourceS
 
     @Override
     public void init() throws Exception {
-        String baseAddress = apiUrl;
+        String baseAddress = getApiUrl();
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(baseAddress);
         scidirWebTarget = webTarget.queryParam("httpAccept", "application/xml");
         scidirWebTarget = scidirWebTarget.queryParam("apiKey", getApiKey());
+    }
+
+    public String getApiUrl() {
+        if(apiUrl == null){
+            apiUrl = ConfigurationManager.getProperty("elsevier-sciencedirect","api.scidir.url");
+        }
+
+        return apiUrl;
     }
 }
