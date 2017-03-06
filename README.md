@@ -112,7 +112,7 @@ DSPACE 5.x [https://github.com/atmire/Elsevier/compare/dspace_5x…stable_5x.pat
 
 Save this file under a meaningful name. It will be later referred to as \<patch file\> 
 
-## Patch installation<a name="Patch-installation"></a> ##
+## Patch installation<a name="Patch-Installation"></a> ##
 
 To install the patch, the following steps will need to be performed. 
 
