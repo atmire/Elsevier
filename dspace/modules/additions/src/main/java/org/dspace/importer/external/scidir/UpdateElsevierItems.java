@@ -123,7 +123,7 @@ public class UpdateElsevierItems {
         Option piiOption = OptionBuilder.withArgName("assignpii").withDescription("Lookups uo the pii for items with a doi (but no pii) and add it to the metadata").create('a');
         Option metadataOption = OptionBuilder.withArgName("metadata").withDescription("import the item metadata").create('m');
         Option forceOption = OptionBuilder.withArgName("force").withDescription("force update changes from elsevier").create('f');
-        Option identifierOption = OptionBuilder.withArgName("i").hasArg().withDescription("specify a handle to update a single item").create('i');
+        Option identifierOption = OptionBuilder.withArgName("item").hasArg().withDescription("specify a handle to update a single item").create('i');
 
         options.addOption(testOption);
         options.addOption(permissionOption);
