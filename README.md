@@ -82,10 +82,8 @@ If *any* HTTP status code is returned you can reach the specified URL properly (
 ### <a name="prerequisites-download"></a> Download patch
 
 > ⚠️ **Important note**
-
-> This work has been proposed as a contribution to the DSpace mainline code in [DS-2877](https://jira.duraspace.org/browse/DS-2877). This patch builds on a new import framework that was included in DSpace 6.0 (see [DS-2876](https://jira.duraspace.org/browse/DS-2876)). Because this framework was not yet part of DSpace 5, the DSpace 5 patch also contains the inclusion of this framework.
-
-> For the time being, please use the patches offered by this repository to install the functionality.
+<br /><br />This work has been proposed as a contribution to the DSpace mainline code in [DS-2877](https://jira.duraspace.org/browse/DS-2877). This patch builds on a new import framework that was included in DSpace 6.0 (see [DS-2876](https://jira.duraspace.org/browse/DS-2876)). Because this framework was not yet part of DSpace 5, the DSpace 5 patch also contains the inclusion of this framework.
+<br />For the time being, please use the patches offered by this repository to install the functionality.
 
 Atmire's modifications to a standard DSpace for Elsevier are tracked on Github. The newest patch can therefore be generated from git.
 
@@ -266,13 +264,12 @@ Here's an overview of the available options to specify which items need to be up
 
 | Option | Description 
 | -------- | -----------
-| `-t` / `--test` | Only test the changes done by the script.
-| `-f` / `--force` | Forcefully update.
-| `-a` / `--assignpii` | Resets the current PII with the one fetched from the API.
-| `-p` / `--permissions` | Adjust Bitstream permissions with those fetched from the API. Only applies to Bitstreams for which permissions were not manually overruled.
-| `-m` / `--metadata` | Adjust metadata values with those fetched from the API. Only takes effect when used in conjunction with `--force`. Note that manually entered metadata will be overridden!
-| `-i` / `--item` *123456789/99* | If provided, the script will only be run for the provided handle. If omitted all archived items will be iterated.
-
+| `-t`<br />`--test` | Only test the changes done by the script.
+| `-f`<br />`--force` | Forcefully update.
+| `-a`<br />`--assignpii` | Resets the current PII with the one fetched from the API.
+| `-p`<br />`--permissions` | Adjust Bitstream permissions with those fetched from the API. Only applies to Bitstreams for which permissions were not manually overruled.
+| `-m`<br />`--metadata` | Adjust metadata values with those fetched from the API. Only takes effect when used in conjunction with `--force`. Note that manually entered metadata will be overridden!
+| `-i`<br />`--item` *123456789/99* | If provided, the script will only be run for the provided handle. If omitted all archived items will be iterated.
 
 ## <a name="configuration"></a> Configuration overview
 
@@ -345,8 +342,7 @@ If you want to make Elsevier's internal ID values editable (e.g. `pii`,  `eid`, 
 In case you have a custom metadata schema and/or fields, you might want to update the field mappings in order for your custom fields to be populated automatically after publication imports. The `dspace/config/spring/api/scidir-service.xml`, `dspace/config/spring/api/scopus-service.xml` and `dspace/config/spring/api/pubmed-service.xml` files contain the Spring configuration for the beans used by the corresponding integrations. To set up a custom field mapping, follow these steps.
 
 > ⚠️ **Heads up**
-
-> Class names and namespaces differ between DSpace 5 and DSpace 6.Please replace each occurrence of `[CLASS]` with the corresponding version for your DSpace.
+<br /><br />Class names and namespaces differ between DSpace 5 and DSpace 6.Please replace each occurrence of `[CLASS]` with the corresponding version for your DSpace.
 
 1. In `dspace/config/spring/api/general-import-services`, the DSpace metadata field that should be populated (e.g. `dc.title`) must be configured as a Spring bean *if this is not already the case*.
    
