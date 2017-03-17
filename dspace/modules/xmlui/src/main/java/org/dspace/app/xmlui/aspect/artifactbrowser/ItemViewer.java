@@ -327,6 +327,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             }
             pageMeta.addMetadata("window.DSpace", "elsevier_apikey").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.key"));
             pageMeta.addMetadata("window.DSpace", "elsevier_entitlement_url").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.entitlement.url"));
+            pageMeta.addMetadata("window.DSpace", "elsevier_embargo_url").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.embargo.url"));
         }
     }
 
