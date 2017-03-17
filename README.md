@@ -170,6 +170,8 @@ Some IDEs might have a built-in UI which allows you to apply patches visually. T
 After the patch has been applied, the repository will need to be rebuilt.
 DSpace repositories are typically built using Maven and deployed using Ant.
 
+Please use `mvn clean package` instead of `mvn package` to avoid errors in the user interface. If `clean` is not specified some classes might not be updated correctly.
+
 ### <a name="installation-restart"></a> 5. Restart Tomcat
 
 After the repository has been rebuilt and redeployed, Tomcat will need to be restarted to bring the changes live.
