@@ -240,7 +240,7 @@ If you experience CORS-related problems, please consider the following note (cop
 
 ### <a name="functionality-embed"></a> Embedded PDF
 
-If enabled, the link to the publisher version will redirect to an embed page on your repository containing directly displaying the corresponding PDF. If access to the PDF is denied, an outgoing link to the actual article on Elsevier's website will be rendered in case the item holds a valid PII or DOI.
+If enabled, the link to the publisher version will redirect to an embed page on your repository directly displaying the corresponding PDF. When access to the PDF is denied, a check will occur To verify if the record is under embargo. If the record is not under embargo, the Accepted Manuscript will be loaded on the embed page instead of the full PDF. Otherwise, an outgoing link to the actual article on Elsevier's website will be rendered in case the item holds a valid PII or DOI.
 
 ![Elsevier Entitlements Embed](../../raw/master/images/elsevier-entitlements-embed.png "Elsevier Entitlements Embed")
 
