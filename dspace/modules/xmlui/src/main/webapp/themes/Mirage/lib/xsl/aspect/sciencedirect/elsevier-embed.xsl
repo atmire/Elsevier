@@ -46,7 +46,7 @@
                 <xsl:value-of select="dri:list/dri:item/dri:field[@n='identifier']"/>
                 <xsl:text>?httpAccept=application/pdf&amp;apiKey=</xsl:text>
                 <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.key')"/>
-                <xsl:text>&amp;cdnRedirect=true</xsl:text>
+                <xsl:text>&amp;cdnRedirect=true&amp;amsRedirect=true</xsl:text>
             </xsl:attribute>
             &#160;
         </iframe>
