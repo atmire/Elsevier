@@ -1537,3 +1537,7 @@ table.discovery-filters th.new-filter-header
     margin-right:5px;
     margin-left:5px;
 }
+
+.import-record {
+    clear:both;
+}
