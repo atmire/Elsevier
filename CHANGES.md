@@ -13,6 +13,10 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## March 24th, 2017 (DSpace 5 only)
+- API change: Accepted Manuscripts are shown on the embed page if the user is not entitled to the full PDF and the record is not under embargo.
+- Fix: Fixed a bug in the bulk import layout for Mirage 1 that caused some checkboxes to be rendered on the right side of the page.
+
 ## February 24th, 2017
 
 - API change: Import source URL configuration for Scopus and Pubmed has been moved to config file elsevier-sciencedirect.cfg
