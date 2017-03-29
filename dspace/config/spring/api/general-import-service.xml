@@ -331,22 +331,22 @@
 
     <bean id="scidirurlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.url.scidir"/>
-        <property name="query" value="x:link[@ref='scidir']"/>
+        <property name="query" value="x:link[@ref='scidir']/@href"/>
     </bean>
 
     <bean id="selfurlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.url.self"/>
-        <property name="query" value="x:link[@ref='self']"/>
+        <property name="query" value="x:link[@ref='self']/@href"/>
     </bean>
 
     <bean id="abstracturlContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.url.abstract"/>
-        <property name="query" value="x:link[@ref='abstract']"/>
+        <property name="query" value="x:link[@ref='abstract']/@href"/>
     </bean>
 
     <bean id="editionContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.edition"/>
-        <property name="query" value="x:link[@ref='self']"/>
+        <property name="query" value="x:link[@ref='self']/@href"/>
     </bean>
 
     <bean id="abstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
@@ -362,6 +362,12 @@
     <bean id="copyrightContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.rights.license"/>
         <property name="query" value="prism:copyright"/>
+    </bean>
+
+    <bean id="keywordContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleSeparatedXpathMetadatumContributor">
+        <property name="field" ref="dc.subject"/>
+        <property name="query" value="x:authkeywords"/>
+        <property name="separator" value="|"/>
     </bean>
 
 </beans>
