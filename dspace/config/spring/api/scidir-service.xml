@@ -69,9 +69,19 @@
         <entry key-ref="elsevier.aggregationtype" value-ref="aggregationtypeContrib"/>
         <entry key-ref="dc.rights.license" value-ref="copyrightContrib"/>
         <entry key-ref="dc.subject" value-ref="keywordContrib"/>
+        <entry key-ref="elsevier.identifier.scopusid" value-ref="scidirScopusIdContrib"/>
+        <entry key-ref="elsevier.identifier.pubmedid" value-ref="scidirPubmedIdContrib"/>
     </util:map>
 
-    <!--einde!!-->
+    <bean id="scidirScopusIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.identifier.scopusid"/>
+        <property name="query" value="x:scopus-id"/>
+    </bean>
+
+    <bean id="scidirPubmedIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="elsevier.identifier.pubmedid"/>
+        <property name="query" value="x:pubmed-id"/>
+    </bean>
 
     <bean class="com.atmire.scidir.DOIBasedQueryGenerator" id="DOIBasedService">
         <description>Defines how an org.dspace.content.Item is mapped to a query in ISI. Please note that exactly one of

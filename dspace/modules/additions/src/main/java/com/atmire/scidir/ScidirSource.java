@@ -222,6 +222,7 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
         Client client = ClientBuilder.newClient();
         WebTarget webTarget = client.target(baseAddress);
         scidirWebTarget = webTarget.queryParam("httpAccept", "application/xml");
+        scidirWebTarget = scidirWebTarget.queryParam("view", "COMPLETE");
         scidirWebTarget = scidirWebTarget.queryParam("apiKey", getApiKey());
     }
 
