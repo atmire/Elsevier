@@ -213,8 +213,8 @@ public class MetadataUtils {
         }
 
         if(StringUtils.isNotBlank(doiValue)) {
-            String[] possiblePrefeces = {"doi:", "http://dx.doi.org/"};
-            for (String prefix : possiblePrefeces) {
+            String[] possiblePrefixes = {"doi:", "http://dx.doi.org/"};
+            for (String prefix : possiblePrefixes) {
                 if (StringUtils.startsWithIgnoreCase(doiValue,prefix)) {
                     return doiValue.substring(prefix.length());
                 }
