@@ -205,11 +205,23 @@ public class MetadataUtils {
     }
 
     public static String getDOI(DSpaceObject item) {
-        String doiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.doi");
-        String doiValue = MetadataUtils.getMetadataFirstValueAnyLanguage(item, doiMdField);
-        if(StringUtils.isNotBlank(doiValue) && StringUtils.startsWithIgnoreCase(doiValue,"doi:")) {
-            doiValue = doiValue.substring(4);
+        String[] doiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect", "metadata.field.doi").split(",");
+        String doiValue = null;
+        for (String field : doiMdField) {
+            doiValue = MetadataUtils.getMetadataFirstValueAnyLanguage(item, field);
+            if (StringUtils.isNotBlank(doiValue)) break;
         }
+
+        if(StringUtils.isNotBlank(doiValue)) {
+            String[] possiblePrefeces = {"doi:", "http://dx.doi.org/"};
+            for (String prefix : possiblePrefeces) {
+                if (StringUtils.startsWithIgnoreCase(doiValue,prefix)) {
+                    return doiValue.substring(prefix.length());
+                }
+            }
+        }
+
+
         return doiValue;
     }
 
