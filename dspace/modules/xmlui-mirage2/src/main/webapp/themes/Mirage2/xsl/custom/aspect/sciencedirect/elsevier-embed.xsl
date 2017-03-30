@@ -46,7 +46,7 @@
                 <xsl:value-of select="//dri:field[@id='com.atmire.sciencedirect.embed.ElsevierEmbed.field.identifier']"/>
                 <xsl:text>?httpAccept=application/pdf&amp;apiKey=</xsl:text>
                 <xsl:value-of select="confman:getProperty('elsevier-sciencedirect', 'api.key')"/>
-                <xsl:text>&amp;cdnRedirect=tru&amp;amsRedirect=true</xsl:text>
+                <xsl:text>&amp;cdnRedirect=true&amp;amsRedirect=true</xsl:text>
             </xsl:attribute>
             &#160;
         </iframe>
