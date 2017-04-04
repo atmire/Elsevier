@@ -332,7 +332,7 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
             if (publisherIsElsevier(item)) {
                 pageMeta.addMetadata("window.DSpace", "item_pubmed_id").addContent(itemMetadataService.getPubmedID(item));
                 pageMeta.addMetadata("window.DSpace", "item_scopus_id").addContent(itemMetadataService.getScopusID(item));
-    }
+            }
             pageMeta.addMetadata("window.DSpace", "elsevier_apikey").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.key"));
             pageMeta.addMetadata("window.DSpace", "elsevier_entitlement_url").addContent(ConfigurationManager.getProperty("elsevier-sciencedirect", "api.entitlement.url"));
         }
@@ -452,9 +452,6 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
     }
 
     private void addEmbeddedDisplayLink(Item item, Division division) throws WingException {
-        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "embed.display");
-
-        if (embedDisplay) {
             String pii = itemMetadataService.getPII(item);
             String doi = itemMetadataService.getDOI(item);
             String eid = itemMetadataService.getEID(item);
@@ -489,7 +486,6 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
                 para.addXref(link, T_elsevier_embed);
                 para.addHidden("embeddedLink").setValue(embeddedLink);
             }
-        }
     }
 
     /**
