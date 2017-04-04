@@ -55,7 +55,7 @@
         <!-- Generate the bitstream information from the file section -->
 
         <xsl:if test='confman:getProperty("elsevier-sciencedirect", "embed.link.position") = "top"'>
-            <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
+            <xsl:call-template name="elsevier-integration"/>
         </xsl:if>
 
         <xsl:choose>
@@ -88,7 +88,7 @@
         </xsl:choose>
 
         <xsl:if test='confman:getProperty("elsevier-sciencedirect", "embed.link.position") = "bottom"'>
-            <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
+            <xsl:call-template name="elsevier-integration"/>
         </xsl:if>
 
         <!-- Generate the Creative Commons license information from the file section (DSpace deposit license hidden by default)-->
@@ -340,7 +340,7 @@
 		</table>
 
         <xsl:if test='confman:getProperty("elsevier-sciencedirect", "embed.link.position") = "top"'>
-            <xsl:apply-templates select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply"/>
+            <xsl:call-template name="elsevier-integration"/>
         </xsl:if>
         <span class="Z3988">
             <xsl:attribute name="title">
@@ -701,14 +701,15 @@
 
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='entitlement']"/>
     <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']"/>
-    <xsl:template match="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']" mode="apply" >
+    <xsl:template name="elsevier-integration">
+
 
            <div id="elsevier-embed-wrapper" class="clearfix">
             <div class="access hidden">
             <div class="thumbnail-wrapper" style="width: {$thumbnail.maxwidth}px;">
                     <a>
                         <xsl:attribute name="href">
-                            <xsl:value-of select="dri:xref/@target"/>
+                            <xsl:call-template name="elsevier-url"/>
                         </xsl:attribute>
                         <img alt="Icon" src="{concat($theme-path, '/images/app-pdf.png')}" style="max-height: {$thumbnail.maxheight}px;"/>
                     </a>
@@ -717,7 +718,7 @@
                     <div>
                         <a class="publiserVersionLink hidden">
                             <xsl:attribute name="href">
-                                <xsl:value-of select="dri:xref/@target"/>
+                                <xsl:call-template name="elsevier-url"/>
                             </xsl:attribute>
                             <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_view</i18n:text>
                         </a>
@@ -729,14 +730,16 @@
                         <span class="open-access hidden">
                             <i18n:text>xmlui.ArtifactBrowser.ItemViewer.elsevier_embed_openaccess</i18n:text>
                         </span>
+                        <xsl:if test='confman:getProperty("elsevier-sciencedirect", "embed.display") = "true"'>
                         <span class="checkmark">
                             <a>
                             <xsl:attribute name="href">
-                                <xsl:value-of select="dri:xref/@target"/>
+                                        <xsl:call-template name="elsevier-url"/>
                             </xsl:attribute>
                             <img alt="Icon" src="{concat($theme-path, '/images/greenArrowInBox.svg')}" style="height: 14px;"/>
                             </a>
                         </span>
+                        </xsl:if>
                     </div>
                     </div>
                 </div>
@@ -768,16 +771,26 @@
             </div>
             <a class="embeddedViewOpenLink hidden">
                 <xsl:attribute name="href">
-                    <xsl:value-of select="dri:xref/@target"/>
+                    <xsl:call-template name="elsevier-url"/>
                 </xsl:attribute>
                 <i18n:text>xmlui.dri2xhtml.METS-1.0.item-files-viewOpen</i18n:text>
             </a>
 
         </div>
+    </xsl:template>
 
+    <xsl:template name="elsevier-url">
+        <xsl:choose>
+            <xsl:when test='confman:getProperty("elsevier-sciencedirect", "embed.display")  = "true"'>
+                <xsl:value-of select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']/dri:xref/@target"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="linkToArticleUrl"/>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template name="linkToArticleUrl">
-        <xsl:value-of select="//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']/dri:field[@n='embeddedLink']"/>
+        <xsl:value-of select="$DRI//dri:div[@n='item-view']//dri:p[@n='elsevier-embed-page']/dri:field[@n='embeddedLink']"/>
     </xsl:template>
 </xsl:stylesheet>
