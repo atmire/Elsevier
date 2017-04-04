@@ -439,9 +439,6 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
     }
 
     private void addEmbeddedDisplayLink(Item item, Division division) throws WingException {
-        boolean embedDisplay = ConfigurationManager.getBooleanProperty("elsevier-sciencedirect", "embed.display");
-
-        if (embedDisplay) {
             String pii = MetadataUtils.getPII(item);
             String doi = MetadataUtils.getDOI(item);
             String eid = MetadataUtils.getEID(item);
@@ -475,7 +472,6 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
                 para.addXref(link, T_elsevier_embed);
                 para.addHidden("embeddedLink").setValue(embeddedLink);
             }
-        }
     }
 
     /**
