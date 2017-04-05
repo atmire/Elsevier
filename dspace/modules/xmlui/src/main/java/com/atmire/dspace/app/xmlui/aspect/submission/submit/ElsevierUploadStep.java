@@ -397,7 +397,13 @@ public class ElsevierUploadStep extends AbstractSubmissionStep {
 
                 int i = 0;
                 while (issnsIterator.hasNext()) {
-                    SHERPAResponse shresp = sherpaSubmitService.searchRelatedJournalsByISSN(issnsIterator.next());
+                    String issn = issnsIterator.next();
+
+                    if(StringUtils.length(issn) == 8 && !StringUtils.contains(issn, "-")){
+                        issn = new StringBuilder(issn).insert(issn.length()-4, "-").toString();
+                    }
+
+                    SHERPAResponse shresp = sherpaSubmitService.searchRelatedJournalsByISSN(issn);
                     java.util.List<SHERPAJournal> journals = shresp.getJournals();
                     java.util.List<SHERPAPublisher> publishers = shresp.getPublishers();
 
