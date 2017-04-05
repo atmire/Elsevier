@@ -74,7 +74,7 @@
         <property name="query" value="descendant::ArticleTitle"/>
     </bean>
 
-    <bean id="pubmedAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
+    <bean id="pubmedAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.MergeMultipleValuesXpathMetadatumContributor">
         <property name="field" ref="dc.description.abstract"/>
         <property name="query" value="descendant::AbstractText"/>
     </bean>
@@ -126,7 +126,7 @@
 
     <bean id="pubmedDoiContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.identifier.doi"/>
-        <property name="query" value="descendant::ELocationID[@EIdType='doi']"/>
+        <property name="query" value="(descendant::*[@EIdType='doi' or @IdType='doi'])[1]"/>
     </bean>
 
     <bean class="java.lang.Integer" id="maxRetry">
