@@ -59,7 +59,7 @@
         <property name="query" value="descendant::ArticleTitle"/>
     </bean>
 
-    <bean id="pubmedAbstractContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+    <bean id="pubmedAbstractContrib" class="com.atmire.import_citations.configuration.metadatamapping.MergeMultipleValuesXpathMetadatumContributor">
         <property name="field" ref="dc.description.abstract"/>
         <property name="query" value="descendant::AbstractText"/>
     </bean>
@@ -111,7 +111,7 @@
 
     <bean id="pubmedDoiContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.identifier.doi"/>
-        <property name="query" value="descendant::ELocationID[@EIdType='doi']"/>
+        <property name="query" value="(descendant::*[@EIdType='doi' or @IdType='doi'])[1]"/>
     </bean>
 
     <bean class="com.atmire.import_citations.GeneratePubmedQueryService" id="pubmedService">
