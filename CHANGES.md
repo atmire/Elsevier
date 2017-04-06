@@ -13,6 +13,13 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## April 6h, 2017
+- API change: Enabled the ScienceDirect complete view.
+- API change: Updated the elsevier configuration so multiple DOI metadata fields can be configured.
+- API fix: Updated the pubmed import record mapping to be able to map an abstract text that is divided into multiple parts.
+- API fix: Updated the pubmed import record mapping to be able to map a DOI from multiple pubmed fields. 
+- Fix: The entitlement check is now performed even when the embed page is disabled. The entitlement check can be disabled separately in the configuration.
+
 ## March 24th, 2017 (DSpace 5 only)
 - API change: Accepted Manuscripts are shown on the embed page if the user is not entitled to the full PDF and the record is not under embargo.
 - Fix: Fixed a bug in the bulk import layout for Mirage 1 that caused some checkboxes to be rendered on the right side of the page.
