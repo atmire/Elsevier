@@ -1,11 +1,13 @@
 # DSpace Elsevier API integration patch
 
 - [Introduction](#introduction)
+- [Conditions for use](#conditions)
 - [Prerequisites](#prerequisites)
     - [Codebase](#prerequisites-codebase)
     - [Firewall verification](#prerequisites-firewall)
     - [Download patch](#prerequisites-download)
     - [Elsevier API key](#prerequisites-api)
+    - [HTTPS support: April 2017 status](#https)
 - [Installation](#installation)
 	- [1. Go to the dspace directory](#installation-src)
 	- [2. Check patch compatibility](#installation-check)
@@ -97,7 +99,7 @@ Save this file under a meaningful name. It will later be referred to as `<patch>
 
 ### <a name="prerequisites-api"></a> Elsevier API key
 
-The integration will send requests to Elsevier's APIs to retrieve metadata and links. These APIs are protected with user accounts and keys to avoid abuse by robots and malicious users. To register for an API key, follow this two step approach:
+The integration will send requests to Elsevier's APIs to retrieve metadata and links from Scopus and ScienceDirect. These APIs are protected with user accounts and keys to avoid abuse by robots and malicious users. To register for an API key, follow this two step approach:
 
 1. Get hold of an API key. Go to [https://dev.elsevier.com/apikey/create](https://dev.elsevier.com/apikey/create) to create a new key. If your institution already has a Scopus API key, you can submit your Scopus API key to have the settings for the ScienceDirect API services added.
 
@@ -109,6 +111,9 @@ Further support for the API key registration process is available from [integrat
 
 More information about the Institutional Repository Program and the corresponding policies can be found on [http://dev.elsevier.com/ir_cris_vivo.html](http://dev.elsevier.com/ir_cris_vivo.html)
 
+### <a name="https"></a> HTTPS support: April 2017 status
+
+Reports related to malfunctioning HTTPS calls are currently under investigation. The patch should be fully functional on HTTP. If you run into any HTTPS or SSL certificate related errors, please report them by creating a Github Issue.
 
 ## <a name="installation"></a> Installation
 
