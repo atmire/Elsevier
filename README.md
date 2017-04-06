@@ -293,7 +293,7 @@ A new `elsevier-sciencedirect.cfg` file will be created in `[dspace-src]/dspace/
 |`ui.article.url`| The base URL for retrieval based on Elsevier PIIs. The default value should probably be left untouched. |http://www.sciencedirect.com/science/article
 |`entitlement.check.enabled`| Whether an article's entitlement (access options) should be fetched for the current user. |true
 |`metadata.field.pii`| The metadata field holding the PII value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pii
-|`metadata.field.doi`| The metadata field holding the DOI value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.doi
+|`metadata.field.doi`| The metadata field holding the DOI value. Used for entitlement retrieval and embedded viewing. Multiple fields can be added, separated by a comma. |elsevier.identifier.doi,dc.identifier
 |`metadata.field.eid`| The metadata field holding the EID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.eid
 |`metadata.field.scopus_id`| The metadata field holding the Scopus ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.scopusid
 |`metadata.field.pubmed_id`| The metadata field holding the PubMed ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pubmedid
