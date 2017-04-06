@@ -2,7 +2,7 @@
  * The contents of this file are subject to the license and copyright
  * detailed in the LICENSE and NOTICE files at the root of the source
  * tree and available online at
- *
+ * <p>
  * http://www.dspace.org/license/
  */
 package org.dspace.fileaccess;
@@ -14,6 +14,8 @@ import org.dspace.content.*;
 import org.dspace.content.service.*;
 import org.dspace.core.*;
 import org.dspace.fileaccess.service.*;
+import org.dspace.services.ConfigurationService;
+import org.dspace.services.factory.DSpaceServicesFactory;
 import org.springframework.beans.factory.annotation.*;
 
 /**
@@ -33,7 +35,7 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
         List<MetadataValue> piiMetadata = itemService.getMetadataByMetadataString(item, piiMdField);
 
         String pii = null;
-        if(piiMetadata.size()>0) {
+        if (piiMetadata.size() > 0) {
             pii = piiMetadata.get(0).getValue();
         }
 
@@ -42,21 +44,29 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
 
     @Override
     public String getDOI(Item item) {
-        String doiMdField = ConfigurationManager.getProperty("elsevier-sciencedirect.metadata.field.doi");
+        ConfigurationService configurationService = DSpaceServicesFactory.getInstance().getConfigurationService();
 
-        List<MetadataValue> doiMetadata = itemService.getMetadataByMetadataString(item, doiMdField);
-
-
-        String doi = null;
-        if(doiMetadata.size()>0) {
-            doi = doiMetadata.get(0).getValue();
-
-            if(doi.startsWith("DOI:")){
-                doi = doi.substring(4);
+        String[] doiMdField = configurationService.getPropertyAsType("elsevier-sciencedirect.metadata.field.doi", String[].class);
+        String doiValue = null;
+        for (String field : doiMdField) {
+            List<MetadataValue> doiMetadata = itemService.getMetadataByMetadataString(item, field);
+            if (doiMetadata.size() > 0) {
+                doiValue = doiMetadata.get(0).getValue();
+                break;
             }
         }
 
-        return doi;
+        if (StringUtils.isNotBlank(doiValue)) {
+            String[] possiblePrefixes = {"doi:", "http://dx.doi.org/"};
+            for (String prefix : possiblePrefixes) {
+                if (StringUtils.startsWithIgnoreCase(doiValue, prefix)) {
+                    return doiValue.substring(prefix.length());
+                }
+            }
+        }
+
+
+        return doiValue;
     }
 
     @Override
@@ -65,7 +75,7 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
 
         List<MetadataValue> eidMetadata = itemService.getMetadataByMetadataString(item, doiMdField);
         String eid = null;
-        if(eidMetadata.size()>0) {
+        if (eidMetadata.size() > 0) {
             eid = eidMetadata.get(0).getValue();
         }
 
@@ -79,10 +89,10 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
         List<MetadataValue> scopusMetadata = itemService.getMetadataByMetadataString(item, scopusMDField);
 
         String scopus_id = null;
-        if(scopusMetadata.size()>0) {
+        if (scopusMetadata.size() > 0) {
             scopus_id = scopusMetadata.get(0).getValue();
-            if(StringUtils.startsWith(scopus_id, "SCOPUS_ID:")){
-                scopus_id= scopus_id.substring("SCOPUS_ID:".length());
+            if (StringUtils.startsWith(scopus_id, "SCOPUS_ID:")) {
+                scopus_id = scopus_id.substring("SCOPUS_ID:".length());
             }
         }
 
@@ -96,7 +106,7 @@ public class ElsevierItemMetadataServiceImpl implements ItemMetadataService {
         List<MetadataValue> pubmedMetadata = itemService.getMetadataByMetadataString(item, pubmedMDField);
 
         String pubmed_id = null;
-        if(pubmedMetadata.size()>0) {
+        if (pubmedMetadata.size() > 0) {
             pubmed_id = pubmedMetadata.get(0).getValue();
         }
 

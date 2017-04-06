@@ -1596,3 +1596,7 @@ ol.ds-ordered-list ol.ds-ordered-list ol.ds-ordered-list {
     margin-right:5px;
     margin-left:5px;
 }
+
+.import-record {
+    clear:both;
+}
