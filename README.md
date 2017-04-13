@@ -193,7 +193,8 @@ The second step allows the user to search and import a publication from the prev
 
 ![Liveimport](../../raw/master/images/elsevier-import-step.png "Liveimport")
 
-Publications that are already imported are shown with a grayish background.
+Publications that are already imported are shown with a grayish background in theme Mirage 2. Already imported publications are only detected for the same source. 
+Theme Mirage does not show already imported publications differently.
 
 ![Liveimport](../../raw/master/images/elsevier-liveimport-2.png "Liveimport")
 
