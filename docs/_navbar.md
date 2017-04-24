@@ -1,0 +1,3 @@
+- [DSpace](http://www.dspace.org)
+- [Atmire](https://www.atmire.com)
+- [Elsevier](https://www.elsevier.com)
