@@ -18,3 +18,8 @@ The DSpace Elsevier API integration patch has been developed and is maintained b
 ## Conditions for use
 
 Using this integration does not require a paid subscription to any of Elsevier's commercial services. The key condition for using this API is that the link to the record of the publication on ScienceDirect/Scopus/PubMed should be prominently visible on the publication's page in the repository.
+
+Full details on the use of the leveraged APIs are available on their respective pages:
+
+* Elsevier: https://dev.elsevier.com/ir_cris_vivo.html
+* PubMed: https://www.ncbi.nlm.nih.gov/books/NBK25497/#chapter2.Usage_Guidelines_and_Requiremen
