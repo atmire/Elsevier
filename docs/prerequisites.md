@@ -2,7 +2,7 @@
 
 ## Codebase
 
-The Elsevier API integration has been released as a "patch" for DSpace as this allows for the easiest installation process of the incremental codebase. The code needed to install and deploy the integration can be found in the [Download patch](#prerequisites-download) section, which needs to be applied to your DSpace source code.
+The Elsevier API integration has been released as a "patch" for DSpace as this allows for the easiest installation process of the incremental codebase.
 
 !> Below, we will explain you how to apply the patch to your existing installation. This will affect your source code. Before applying a patch, it is **always** recommended to create backup of your DSpace source code.
 
