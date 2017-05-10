@@ -256,14 +256,6 @@ An update script is available to accommodate for changes in previously imported 
 
 The script can be run using the following command in the `[dspace]` directory:
 
-**DSpace 5**
-
-```
-[dspace]/bin/dspace dsrun com.atmire.script.UpdateElsevierItems
-```
-
-**DSpace 6**
-
 ```
 [dspace]/bin/dspace dsrun org.dspace.importer.external.scidir.UpdateElsevierItems
 ```
@@ -283,36 +275,48 @@ Here's an overview of the available options to specify which items need to be up
 
 ### <a name="configuration-parameters"></a> Configuration parameters
 
-A new `elsevier-sciencedirect.cfg` file will be created in `[dspace-src]/dspace/config/modules`.
+The configuration related to the external source imports and Elsevier integrations can be found in folder `[dspace-src]/dspace/config/modules/external-sources`. This folder contains a separate configuration file for each import source and for the elsevier integrations. 
 
-> **Important note**: all configurations in DSpace 6.x are prefixed with `elsevier-sciencedirect.`, e.g. `elsevier-sciencedirect.api.key`.
+#### elsevier.cfg
 
 | Property | Description | Default 
 | -------- | ----------- | -------|
-|`api.key`| Elsevier API key that has been registered [before](#prerequisites-api). You can either fill out the API key manually or include in your Maven/Puppet/Ansible configuration profiles. |${elsevier.api.key}
-|`api.article.url`| The base URL for the retrieval of an article. The default value should probably be left untouched. |http://api.elsevier.com/content/article
-|`api.entitlement.url`| The base URL for the retrieval of identifiers and the entitlement status. The default value should probably be left untouched. |http://api.elsevier.com/content/article/entitlement
-|`api.scidir.url`| The base URL for the interacting with ScienceDirect's API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scidir
-|`api.pubmed.url`| The base URL for the interacting with PubMed's API. The default value should probably be left untouched. |https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
-|`api.scopus.url`| The base URL for the interacting with Scopus' API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scopus
-|`api.scopus.view`| The Scopus view to use for retrieving results. Should either be `STANDARD` or `COMPLETE`. Only set to `COMPLETE` if your Elsevier API key allows the use of the Scopus COMPLETE view. Please refer to the [API description](http://api.elsevier.com/documentation/search/SCOPUSSearchViews.htm) for more information. |STANDARD
-|`ui.article.url`| The base URL for retrieval based on Elsevier PIIs. The default value should probably be left untouched. |http://www.sciencedirect.com/science/article
-|`entitlement.check.enabled`| Whether an article's entitlement (access options) should be fetched for the current user. |true
-|`metadata.field.pii`| The metadata field holding the PII value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pii
-|`metadata.field.doi`| The metadata field holding the DOI value. Used for entitlement retrieval and embedded viewing. Multiple fields can be added, separated by a comma. |elsevier.identifier.doi,dc.identifier
-|`metadata.field.eid`| The metadata field holding the EID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.eid
-|`metadata.field.scopus_id`| The metadata field holding the Scopus ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.scopusid
-|`metadata.field.pubmed_id`| The metadata field holding the PubMed ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pubmedid
-|`embed.display`| Whether publisher versions should be embedded for viewing within the repository. If false, the user is redirected to an off-site Elsevier website. |false
-|`embed.display.width`| The width of the embed frame (in px) in case `embed.display` is set to true. |700
-|`embed.display.height`| The height of the embed frame (in px) in case `embed.display` is set to true. |500
-|`embed.link.position`| Whether the link to the publisher version should be rendered above or below the file section on the item page. Should either be `top` or `bottom`. |top
+|`external-sources.elsevier.key`| Elsevier API key that has been registered [before](#prerequisites-api). You can either fill out the API key manually or include in your Maven/Puppet/Ansible configuration profiles. |${elsevier.api.key}
+|`external-sources.elsevier.api.article.url`| The base URL for the retrieval of an article. The default value should probably be left untouched. |http://api.elsevier.com/content/article
+|`external-sources.elsevier.ui.article.url`| The base URL for retrieval based on Elsevier PIIs. The default value should probably be left untouched. |http://www.sciencedirect.com/science/article
+|`external-sources.elsevier.entitlement.url=`| The base URL for the retrieval of identifiers and the entitlement status. The default value should probably be left untouched. |http://api.elsevier.com/content/article/entitlement
+|`external-sources.elsevier.embargo.url=`| The base URL for the retrieval of the embargo status associated with a publication. The default value should probably be left untouched. |http://api.elsevier.com/content/article/hostingpermission
+|`external-sources.elsevier.entitlement.check.enabled`| Whether an article's entitlement (access options) should be fetched for the current user. |true
+|`external-sources.elsevier.file.access.enabled`| Whether the file upload step Elsevier integrations should be enabled. |true
+|`external-sources.elsevier.metadata.field.pii`| The metadata field holding the PII value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pii
+|`external-sources.elsevier.metadata.field.doi`| The metadata field holding the DOI value. Used for entitlement retrieval and embedded viewing. Multiple fields can be added, separated by a comma. |elsevier.identifier.doi,dc.identifier
+|`external-sources.elsevier.metadata.field.eid`| The metadata field holding the EID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.eid
+|`external-sources.elsevier.metadata.field.scopus_id`| The metadata field holding the Scopus ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.scopusid
+|`external-sources.elsevier.metadata.field.pubmed_id`| The metadata field holding the PubMed ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pubmedid
+|`external-sources.elsevier.embed.display`| Whether publisher versions should be embedded for viewing within the repository. If false, the user is redirected to an off-site Elsevier website. |false
+|`external-sources.elsevier.embed.display.width`| The width of the embed frame (in px) in case `embed.display` is set to true. |700
+|`external-sources.elsevier.embed.display.height`| The height of the embed frame (in px) in case `embed.display` is set to true. |500
+|`external-sources.elsevier.embed.link.position`| Whether the link to the publisher version should be rendered above or below the file section on the item page. Should either be `top` or `bottom`. |top
 
-The `dspace/config/dspace.cfg` file will also receive an additional parameter to hide abstracts originating from Scopus according to [Scopus' policies](https://dev.elsevier.com/policy.html). This way only administrators will be able to see the abstract.
+#### pubmed.cfg
 
-```
-metadata.hide.elsevier.description.scopusabstract = true
-```
+| Property | Description | Default 
+| -------- | ----------- | -------|
+|`external-sources.pubmed.url`| The base URL for the interacting with PubMed's API. The default value should probably be left untouched. |https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
+
+
+#### scidir.cfg
+
+| Property | Description | Default 
+| -------- | ----------- | -------|
+|`external-sources.scidir.url`| The base URL for the interacting with ScienceDirect's API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scidir
+
+#### scopus.cfg
+
+| Property | Description | Default 
+| -------- | ----------- | -------|
+|`external-sources.scopus.url`| The base URL for the interacting with Scopus' API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scopus
+|`external-sources.scopus.view`| The Scopus view to use for retrieving results. Should either be `STANDARD` or `COMPLETE`. Only set to `COMPLETE` if your Elsevier API key allows the use of the Scopus COMPLETE view. Please refer to the [API description](http://api.elsevier.com/documentation/search/SCOPUSSearchViews.htm) for more information. |STANDARD
 
 ### <a name="configuration-tailor"></a> Additional tailoring
 
@@ -325,10 +329,15 @@ If you are not a Scopus subscriber, the Scopus import functionality will return 
 #### Submission steps
 For users to see the import source lookup steps at the start of a new submission, the patch adds two submission steps in `dspace/config/item-submission.xml`. If you have multiple steps early in your submission process, please make sure that the `submit.progressbar.sourcechoice` and `submit.progressbar.liveimport` steps appear before the *Describe Metadata* steps.
 
-Additionally a custom UploadStep class has been created in order for file permissions to be automatically suggested based on the information supplied by Elsevier. The patch will comment out the built-in UploadStep and then adds the ElsevierUploadStep. Please review carefully if you have modified UploadStep.
+#### File upload step
 
-#### Batch import
-To disable the batch importing functionality, the `ScienceDirect` aspect should be commented out (or removed) in `dspace/config/xmlui.xconf`. 
+The Upload step has been updated in order for file permissions to be automatically suggested based on the information supplied by Elsevier. 
+The file upload customisations can be enabled in configuration file `dspace/config/modules/external-sources/elsevier.cfg` by setting property `external-sources.elsevier.file.access.enabled` to true.
+
+By default the file upload step requires at least one file to be uploaded before a submission can be completed. Due to the Elsevier integrations a file upload may not always be required. This requirement can be disabled in configuration file `dspace/config/dspace.cfg` by setting property `webui.submit.upload.required` to true.
+
+#### Embedded PDF
+To enable the Embedded PDF functionality, the `ElsevierEmbed` aspect should be uncommented in `dspace/config/xmlui.xconf`. 
 
 #### Input form fields
 If you want to make Elsevier's internal ID values editable (e.g. `pii`,  `eid`, `scopus_id` & `pubmed_id`), they should be added to `dspace/config/input-forms.xml`. For example:
@@ -349,9 +358,6 @@ If you want to make Elsevier's internal ID values editable (e.g. `pii`,  `eid`, 
 #### API field mapping
 In case you have a custom metadata schema and/or fields, you might want to update the field mappings in order for your custom fields to be populated automatically after publication imports. The `dspace/config/spring/api/scidir-service.xml`, `dspace/config/spring/api/scopus-service.xml` and `dspace/config/spring/api/pubmed-service.xml` files contain the Spring configuration for the beans used by the corresponding integrations. To set up a custom field mapping, follow these steps.
 
-> ⚠️ **Heads up**
-<br /><br />Class names and namespaces differ between DSpace 5 and DSpace 6.Please replace each occurrence of `[CLASS]` with the corresponding version for your DSpace.
-
 1. In `dspace/config/spring/api/general-import-services`, the DSpace metadata field that should be populated (e.g. `dc.title`) must be configured as a Spring bean *if this is not already the case*.
    
    ```
@@ -362,10 +368,10 @@ In case you have a custom metadata schema and/or fields, you might want to updat
    | Placeholder         | Value
    | ------------------- | ------
    | `[MAPPED_FIELD_ID]` | The bean ID to be referenced later. E.g. `dcTitle`.
-   | `[CLASS]`           | <ul><li>**DSpace 5**: `com.atmire.import_citations.configuration.metadatamapping.MetadataField`</li><li>**DSpace 6**: `org.dspace.importer.external.metadatamapping.MetadataFieldConfig`</li></ul>
+   | `[CLASS]`           | `org.dspace.importer.external.metadatamapping.MetadataFieldConfig`
    | `[DSPACE_FIELD]`    | The DSpace metadata field to populate. E.g. `dc.title`.
 
-1. In `dspace/config/spring/api/general-import-services`, an additional Spring bean should be created to define which API value to use for populating the mapped field.
+2. In `dspace/config/spring/api/general-import-services`, an additional Spring bean should be created to define which API value to use for populating the mapped field.
    
    ```
     <bean id="[VALUE_MAPPING_ID]" class="[CLASS]">
@@ -377,10 +383,10 @@ In case you have a custom metadata schema and/or fields, you might want to updat
    | Placeholder          | Value
    | -------------------- | ------
    | `[VALUE_MAPPING_ID]` | The bean ID to be referenced later. E.g. `titleContrib`.
-   | `[CLASS]`            | <ul><li>**DSpace 5**: `com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor`</li><li>**DSpace 6**: `org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor`</li></ul>
+   | `[CLASS]`            | `org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor`
    | `[XPATH]`            | The xpath expression used to fetch the API value from an XML response. The root for the query is the "entry" element. E.g. `dc:title`.
    
-1. In `dspace/config/spring/api/scidir-services` (or the corresponding file of the import source of your choice), an entry should be added to the `scidirMetadataFieldMap` (or similar in case of another import source).
+3. In `dspace/config/spring/api/scidir-services` (or the corresponding file of the import source of your choice), an entry should be added to the `scidirMetadataFieldMap` (or similar in case of another import source).
    
    ```
     <util:map id="scidirMetadataFieldMap" ...>
@@ -413,7 +419,7 @@ In case the populated value should be constructed from multiple API values, step
     </bean>
     ```
 
-1. Then create a new Spring list containing references to the intermediary value mapping beans.
+2. Then create a new Spring list containing references to the intermediary value mapping beans.
 
     ```
     <util:list id="[COMBINED_MAPPING_ID]" value-type="[CLASS]" list-class="java.util.LinkedList">
@@ -425,9 +431,9 @@ In case the populated value should be constructed from multiple API values, step
     | Placeholder            | Value
    | ----------------------- | ------
    | `[COMBINED_MAPPING_ID]` | The bean ID to be referenced later. E.g. `combinedAuthorList`.
-   | `[CLASS]`               | <ul><li>**DSpace 5**: `com.atmire.import_citations.configuration.metadatamapping.MetadataContributor`</li><li>**DSpace 6**: `org.dspace.importer.external.metadatamapping.contributor.MetadataContributor`</li></ul>
+   | `[CLASS]`               | `org.dspace.importer.external.metadatamapping.contributor.MetadataContributor`
 
-1. Finally create the value mapping bean while providing the Spring list.
+3. Finally create the value mapping bean while providing the Spring list.
 
     ```
     <bean id="[VALUE_MAPPING_ID]" class="[CLASS]">
@@ -440,6 +446,6 @@ In case the populated value should be constructed from multiple API values, step
    | Placeholder          | Value
    | -------------------- | ------
    | `[VALUE_MAPPING_ID]` | The bean ID to be referenced later. E.g. `authorContrib`.
-   | `[CLASS]`            | <ul><li>**DSpace 5**: `com.atmire.import_citations.configuration.metadatamapping.CombinedMetadatumContributor`</li><li>**DSpace 6**: `org.dspace.importer.external.metadatamapping.contributor.CombinedMetadatumContributor`</li></ul>
+   | `[CLASS]`            | `org.dspace.importer.external.metadatamapping.contributor.CombinedMetadatumContributor`
    | `[SEPARATOR]`        | The string to use for separating the combined values. E.g. `, `.
    | `[COMBINED_MAPPING_ID]` | The ID of the list bean, defined earlier.
