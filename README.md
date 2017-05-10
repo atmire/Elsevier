@@ -339,22 +339,6 @@ By default the file upload step requires at least one file to be uploaded before
 #### Embedded PDF
 To enable the Embedded PDF functionality, the `ElsevierEmbed` aspect should be uncommented in `dspace/config/xmlui.xconf`. 
 
-#### Input form fields
-If you want to make Elsevier's internal ID values editable (e.g. `pii`,  `eid`, `scopus_id` & `pubmed_id`), they should be added to `dspace/config/input-forms.xml`. For example:
-
-```
-<field>
-     <dc-schema>elsevier</dc-schema>
-     <dc-element>identifier</dc-element>
-     <dc-qualifier>pii</dc-qualifier>
-     <repeatable>false</repeatable>
-     <label>PII</label>
-     <input-type>onebox</input-type>
-     <hint>Enter the PII for this item.</hint>
-     <required></required>
-</field>
-```
-
 #### API field mapping
 In case you have a custom metadata schema and/or fields, you might want to update the field mappings in order for your custom fields to be populated automatically after publication imports. The `dspace/config/spring/api/scidir-service.xml`, `dspace/config/spring/api/scopus-service.xml` and `dspace/config/spring/api/pubmed-service.xml` files contain the Spring configuration for the beans used by the corresponding integrations. To set up a custom field mapping, follow these steps.
 
