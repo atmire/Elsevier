@@ -57,7 +57,7 @@ An **External Source Import** menu link will be available in the administrative 
 
 ### Bitstreams on item display page
 
-The framework will **never** download an item's file to the local assetstore. A dynamically added bitstream entry will be shown on the item display page instead, linking out to the corresponding webpage of the external source, e.g. the Publisher's article page. This way a DSpace repository can safely contain restricted metadata items as interested users will get redirected to the Publisher, allowing them for example to swiftly make use of their instution's subscription to get hold of the publication.
+The framework will **never** download an item's file to the local assetstore. A dynamically added bitstream entry will be shown on the item display page instead, linking out to the corresponding webpage of the external source, e.g. the Publisher's article page. This way a DSpace repository can safely contain restricted metadata items as interested users will get redirected to the Publisher, allowing them for example to swiftly make use of their institution's subscription to get hold of the publication.
 
 ![Item display page](images/item-display-bitstream.png "Item display page - Bitstreams")
 
@@ -65,7 +65,7 @@ The framework will **never** download an item's file to the local assetstore. A 
 
 > **Important note:** The entitlements implementation is currently hardcoded to support ScienceDirect, Scopus and PubMed only. Extending this part of the code towards a hookable system, allowing custom APIs to make use of the entitlements feature as well, is put on the roadmap and will be implemented in a next release.
 
-Most publishers own the rights to the articles in their journals. Anyone who wants to read the articles must pay to access them. Anyone who wants to use the articles in any way must obtain permission from the publisher and is often required to pay an additional fee. Through Open Acces, the results of publicly funded research are freely available online and do not have to be bought (back) from the publishers by the scientific and scholarly institutions.
+Most publishers own the rights to the articles in their journals. Anyone who wants to read the articles must pay to access them. Anyone who wants to use the articles in any way must obtain permission from the publisher and is often required to pay an additional fee. Through Open Access, the results of publicly funded research are freely available online and do not have to be bought (back) from the publishers by the scientific and scholarly institutions.
 
 If the external API supports getting information about the publication's Open Access status, this information can be queried and shown next to the outgoing Publisher link.
 
@@ -95,7 +95,7 @@ If the external API supports streaming files for embedded viewing, this feature 
 
 ### Import metadata during manual submissions
 
-For users to see the **Import Sources** and **External Import Source** steps at the start of a new submission, uncomment the `submit.progressbar.sourcechoice` and `submit.progressbar.liveimport` steps in `dspace/config/item-submission.xml` and make sure they appear before the *Describe Metadata* steps:
+For users to see the **Import Sources** and **External Import Source** steps at the start of a new submission, uncomment the `submit.progressbar.sourcechoice` and `submit.progressbar.sourceimport` steps in `dspace/config/item-submission.xml` and make sure they appear before the *Describe Metadata* steps:
 
 ```
 <step>
@@ -106,14 +106,14 @@ For users to see the **Import Sources** and **External Import Source** steps at 
 </step>
 
 <step>
-   <heading>submit.progressbar.liveimport</heading>
-   <processing-class>org.dspace.submit.step.LiveImportStep</processing-class>
-   <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.LiveImportStep</xmlui-binding>
+   <heading>submit.progressbar.sourceimport</heading>
+   <processing-class>org.dspace.submit.step.SourceImportStep</processing-class>
+   <xmlui-binding>org.dspace.app.xmlui.aspect.submission.submit.SourceImportStep</xmlui-binding>
    <workflow-editable>true</workflow-editable>
 </step>
 
 <step>
-    <heading>submit.progressbar.describe</heading>
+   <heading>submit.progressbar.describe</heading>
     ...
 </step>
 
@@ -130,7 +130,7 @@ webui.submit.upload.required = false
 ```
 
 **Automatic embargo**
-> **Important note:** The File Upload step changes are currently hardcoded to support ScienceDirect, Scopus and PubMed only. Extending this part of the code towards a hookable system, allowing custom APIs to make use of the this feature as well, is put on the roadmap and will be implemented in a next release.
+> **Important note:** The File Upload step changes are currently hardcoded to support Elsevier only. Extending this part of the code towards a hookable system, allowing custom APIs to make use of the this feature as well, is put on the roadmap and will be implemented in a next release.
 
 The File Upload step can automatically be enhanced to suggest file permissions based on the information supplied by an external API. These file upload customizations can be enabled in `[dspace]/config/modules/external-sources/elsevier.cfg` as follows:
 
