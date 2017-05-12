@@ -146,7 +146,7 @@ Batch Import functionality is enabled by default! If you would like to remove th
 <aspect name="ExternalImport" path="resource://aspects/ExternalImport/" />
 ```
 
-Be sure to also remove the corresponding entry from the navigation menu defined in `org.dspace.app.xmlui.aspect.administrative`.
+Be sure to also remove the corresponding entry from the navigation menu defined in `org.dspace.app.xmlui.aspect.administrative.Navigation`.
 
 ### Entitlements
 
