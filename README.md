@@ -138,7 +138,7 @@ The File Upload step can automatically be enhanced to suggest file permissions b
 external-sources.elsevier.file.access.enabled = true
 ```
 
-#### Batch import metadata
+### Batch import metadata
 
 Batch Import functionality is enabled by default! If you would like to remove this feature, open `[dspace]/config/xmlui.xconf` and comment out the following aspect:
 
@@ -148,7 +148,7 @@ Batch Import functionality is enabled by default! If you would like to remove th
 
 Be sure to also remove the corresponding entry from the navigation menu defined in `org.dspace.app.xmlui.aspect.administrative`.
 
-#### Entitlements
+### Entitlements
 
 To enable the Entitlements functionality, open `[dspace]/config/xmlui.xconf` and uncomment the following aspect:
 
@@ -156,7 +156,7 @@ To enable the Entitlements functionality, open `[dspace]/config/xmlui.xconf` and
 <aspect name="ElsevierEntitlement" path="resource://aspects/ElsevierEntitlement/" />
 ```
 
-#### Embedded viewing
+### Embedded viewing
 
 > **Important note:** Reports related to malfunctioning HTTPS calls are currently under investigation. Embedded Viewing should be fully functional on HTTP. If you run into any HTTPS or SSL certificate related errors, please bear with us.
 
