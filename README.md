@@ -156,6 +156,12 @@ To enable the Entitlements functionality, open `[dspace]/config/xmlui.xconf` and
 <aspect name="ElsevierEntitlement" path="resource://aspects/ElsevierEntitlement/" />
 ```
 
+Lastly set the following configuration to `true` in `[dspace]/config/modules/external-sources/elsevier.cfg`.
+
+```
+external-sources.elsevier.entitlement.check.enabled = true
+```
+
 ### Embedded viewing
 
 > **Important note:** Reports related to malfunctioning HTTPS calls are currently under investigation. Embedded Viewing should be fully functional on HTTP. If you run into any HTTPS or SSL certificate related errors, please bear with us.
@@ -165,6 +171,12 @@ To enable the Embedded Viewing functionality, open `[dspace]/config/xmlui.xconf`
 ```
 <aspect name="ElsevierEntitlement" path="resource://aspects/ElsevierEntitlement/" />
 <aspect name="ElsevierEmbed" path="resource://aspects/ElsevierEmbed/" />
+```
+
+And also set the following configuration to `true` in `[dspace]/config/modules/external-sources/elsevier.cfg`.
+
+```
+external-sources.elsevier.embed.display = true
 ```
 
 ### Firewall verification
@@ -230,7 +242,7 @@ Configurations related to the External Source Import framework and specific inte
 |`external-sources.elsevier.metadata.field.eid`| The metadata field holding the EID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.eid
 |`external-sources.elsevier.metadata.field.scopus_id`| The metadata field holding the Scopus ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.scopusid
 |`external-sources.elsevier.metadata.field.pubmed_id`| The metadata field holding the PubMed ID value. Used for entitlement retrieval and embedded viewing. |elsevier.identifier.pubmedid
-|`external-sources.elsevier.embed.display`| Whether publisher versions should be embedded for viewing within the repository. If false, the user is redirected to an off-site Elsevier website. |false
+|`external-sources.elsevier.embed.display`| Whether publisher versions should be embedded for viewing within the repository. If false, the user is redirected to an off-site Publisher website. |false
 |`external-sources.elsevier.embed.display.width`| The width of the embed frame (in px) in case `embed.display` is set to true. |700
 |`external-sources.elsevier.embed.display.height`| The height of the embed frame (in px) in case `embed.display` is set to true. |500
 |`external-sources.elsevier.embed.link.position`| Whether the link to the publisher version should be rendered above or below the file section on the item page. Should either be `top` or `bottom`. |top
