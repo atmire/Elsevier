@@ -150,16 +150,16 @@ Be sure to also remove the corresponding entry from the navigation menu defined 
 
 ### Entitlements
 
-To enable the Entitlements functionality, open `[dspace]/config/xmlui.xconf` and uncomment the following aspect:
+Entitlements are enabled by default! If you would like to remove this feature, open `[dspace]/config/xmlui.xconf` and comment out the following aspect:
 
 ```
 <aspect name="ElsevierEntitlement" path="resource://aspects/ElsevierEntitlement/" />
 ```
 
-Lastly set the following configuration to `true` in `[dspace]/config/modules/external-sources/elsevier.cfg`.
+And also set the following configuration to `false` in `[dspace]/config/modules/external-sources/elsevier.cfg`.
 
 ```
-external-sources.elsevier.entitlement.check.enabled = true
+external-sources.elsevier.entitlement.check.enabled = false
 ```
 
 ### Embedded viewing
