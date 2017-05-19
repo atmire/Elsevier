@@ -89,13 +89,13 @@ Entitlements are fetched asynchronously through Javascript after an item page is
 
 If the external API supports streaming files for embedded viewing, this feature can be enabled. Open Access publications won't link out anymore to the Publisher website but will render an embedded viewer so the user can immediately start reading. When access to the publication is denied, a check will occur to verify if the record is under embargo. If the record is not under embargo, the Accepted Manuscript will be loaded on the embed page instead of the full text publication.
 
-## Enabling External Source Import (XMLUI)
+## Installing External Source Import (XMLUI)
 
 > The External Source Import framework is available for the XMLUI only.
 
 ### Import metadata during manual submissions
 
-For users to see the **Import Sources** and **External Import Source** steps at the start of a new submission, uncomment the `submit.progressbar.sourcechoice` and `submit.progressbar.sourceimport` steps in `dspace/config/item-submission.xml` and make sure they appear before the *Describe Metadata* steps:
+For users to see the **Import Sources** and **External Import Source** steps at the start of a new submission, uncomment the `submit.progressbar.sourcechoice` and `submit.progressbar.sourceimport` steps in `[dspace]/config/item-submission.xml` and make sure they appear before the *Describe Metadata* steps:
 
 ```
 <step>
@@ -204,15 +204,23 @@ Further support for the API key registration process is available from [integrat
 
 More information about the Institutional Repository Program and the corresponding policies can be found on [http://dev.elsevier.com/ir_cris_vivo.html](http://dev.elsevier.com/ir_cris_vivo.html)
 
-To enable ScienceDirect and/or Scopus support in DSpace, add your API key in `[dspace]/config/modules/external-sources/elsevier.cfg`, or define it in your Maven build profile as `<external-sources.elsevier.key>`.
+To enable ScienceDirect and/or Scopus support in DSpace, uncomment the following configuration in  `[dspace]/config/modules/external-sources/elsevier.cfg` and specify your API key, or define it in your Maven build profile as `<external-sources.elsevier.key>`.
 
 ```
 external-sources.elsevier.key = ${external-sources.elsevier.key}
 ```
 
-Lastly, uncomment the corresponding entries in Spring configuration, found in `[dspace]/config/spring/api/general-import-service.xml`:
+Next, open `[dspace]/config/spring/api/general-import-service.xml` and plug in `${external-sources.elsevier.key}` in the constructor of the `apiKey` bean:
 
+```xml
+<bean class="java.lang.String" id="apiKey" autowire-candidate="true">
+   <constructor-arg value="${external-sources.elsevier.key}"/>
+</bean>
 ```
+
+Lastly, uncomment the desired services, found in the same Spring configuration file:
+
+```xml
 <util:map id="ImportServices">
     <entry key="science" value-ref="ScidirImportService"/>
     <entry key="scopus" value-ref="ScopusImportService"/>
