@@ -13,6 +13,10 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## Latest changes - not yet tagged
+
+- Fix: Raised the default height to 800px and the default width to 100% for the Elsevier embed page.
+
 ## April 6h, 2017
 - API change: Enabled mapping of metadata fields that are only exposed in the ScienceDirect complete view.
 - API change: Multiple DOI fields can now be configured for the Entitlements lookups.
