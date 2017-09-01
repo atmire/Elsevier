@@ -6,7 +6,6 @@ package org.dspace.importer.external.scopus.wadl;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 
-@Path("index:scopus")
 public interface IndexScopusResource {
 
     @GET
