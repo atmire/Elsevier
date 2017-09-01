@@ -13,11 +13,13 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
-## Latest changes - not yet tagged
+## September 1st, 2017
 
 - Fix: Raised the default height to 800px and the default width to 100% for the Elsevier embed page.
+- API fix: Updated the URL that is used for the Scopus import.
 
 ## April 6th, 2017
+
 - API change: Enabled mapping of metadata fields that are only exposed in the ScienceDirect complete view.
 - API change: Multiple DOI fields can now be configured for the Entitlements lookups.
 - API fix: Updated the PubMed import record mapping to be able to map an abstract text that is divided into multiple parts.
@@ -25,6 +27,7 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Fix: Entitlements API integration and links now also work when the Article Embedding API is disabled.
 
 ## March 24th, 2017 (DSpace 5 only)
+
 - API change: Accepted Manuscripts are shown on the embed page if the user is not entitled to the full PDF and the record is not under embargo.
 - Fix: Fixed a bug in the bulk import layout for Mirage 1 that caused some checkboxes to be rendered on the right side of the page.
 
