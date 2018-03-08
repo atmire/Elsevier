@@ -47,7 +47,7 @@ A collection to which the items are added must be selected from the "Select coll
 
 The file upload step has been altered to allow users to select the accessibility of files.
 
-![Elsevier Batch Import](https://github.com/atmire/Elsevier/raw/master/images/elsevier-batchimport-1.png "Elsevier Batch Import")
+![Elsevier File Upload](https://github.com/atmire/Elsevier/raw/master/images/elsevier-file-upload.png "Elsevier Batch Import")
 
 If you encounter the following warning message in the DSpace logs, please verify whether the permissions of your API key are sufficient to retrieve hosting permissions:
 
