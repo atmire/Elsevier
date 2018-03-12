@@ -54,15 +54,6 @@
 
     </xsl:template>
 
-    <xsl:template match="dri:item[@rend='record-uri']/dri:xref">
-        <a target="_blank">
-            <xsl:attribute name="href">
-                <xsl:value-of select="@target"/>
-            </xsl:attribute>
-            <xsl:value-of select="@target"/>
-        </a>
-    </xsl:template>
-
 
 
 </xsl:stylesheet>

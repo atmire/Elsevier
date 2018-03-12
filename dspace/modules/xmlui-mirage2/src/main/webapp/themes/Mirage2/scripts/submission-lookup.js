@@ -20,10 +20,12 @@
         }
     });
 
+    var spinner =  " <i class=\"fa fa-spinner fa-spin\"></i>";
 
     $('#aspect_submission_StepTransformer_field_submit_lookup').click(function(event){
         event.preventDefault();
         var searchInput = "";
+        $(this).html($(this).text() + spinner)
 
         $("input[id^='aspect_submission_StepTransformer_field_'][type='text'], input[id^='aspect_submission_StepTransformer_field_'][type='hidden']").each(function () {
             if($(this).val()) {
@@ -46,10 +48,12 @@
             async: true,
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             error: function(xhr, status, error){
+                button.html(button.html().replace(spinner, ''));
                 var err = eval("(" + xhr.responseText + ")");
                 alert(err.Message);
             },
             success: function(info) {
+                button.html(button.html().replace(spinner, ''));
                 info.shownStart = start + 1;
                 info.shownCount = start + info.records.length;
 
