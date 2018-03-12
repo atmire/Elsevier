@@ -175,6 +175,11 @@ public class LiveImportStep extends AbstractSubmissionStep {
                                 }
 
                                 rightList.addItem().addContent(authorString);
+                                java.util.Collection<Metadatum> mdvList = record.getValue("dc.identifier.uri");
+                                if(mdvList.size() > 0) {
+                                    String uri = mdvList.iterator().next().value;
+                                    rightList.addItem("uri", "record-uri").addXref(uri, uri);
+                                }
                             }
                         }
                     }
