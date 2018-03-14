@@ -16,7 +16,6 @@
     ::-moz-selection { @content; }
     ::selection { @content; }
 }
-
 @include selection {
     color: white;
     background: hotpink;

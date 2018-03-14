@@ -182,7 +182,6 @@
                     </xsl:attribute>
                 </link>
             </xsl:for-each>
-
             <!-- Add syndication feeds -->
             <xsl:for-each select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='feed']">
                 <link rel="alternate" type="application">
@@ -280,7 +279,6 @@
                     <xsl:value-of select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='theme'][@qualifier='path']"/>
                     <xsl:text>/lib/js/modernizr-1.7.min.js</xsl:text>
                 </xsl:attribute>&#160;</script>
-
             <!-- Add the title in -->
             <xsl:variable name="page_title" select="/dri:document/dri:meta/dri:pageMeta/dri:metadata[@element='title']" />
             <title>
