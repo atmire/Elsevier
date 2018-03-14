@@ -13,6 +13,13 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## March 14th, 2018
+
+- Fix: On theme Mirage 2 search results in the live import submission step now shows a link to the source record.
+- Fix: On theme Mirage 2 the search results dialog in the live import submission step now shows a clearer message when no results are found.
+- Fix: On theme Mirage 2 a loading icon is shown inside the search button on the live import submission step while a search is being performed.
+- API change: All API calls to Elsevier services now go over HTTPS instead of HTTP.
+
 ## September 1st, 2017
 
 - Fix: Raised the default height to 800px and the default width to 100% for the Elsevier embed page.
