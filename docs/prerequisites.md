@@ -64,6 +64,6 @@ Further support for the API key registration process is available from [integrat
 
 More information about the Institutional Repository Program and the corresponding policies can be found on [http://dev.elsevier.com/ir_cris_vivo.html](http://dev.elsevier.com/ir_cris_vivo.html)
 
-## HTTPS support: April 2017 status
+## HTTPS support: 2018-03-28 status
 
-Reports related to malfunctioning HTTPS calls are currently under investigation. The patch should be fully functional on HTTP. If you run into any HTTPS or SSL certificate related errors, please report them by creating a Github Issue.
+Elsevier now supports and will even enforce all API calls to be made over HTTPS. All calls that the patch made are now HTTPS calls. This means you should now be able to run the patch on repositories that themselves run on either HTTP or HTTPS.
