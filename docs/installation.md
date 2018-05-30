@@ -35,7 +35,7 @@ In case the check is successful, the patch can be installed as explained in the 
 To apply the patch, the following command should be run where  `<patch>` is replaced with the name of the patch file.
 
 ```bash
-git apply --whitespace=nowarn --reject <patch>
+git apply --apply --whitespace=nowarn --reject <patch>
 ```
 
 This command will tell git to apply the patch and ignore unharmful whitespace issues. The `--reject` flag instructs the command to continue when conflicts are encountered and saves the corresponding code hunks to a `.rej` file so you can review and apply them manually later on. This flag can be omitted if desired.
