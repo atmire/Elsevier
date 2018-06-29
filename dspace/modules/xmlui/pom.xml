@@ -12,7 +12,7 @@
     <parent>
         <groupId>org.dspace</groupId>
         <artifactId>modules</artifactId>
-        <version>5.6</version>
+        <version>5.9</version>
         <relativePath>..</relativePath>
     </parent>
 
@@ -30,6 +30,7 @@
     </build>
 
     <profiles>
+
         <profile>
             <id>oracle-support</id>
             <activation>
@@ -179,7 +180,7 @@
                 <dependency>
                     <groupId>org.dspace.modules</groupId>
                     <artifactId>xmlui-mirage2</artifactId>
-                    <version>5.6</version>
+                    <version>5.9</version>
                     <type>war</type>
                 </dependency>
             </dependencies>
