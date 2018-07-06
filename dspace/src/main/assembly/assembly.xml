@@ -81,6 +81,9 @@
          <includes>
             <include>*:jar:*</include>
          </includes>
+        <excludes>
+            <exclude>org.glassfish.hk2.external:bean-validator:jar:*</exclude>
+        </excludes>
          <outputDirectory>lib</outputDirectory>
          <useProjectArtifact>false</useProjectArtifact>
       </dependencySet>
@@ -105,6 +108,9 @@
                   <includes>
                      <include>*:jar:*</include>
                   </includes>
+                  <excludes>
+                      <exclude>org.glassfish.hk2.external:bean-validator:jar:*</exclude>
+                  </excludes>
                </dependencySet>
             </dependencySets>
          </binaries>
@@ -131,3 +137,4 @@
    </moduleSets>
 
 </assembly>
+
