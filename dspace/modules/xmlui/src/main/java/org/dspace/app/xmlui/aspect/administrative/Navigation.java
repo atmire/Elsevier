@@ -157,8 +157,8 @@ public class Navigation extends AbstractDSpaceTransformer implements CacheablePr
 		            DSpaceValidity validity = new DSpaceValidity();
 		            
 		            validity.add(context, eperson);
-		            
-		            java.util.List<Group> groups = groupService.allMemberGroups(context, eperson);
+
+                    java.util.Set<Group> groups = groupService.allMemberGroupsSet(context, eperson);
 		            for (Group group : groups)
 		            {
 		            	validity.add(context, group);
