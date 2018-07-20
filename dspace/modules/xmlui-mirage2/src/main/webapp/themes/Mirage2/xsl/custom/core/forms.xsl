@@ -31,6 +31,7 @@
                 exclude-result-prefixes="i18n dri mets xlink xsl dim xhtml mods dc">
 
     <xsl:output indent="yes"/>
+    <xsl:template match="dri:div[@n='lookup-modal']" priority="2"/>
     <xsl:template match="dri:div[@n='lookup-modal']" priority="2" mode="outside">
     <div id="lookup-search-results" class="modal fade" role="dialog">
         <div class="modal-dialog">
