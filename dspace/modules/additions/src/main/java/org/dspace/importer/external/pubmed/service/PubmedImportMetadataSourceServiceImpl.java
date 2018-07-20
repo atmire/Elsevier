@@ -22,6 +22,9 @@ import org.dspace.core.*;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.exception.*;
 import org.dspace.importer.external.service.*;
+import org.apache.axiom.om.util.AXIOMUtil;
+import javax.xml.stream.XMLStreamException;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.jaxen.*;
 
 /**
@@ -276,14 +279,15 @@ public class PubmedImportMetadataSourceServiceImpl extends AbstractImportMetadat
 
     @Override
     public List<OMElement> splitToRecords(String recordsSrc) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
         try {
-            xpath = new AXIOMXPath("//PubmedArticle");
+            OMElement element = AXIOMUtil.stringToOM(recordsSrc);
+            AXIOMXPath xpath = new AXIOMXPath("//PubmedArticle");
             List<OMElement> recordsList = xpath.selectNodes(element);
             return recordsList;
         } catch (JaxenException e) {
+            return null;
+        }  catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }

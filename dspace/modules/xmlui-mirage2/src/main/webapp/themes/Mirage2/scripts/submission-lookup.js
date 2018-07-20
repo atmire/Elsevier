@@ -102,28 +102,29 @@
         $("#import-pagination-previous").click(function(event) {
             $( this ).unbind( event );
             event.preventDefault();
-            startLookup(searchInput, start - 20);
+            startLookup($(this), searchInput, start - 20);
+
         });
 
         $("#import-pagination-next").unbind("click");
         $("#import-pagination-next").click(function(event) {
             event.preventDefault();
-            startLookup(searchInput, start + 20);
+            startLookup($(this), searchInput, start + 20);
+
         });
     }
 
     function centerModal() {
         var $dialog  = $(this).find(".modal-dialog");
-        var offset = $(window).scrollTop() - $("header").height() - $(".trail-wrapper").height();
-        $dialog.css("margin-top", offset);
-
         $(".modal-body").css("height", "auto");
-
-        if($dialog.height()>window.innerHeight){
-            $(".modal-body").height(window.innerHeight - ($(".modal-header").height() + $(".modal-footer").height() + 100));
-        }
+        // Default offset is 30px
+        // If dialog is too large, resize the body of the modal so it fits with a margin of 30px at the bottom and 30px at the top
+        if(($dialog.outerHeight() + 60) > window.innerHeight){
+            $(".modal-body").outerHeight(window.innerHeight - ($(".modal-header").outerHeight() + $(".modal-footer").outerHeight() + 60));
+            $dialog.css("margin-top", 30 );        }
+        // If the dialog fits, make sure it's centered
         else {
-            $dialog.css("margin-top", offset + (window.innerHeight - $dialog.height())/2 );
+            $dialog.css("margin-top", (window.innerHeight - $dialog.outerHeight())/2 );
         }
     }
 

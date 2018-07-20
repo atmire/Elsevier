@@ -2566,6 +2566,12 @@
 	<message key="xmlui.Submission.submit.progressbar.liveimport">ScienceDirect Import</message>
 	<message key="xmlui.Submission.submit.LiveImportStep.select_help"><p>The Elsevier batch import allows you to import items from multiple sources.</p><p>Select the preferred source in the dropdown and click "Next" to continue to the search page</p></message>
 
+    <message key="xmlui.Submission.submit.LiveImportStep.results">Search Results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_help">Help</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_previous">Previous results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_next">Next results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_close">Close</message>
+
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title">ScienceDirect embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.trail">ScienceDirect embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title_error">The embed page cannot be rendered</message>
