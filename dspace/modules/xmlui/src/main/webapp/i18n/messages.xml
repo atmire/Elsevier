@@ -2565,6 +2565,12 @@
     <message key="xmlui.Submission.submit.progressbar.liveimport">Elsevier Import</message>
     <message key="xmlui.Submission.submit.LiveImportStep.select_help"><p>The Elsevier batch import allows you to import items from multiple sources.</p><p>Select the preferred source in the dropdown and click "Next" to continue to the search page</p></message>
 
+    <message key="xmlui.Submission.submit.LiveImportStep.results">Search Results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_help">Help</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_previous">Previous results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_next">Next results</message>
+    <message key="xmlui.Submission.submit.LiveImportStep.results_close">Close</message>
+
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title">Elsevier embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.trail">Elsevier embed page</message>
     <message key="com.atmire.sciencedirect.embed.ElsevierEmbed.title_error">The embed page cannot be rendered</message>
@@ -2578,7 +2584,7 @@
     <message key="xmlui.file-access.FileAccessUI.option.public">public</message>
     <message key="xmlui.file-access.FileAccessUI.option.restricted">restricted</message>
     <message key="xmlui.file-access.FileAccessUI.option.embargo">embargo</message>
-    
+
     <message key="xmlui.Submission.submit.ElsevierUploadStep.open_access">The Elsevier lookup identified the record as open access</message>
     <message key="xmlui.Submission.submit.ElsevierUploadStep.restricted_access">The Elsevier lookup identified the record as restricted access</message>
 
@@ -2586,6 +2592,4 @@
     <message key="xmlui.Submission.submit.SourceChoiceStep.title">Choose an Import Source</message>
     <message key="xmlui.Submission.submit.SourceChoiceStep.choose_source">Choose import source</message>
     <message key="xmlui.Submission.submit.progressbar.sourcechoice">Import Source</message>
-
-
 </catalogue>
