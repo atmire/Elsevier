@@ -24,7 +24,7 @@
     $('#aspect_submission_StepTransformer_field_submit_lookup').click(function(event){
         event.preventDefault();
         var searchInput = "";
-        $(this).html($(this).text() + spinner)
+        $(this).html($(this).text() + spinner);
 
         $("input[id^='aspect_submission_StepTransformer_field_'][type='text'], input[id^='aspect_submission_StepTransformer_field_'][type='hidden']").each(function () {
             if($(this).val()) {
@@ -37,7 +37,7 @@
             }
         });
 
-        startLookup($(this), searchInput,0)
+        startLookup($(this), searchInput,0);
     });
 
     function startLookup(button, searchInput,start) {
@@ -119,9 +119,10 @@
         $(".modal-body").css("height", "auto");
         // Default offset is 30px
         // If dialog is too large, resize the body of the modal so it fits with a margin of 30px at the bottom and 30px at the top
-        if(($dialog.outerHeight() + 60) > window.innerHeight){
+        if(($dialog.outerHeight() + 60) > window.innerHeight) {
             $(".modal-body").outerHeight(window.innerHeight - ($(".modal-header").outerHeight() + $(".modal-footer").outerHeight() + 60));
-            $dialog.css("margin-top", 30 );        }
+            $dialog.css("margin-top", 30 );
+        }
         // If the dialog fits, make sure it's centered
         else {
             $dialog.css("margin-top", (window.innerHeight - $dialog.outerHeight())/2 );
