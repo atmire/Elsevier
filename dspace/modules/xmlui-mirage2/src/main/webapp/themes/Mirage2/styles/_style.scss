@@ -115,6 +115,6 @@
 #lookup-search-results {
     overflow: hidden;
     .modal-body {
-        overflow: scroll;
+        overflow-y: scroll;
     }
 }
