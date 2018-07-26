@@ -2515,8 +2515,8 @@
 
 
 
-    <message key="xmlui.scidir.live-import.trail">ScienceDirect Import</message>
-    <message key="xmlui.scidir.live-import.head">ScienceDirect Import</message>
+    <message key="xmlui.scidir.live-import.trail">Elsevier Import</message>
+    <message key="xmlui.scidir.live-import.head">Elsevier Import</message>
     <message key="xmlui.scidir.live-import.hint">Fill in at least one of the following fields.</message>
     <message key="xmlui.scidir.live-import.affiliation">affiliation</message>
     <message key="xmlui.scidir.live-import.affiliation_hint"><p>The name of the institution the publication is connected to.</p><p>Example: "broad institute"</p></message>
@@ -2563,7 +2563,7 @@
     <message key="xmlui.Submission.submit.LiveImportStep.no-records">No records found</message>
     <message key="xmlui.Submission.submit.LiveImportStep.submit_results">Search results</message>
 	<message key="xmlui.Submission.submit.LiveImportStep..missing_import_source">Please return to the previous step to select an import source.</message>
-	<message key="xmlui.Submission.submit.progressbar.liveimport">ScienceDirect Import</message>
+	<message key="xmlui.Submission.submit.progressbar.liveimport">Elsevier Import</message>
 	<message key="xmlui.Submission.submit.LiveImportStep.select_help"><p>The Elsevier batch import allows you to import items from multiple sources.</p><p>Select the preferred source in the dropdown and click "Next" to continue to the search page</p></message>
 
     <message key="xmlui.Submission.submit.LiveImportStep.results">Search Results</message>
