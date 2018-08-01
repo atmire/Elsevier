@@ -43,7 +43,8 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
 
 //            getRecordIdsTarget = getRecordIdsTarget.path("esearch.fcgi");
 
-            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE);
+            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE)
+                    .header("Content-type", "application/json");
 
             Response response = invocationBuilder.get();
 
@@ -106,7 +107,8 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
             getRecordIdsTarget = getRecordIdsTarget.queryParam("count", count);
 
 
-            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE);
+            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE)
+                    .header("Content-type", "application/json");
             Response response = invocationBuilder.get();
 
             List<OMElement> omElements = splitToRecords(response.readEntity(String.class));
@@ -148,7 +150,8 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
 
             WebTarget getRecordTarget = scidirWebTarget.queryParam("query", "eid(" + id + ")");
 
-            Invocation.Builder invocationBuilder = getRecordTarget.request(MediaType.TEXT_XML_TYPE);
+            Invocation.Builder invocationBuilder = getRecordTarget.request(MediaType.TEXT_XML_TYPE)
+                    .header("Content-type", "application/json");
             Response response = invocationBuilder.get();
 
             List<OMElement> omElements = splitToRecords(response.readEntity(String.class));
@@ -193,7 +196,8 @@ public class ScidirSource extends AbstractImportSource<OMElement> {
             List<Record> records = new LinkedList<Record>();
 
             WebTarget getRecordIdsTarget = scidirWebTarget.queryParam("query", query.getParameterAsClass("query", String.class));
-            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE);
+            Invocation.Builder invocationBuilder = getRecordIdsTarget.request(MediaType.TEXT_XML_TYPE)
+                    .header("Content-type", "application/json");
 
             Response response = invocationBuilder.get();
             List<OMElement> omElements = splitToRecords(response.readEntity(String.class));
