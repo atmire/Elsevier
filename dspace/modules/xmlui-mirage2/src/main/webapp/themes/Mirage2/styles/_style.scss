@@ -108,3 +108,11 @@
 #aspect_administrative_importer_external_scidir_ImportSourceForm_field_submit {
   margin-top: 15px;
 }
+
+
+#lookup-search-results {
+    overflow: hidden;
+    .modal-body {
+        overflow-y: scroll;
+    }
+}

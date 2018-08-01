@@ -19,21 +19,21 @@
 -->
 
 <xsl:stylesheet
-    xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
-    xmlns:dri="http://di.tamu.edu/DRI/1.0/"
-    xmlns:mets="http://www.loc.gov/METS/"
-    xmlns:dim="http://www.dspace.org/xmlns/dspace/dim"
-    xmlns:xlink="http://www.w3.org/TR/xlink/"
-    xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
-    xmlns:atom="http://www.w3.org/2005/Atom"
-    xmlns:ore="http://www.openarchives.org/ore/terms/"
-    xmlns:oreatom="http://www.openarchives.org/ore/atom/"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:xalan="http://xml.apache.org/xalan"
-    xmlns:encoder="xalan://java.net.URLEncoder"
-    xmlns:util="org.dspace.app.xmlui.utils.XSLUtils"
-    xmlns:confman="org.dspace.core.ConfigurationManager"
-    exclude-result-prefixes="xalan encoder i18n dri mets dim xlink xsl util confman">
+        xmlns:i18n="http://apache.org/cocoon/i18n/2.1"
+        xmlns:dri="http://di.tamu.edu/DRI/1.0/"
+        xmlns:mets="http://www.loc.gov/METS/"
+        xmlns:dim="http://www.dspace.org/xmlns/dspace/dim"
+        xmlns:xlink="http://www.w3.org/TR/xlink/"
+        xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0"
+        xmlns:atom="http://www.w3.org/2005/Atom"
+        xmlns:ore="http://www.openarchives.org/ore/terms/"
+        xmlns:oreatom="http://www.openarchives.org/ore/atom/"
+        xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:xalan="http://xml.apache.org/xalan"
+        xmlns:encoder="xalan://java.net.URLEncoder"
+        xmlns:util="org.dspace.app.xmlui.utils.XSLUtils"
+        xmlns:confman="org.dspace.core.ConfigurationManager"
+        exclude-result-prefixes="xalan encoder i18n dri mets dim xlink xsl util confman">
 
     <xsl:output indent="yes"/>
 
@@ -41,7 +41,7 @@
     can be configured with the property 'xmlui.theme.mirage.item-list.emphasis' in dspace.cfg-->
 
     <xsl:template name="itemSummaryList-DIM">
-        <xsl:variable name="itemWithdrawn" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn" />
+        <xsl:variable name="itemWithdrawn" select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim/@withdrawn"/>
 
         <xsl:variable name="href">
             <xsl:choose>
@@ -60,14 +60,20 @@
 
 
                 <div class="item-wrapper clearfix">
-                    <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview"><xsl:with-param name="href" select="$href"/></xsl:apply-templates>
+                    <xsl:apply-templates select="./mets:fileSec" mode="artifact-preview">
+                        <xsl:with-param name="href" select="$href"/>
+                    </xsl:apply-templates>
                     <xsl:apply-templates select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
-                                         mode="itemSummaryList-DIM-file"><xsl:with-param name="href" select="$href"/></xsl:apply-templates>
+                                         mode="itemSummaryList-DIM-file">
+                        <xsl:with-param name="href" select="$href"/>
+                    </xsl:apply-templates>
                 </div>
             </xsl:when>
             <xsl:otherwise>
                 <xsl:apply-templates select="./mets:dmdSec/mets:mdWrap[@OTHERMDTYPE='DIM']/mets:xmlData/dim:dim"
-                                     mode="itemSummaryList-DIM-metadata"><xsl:with-param name="href" select="$href"/></xsl:apply-templates>
+                                     mode="itemSummaryList-DIM-metadata">
+                    <xsl:with-param name="href" select="$href"/>
+                </xsl:apply-templates>
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
@@ -77,7 +83,10 @@
         <xsl:param name="href"/>
         <xsl:variable name="metadataWidth" select="675 - $thumbnail.maxwidth - 30"/>
         <div class="item-metadata" style="width: {$metadataWidth}px;">
-            <span class="bold"><i18n:text>xmlui.dri2xhtml.pioneer.title</i18n:text><xsl:text>:</xsl:text></span>
+            <span class="bold">
+                <i18n:text>xmlui.dri2xhtml.pioneer.title</i18n:text>
+                <xsl:text>:</xsl:text>
+            </span>
             <span class="content" style="width: {$metadataWidth - 110}px;">
                 <xsl:element name="a">
                     <xsl:attribute name="href">
@@ -99,7 +108,10 @@
                 </xsl:attribute>
                 &#xFEFF; <!-- non-breaking space to force separating the end tag -->
             </span>
-            <span class="bold"><i18n:text>xmlui.dri2xhtml.pioneer.author</i18n:text><xsl:text>:</xsl:text></span>
+            <span class="bold">
+                <i18n:text>xmlui.dri2xhtml.pioneer.author</i18n:text>
+                <xsl:text>:</xsl:text>
+            </span>
             <span class="content" style="width: {$metadataWidth - 110}px;">
                 <xsl:choose>
                     <xsl:when test="dim:field[@element='contributor'][@qualifier='author']">
@@ -139,7 +151,10 @@
                 </xsl:choose>
             </span>
             <xsl:if test="dim:field[@element='date' and @qualifier='issued'] or dim:field[@element='publisher']">
-                <span class="bold"><i18n:text>xmlui.dri2xhtml.pioneer.date</i18n:text><xsl:text>:</xsl:text></span>
+                <span class="bold">
+                    <i18n:text>xmlui.dri2xhtml.pioneer.date</i18n:text>
+                    <xsl:text>:</xsl:text>
+                </span>
                 <span class="content" style="width: {$metadataWidth - 110}px;">
                     <xsl:value-of
                             select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
@@ -179,10 +194,12 @@
                         <xsl:when test="dim:field[@element='contributor'][@qualifier='author']">
                             <xsl:for-each select="dim:field[@element='contributor'][@qualifier='author']">
                                 <span>
-                                  <xsl:if test="@authority">
-                                    <xsl:attribute name="class"><xsl:text>ds-dc_contributor_author-authority</xsl:text></xsl:attribute>
-                                  </xsl:if>
-                                  <xsl:copy-of select="node()"/>
+                                    <xsl:if test="@authority">
+                                        <xsl:attribute name="class">
+                                            <xsl:text>ds-dc_contributor_author-authority</xsl:text>
+                                        </xsl:attribute>
+                                    </xsl:if>
+                                    <xsl:copy-of select="node()"/>
                                 </span>
                                 <xsl:if test="count(following-sibling::dim:field[@element='contributor'][@qualifier='author']) != 0">
                                     <xsl:text>; </xsl:text>
@@ -212,19 +229,19 @@
                 </span>
                 <xsl:text> </xsl:text>
                 <xsl:if test="dim:field[@element='date' and @qualifier='issued'] or dim:field[@element='publisher']">
-	                <span class="publisher-date">
-	                    <xsl:text>(</xsl:text>
-	                    <xsl:if test="dim:field[@element='publisher']">
-	                        <span class="publisher">
-	                            <xsl:copy-of select="dim:field[@element='publisher']/node()"/>
-	                        </span>
-	                        <xsl:text>, </xsl:text>
-	                    </xsl:if>
-	                    <span class="date">
-	                        <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
-	                    </span>
-	                    <xsl:text>)</xsl:text>
-	                </span>
+                    <span class="publisher-date">
+                        <xsl:text>(</xsl:text>
+                        <xsl:if test="dim:field[@element='publisher']">
+                            <span class="publisher">
+                                <xsl:copy-of select="dim:field[@element='publisher']/node()"/>
+                            </span>
+                            <xsl:text>, </xsl:text>
+                        </xsl:if>
+                        <span class="date">
+                            <xsl:value-of select="substring(dim:field[@element='date' and @qualifier='issued']/node(),1,10)"/>
+                        </span>
+                        <xsl:text>)</xsl:text>
+                    </span>
                 </xsl:if>
             </div>
             <xsl:if test="dim:field[@element = 'description' and @qualifier='abstract']">
@@ -248,12 +265,31 @@
                 <a class="image-link" href="{$href}">
                     <xsl:choose>
                         <xsl:when test="mets:fileGrp[@USE='THUMBNAIL']">
-                            <img alt="Thumbnail">
-                                <xsl:attribute name="src">
-                                    <xsl:value-of
-                                            select="mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
-                                </xsl:attribute>
-                            </img>
+                            <!-- Checking if Thumbnail is restricted and if so, show a restricted image -->
+                            <xsl:variable name="src">
+                                <xsl:value-of select="mets:fileGrp[@USE='THUMBNAIL']/mets:file/mets:FLocat[@LOCTYPE='URL']/@xlink:href"/>
+                            </xsl:variable>
+                            <xsl:choose>
+                                <xsl:when test="contains($src,'isAllowed=n')">
+                                    <div style="width: 100%; text-align: center">
+                                        <img>
+                                            <xsl:attribute name="src">
+                                                <xsl:value-of select="$context-path"/>
+                                                <xsl:text>/static/icons/lock24.png</xsl:text>
+                                            </xsl:attribute>
+                                            <xsl:attribute name="alt">xmlui.dri2xhtml.METS-1.0.blocked</xsl:attribute>
+                                            <xsl:attribute name="attr" namespace="http://apache.org/cocoon/i18n/2.1">alt</xsl:attribute>
+                                        </img>
+                                    </div>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <img alt="Thumbnail">
+                                        <xsl:attribute name="src">
+                                            <xsl:value-of select="$src"/>
+                                        </xsl:attribute>
+                                    </img>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:otherwise>
                             <img alt="Icon" src="{concat($theme-path, '/images/mime.png')}" style="height: {$thumbnail.maxheight}px;"/>

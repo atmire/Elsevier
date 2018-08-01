@@ -49,9 +49,9 @@
     <xsl:import href="aspect/artifactbrowser/one-offs.xsl"/>
     <xsl:import href="aspect/submission/submission.xsl"/>
     <xsl:import href="custom/core/global-variables.xsl"/>
+    <xsl:import href="custom/core/forms.xsl"/>
     <xsl:import href="custom/aspect/artifactbrowser/item-view.xsl"/>
     <xsl:import href="custom/aspect/sciencedirect/elsevier-embed.xsl"/>
-    <xsl:import href="custom/aspect/sciencedirect/elsevier-lookup.xsl"/>
     <xsl:import href="custom/core/elements.xsl"/>
     <xsl:import href="custom/core/page-structure.xsl"/>
     <xsl:output indent="yes"/>

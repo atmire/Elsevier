@@ -2,7 +2,7 @@
  * The contents of this file are subject to the license and copyright
  * detailed in the LICENSE and NOTICE files at the root of the source
  * tree and available online at
- *
+ * <p>
  * http://www.dspace.org/license/
  */
 
@@ -12,9 +12,9 @@ import java.io.StringReader;
 import java.util.*;
 
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 import org.dspace.importer.external.datamodel.*;
 import org.dspace.importer.external.metadatamapping.*;
 import org.dspace.importer.external.metadatamapping.contributor.*;
@@ -23,6 +23,7 @@ import org.dspace.importer.external.scidir.GenerateQueryForItem;
 import org.dspace.importer.external.service.components.*;
 import org.jaxen.JaxenException;
 import org.springframework.beans.factory.annotation.Autowired;
+import javax.xml.stream.XMLStreamException;
 
 /**
  * This class is a partial implementation of {@link MetadataSource}. It provides assistance with mapping metadata from source format to DSpace format.
@@ -33,124 +34,131 @@ import org.springframework.beans.factory.annotation.Autowired;
  *
  */
 public abstract class AbstractImportMetadataSourceService<RecordType> extends AbstractRemoteMetadataSource implements MetadataSource {
-	protected GenerateQueryService generateQueryForItem = null;
-	private MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping;
+    protected GenerateQueryService generateQueryForItem = null;
+    private MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping;
     private String name;
     private Map<String, String> importFields;
     private String apiKey;
     private String idField;
 
-	public AbstractImportMetadataSourceService(GenerateQueryService generateQueryService, MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping){
-		this.generateQueryForItem=generateQueryService;
-		this.metadataFieldMapping = metadataFieldMapping;
-	}
+    Logger log = Logger.getLogger(AbstractImportMetadataSourceService.class);
 
-	protected AbstractImportMetadataSourceService() {
-	}
+    public AbstractImportMetadataSourceService(GenerateQueryService generateQueryService, MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping) {
+        this.generateQueryForItem = generateQueryService;
+        this.metadataFieldMapping = metadataFieldMapping;
+    }
 
-	public String getApiKey() {
-		return apiKey;
-	}
+    protected AbstractImportMetadataSourceService() {
+    }
 
-	@Autowired(required = false)
-	public void setApiKey(String apiKey) {
-		this.apiKey = apiKey;
-	}
+    public String getApiKey() {
+        return apiKey;
+    }
 
-	@Autowired(required = false)
-	public void setIdField(String field) {
-		this.idField = field;
-	}
+    @Autowired(required = false)
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
-
-	@Autowired
-	public void setGenerateQueryForItem(GenerateQueryForItem generateQueryForItem) {
-		this.generateQueryForItem = generateQueryForItem;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public Map<String, String> getImportFields() {
-		return importFields;
-	}
-
-	public void setImportFields(Map<String, String> importFields) {
-		this.importFields = importFields;
-	}
+    @Autowired(required = false)
+    public void setIdField(String field) {
+        this.idField = field;
+    }
 
 
-	/**
+    @Autowired
+    public void setGenerateQueryForItem(GenerateQueryForItem generateQueryForItem) {
+        this.generateQueryForItem = generateQueryForItem;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Map<String, String> getImportFields() {
+        return importFields;
+    }
+
+    public void setImportFields(Map<String, String> importFields) {
+        this.importFields = importFields;
+    }
+
+
+    /**
      * Retrieve the MetadataFieldMapping containing the mapping between RecordType and Metadata
      * @return The configured MetadataFieldMapping
      */
-	public MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> getMetadataFieldMapping() {
-		return metadataFieldMapping;
-	}
+    public MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> getMetadataFieldMapping() {
+        return metadataFieldMapping;
+    }
 
     /**
      * Sets the MetadataFieldMapping to base the mapping of RecordType and
      * @param metadataFieldMapping
      */
-	@Autowired
-	public void setMetadataFieldMapping(
-			MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping) {
-		this.metadataFieldMapping = metadataFieldMapping;
-	}
+    @Autowired
+    public void setMetadataFieldMapping(
+            MetadataFieldMapping<RecordType, MetadataContributor<RecordType>> metadataFieldMapping) {
+        this.metadataFieldMapping = metadataFieldMapping;
+    }
 
     /**
      *  Return an ImportRecord constructed from the results in a RecordType
      * @param recordType The recordtype to retrieve the DCValueMapping from
      * @return An {@link ImportRecord}, This is based on the results retrieved from the recordTypeMapping
      */
-	public ImportRecord transformSourceRecords(RecordType recordType){
-		 return new ImportRecord(new LinkedList<>(getMetadataFieldMapping().resultToDCValueMapping(recordType)));
-	}
+    public ImportRecord transformSourceRecords(RecordType recordType) {
+        return new ImportRecord(new LinkedList<>(getMetadataFieldMapping().resultToDCValueMapping(recordType)));
+    }
 
-	protected String getSingleElementValue(String src, String elementName) {
-		OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(src));
-		OMElement element = records.getDocumentElement();
-		AXIOMXPath xpath = null;
-		String value = null;
-		try {
-			xpath = new AXIOMXPath("//" + elementName);
-			xpath.addNamespace("dc", "http://purl.org/dc/elements/1.1/");
-			xpath.addNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
-			List<OMElement> recordsList = xpath.selectNodes(element);
-			if (!recordsList.isEmpty()) {
-				value = recordsList.get(0).getText();
-			}
-		} catch (JaxenException e) {
-			value = null;
-		}
-		return value;
-	}
+    protected String getSingleElementValue(String src, String elementName) {
+        String value = null;
+        try {
+            OMElement element = AXIOMUtil.stringToOM(src);
+            AXIOMXPath xpath = new AXIOMXPath("//" + elementName);
+            xpath.addNamespace("dc", "http://purl.org/dc/elements/1.1/");
+            xpath.addNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
+            List<OMElement> recordsList = xpath.selectNodes(element);
+            if (!recordsList.isEmpty()) {
+                value = recordsList.get(0).getText();
+            }
+        } catch (JaxenException e) {
+            value = null;
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
+            value = null;
+        }
+        return value;
+    }
 
-	protected List<OMElement> splitToRecords(String recordsSrc) {
-		OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-		OMElement element = records.getDocumentElement();
-
-		Iterator childElements = element.getChildElements();
-
-		List<OMElement> recordsList = new ArrayList<>();
-
-		while (childElements.hasNext()) {
-			OMElement next = (OMElement) childElements.next();
-
-			if (next.getLocalName().equals("entry")) {
-				recordsList.add(next);
-			}
-		}
-		return recordsList;
-	}
+    protected List<OMElement> splitToRecords(String recordsSrc) {
 
 
-	public String getIdField() {
-		return idField;
-	}
+        List<OMElement> recordsList = new ArrayList<>();
+        try {
+
+            OMElement element = AXIOMUtil.stringToOM(recordsSrc);
+
+            Iterator childElements = element.getChildElements();
+            while (childElements.hasNext()) {
+                OMElement next = (OMElement) childElements.next();
+
+                if (next.getLocalName().equals("entry")) {
+                    recordsList.add(next);
+                }
+            }
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
+        }
+        return recordsList;
+    }
+
+
+    public String getIdField() {
+        return idField;
+    }
 }

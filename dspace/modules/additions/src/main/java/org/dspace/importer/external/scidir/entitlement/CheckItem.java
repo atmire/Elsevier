@@ -9,6 +9,9 @@ package org.dspace.importer.external.scidir.entitlement;
 
 import java.io.*;
 import java.util.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
 import javax.xml.transform.stream.*;
@@ -25,6 +28,7 @@ import org.dspace.fileaccess.factory.*;
 import org.dspace.fileaccess.service.*;
 import org.dspace.importer.external.scidir.util.*;
 import org.w3c.dom.*;
+import org.xml.sax.SAXException;
 
 /**
  * Created by: Antoine Snyers (antoine at atmire dot com)
@@ -63,23 +67,27 @@ public abstract class CheckItem {
         String eid = itemMetadataService.getEID(item);
         String scopus_id = itemMetadataService.getScopusID(item);
         String pubmed_ID = itemMetadataService.getPubmedID(item);
-
+        InputStream responseStream= null;
         if (StringUtils.isNotBlank(pii)) {
-            response = connect.get("hostingpermission/pii/" + pii + getQueryString());
+            responseStream = connect.get("hostingpermission/pii/" + pii + getQueryString(), null);
         }  else if (StringUtils.isNotBlank(eid)) {
-            response = connect.get("hostingpermission/eid/" + eid + getQueryString());
+            responseStream = connect.get("hostingpermission/eid/" + eid + getQueryString(), null);
         } else if (StringUtils.isNotBlank(doi) && doi.startsWith("10.1016")) {
-            response = connect.get("hostingpermission/doi/" + doi + getQueryString());
+            responseStream = connect.get("hostingpermission/doi/" + doi + getQueryString(), null);
         } else if (publisherIsElsevier(item)) {
             if (StringUtils.isNotBlank(scopus_id)) {
-                response = connect.get("hostingpermission/scopus_id/" + scopus_id + getQueryString());
+                responseStream = connect.get("hostingpermission/scopus_id/" + scopus_id + getQueryString(), null);
             } else if (StringUtils.isNotBlank(pubmed_ID)) {
-                response = connect.get("hostingpermission/pubmed_id/" + pubmed_ID + getQueryString());
+                responseStream = connect.get("hostingpermission/pubmed_id/" + pubmed_ID + getQueryString(), null);
             }
         }
 
-        if (response != null) {
+
+        if (responseStream != null) {
             try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                response = builder.parse(responseStream);
                 Node hostingNode = XMLUtils.getNode(response, getCheckNodeXPath());
                 Node hostingAllowedNode;
                 if(hostingNode==null){
@@ -113,21 +121,31 @@ public abstract class CheckItem {
                 log.error("Error", e);
             } catch (TransformerException e) {
                 log.error("Error", e);
+            } catch (ParserConfigurationException e) {
+                log.error("Error", e);
+            } catch (IOException e) {
+                log.error("Error", e);
+            } catch (SAXException e) {
+                log.error("Error", e);
             }
         }
 
         if(StringUtils.isBlank(articleAccess.getAudience())){
             if (StringUtils.isNotBlank(pii)) {
-            response = connect.get("pii/" + pii + getQueryString());
+            responseStream = connect.get("pii/" + pii + getQueryString(), null);
                 log.error("using the fallback access check implementation for article with pii " + pii);
 
         } else if (StringUtils.isNotBlank(doi)) {
-            response = connect.get("doi/" + doi + getQueryString());
+                responseStream = connect.get("doi/" + doi + getQueryString(), null);
                 log.error("using the fallback access check implementation for article with doi " + doi);
         }
 
-        if (response != null) {
+            if (responseStream != null) {
             try {
+
+                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder builder = factory.newDocumentBuilder();
+                    response = builder.parse(responseStream);
                 Node node = XMLUtils.getNode(response, getCheckNodeXPath());
 
                 if (node != null) {
@@ -135,6 +153,12 @@ public abstract class CheckItem {
                 }
             } catch (XPathExpressionException e) {
                 log.error("Error", e);
+                } catch (ParserConfigurationException e) {
+                    log.error("Error", e);
+                } catch (IOException e) {
+                    log.error("Error", e);
+                } catch (SAXException e) {
+                    log.error("Error", e);
             }
         }
         }

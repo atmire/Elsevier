@@ -49,7 +49,7 @@ public class ElsevierUploadStep extends UploadStep {
     public static final int STATUS_NO_FIlE_ACCESS_ERROR = 6;
 
     /** log4j logger */
-    private static Logger log = Logger.getLogger(ElsevierUploadStep.class);
+    private static final Logger log = Logger.getLogger(ElsevierUploadStep.class);
 
     protected FileAccessFromMetadataService fileAccessFromMetadataService = FileAccessServiceFactory.getInstance().getFileAccessFromMetadataService();
 
@@ -463,7 +463,7 @@ public class ElsevierUploadStep extends UploadStep {
                 if (ConfigurationManager.getBooleanProperty("submission-curation", "virus-scan"))
                 {
                     Curator curator = new Curator();
-                    curator.addTask("vscan").curate(item);
+                    curator.addTask("vscan").curate(context, item);
                     int status = curator.getStatus("vscan");
                     if (status == Curator.CURATE_ERROR)
                     {

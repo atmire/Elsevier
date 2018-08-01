@@ -727,6 +727,9 @@ public class ItemAdapter extends AbstractAdapter
         // Suppress license?
         Boolean showLicense = DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("webui.licence_bundle.show");
 
+        // Check if ORIGINAL bundle included (either explicitly or via include all fileGrp types)
+        boolean includeContentBundle = this.fileGrpTypes.isEmpty() ? true : this.fileGrpTypes.contains("ORIGINAL");
+
         // Loop over all requested bundles
         for (Bundle bundle : bundles)
         {
@@ -755,6 +758,24 @@ public class ItemAdapter extends AbstractAdapter
                     // The user requested specific file groups and this is not one of them.
                     continue;
 
+            // /////////////////////////////////////
+            // Determine which bitstreams to include in bundle
+            List<Bitstream> bitstreams = new ArrayList<Bitstream>();
+
+            // If this is the THUMBNAIL bundle, and we are NOT including content bundle,
+            // Then assume this is an item summary page, and we can just include the main thumbnail.
+            if ("THUMBNAIL".equals(bundle.getName()) && !includeContentBundle)
+            {
+                Thumbnail thumbnail = itemService.getThumbnail(context, item, false);
+                if(thumbnail != null) {
+                    bitstreams.add(thumbnail.getThumb());
+                }
+            }
+            else
+            {   // Default to including all bitstreams
+                bitstreams = bundle.getBitstreams();
+            }
+
 
             // ///////////////////
             // Start bundle's file group
@@ -762,14 +783,16 @@ public class ItemAdapter extends AbstractAdapter
             attributes.put("USE", use);
             startElement(METS,"fileGrp",attributes);
 
-            for (Bitstream bitstream : bundle.getBitstreams())
+            for (Bitstream bitstream : bitstreams)
             {
                 // //////////////////////////////
                 // Determine the file's IDs
                 String fileID = getFileID(bitstream);
 
                 Bitstream originalBitstream = null;
-                if (isDerivedBundle)
+                // If we are looping through a derived bundle and content bundle is included,
+                // ensure each derived bitstream and original bitstream share the same groupID
+                if (isDerivedBundle && includeContentBundle)
                 {
                     originalBitstream = findOriginalBitstream(item, bitstream);
                 }
@@ -1018,7 +1041,8 @@ public class ItemAdapter extends AbstractAdapter
 
         // Filename of original will be filename of the derived bitstream
         // minus the extension (ie everything from and including the last "." character)
-        String originalFilename = derived.getName().substring(0, derived.getName().lastIndexOf("."));
+       int endIndex = derived.getName().lastIndexOf(".");
+       String originalFilename = derived.getName().substring(0, endIndex>0?endIndex:(derived.getName().length()-1));
 
         // First find "original" bundle
         for (Bundle bundle : bundles)

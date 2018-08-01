@@ -34,7 +34,7 @@ public class SourceChoiceStep extends AbstractProcessingStep {
         if (StringUtils.isNotBlank(source) && sources.keySet().contains(source)) {
             itemService.addMetadata(context, item, "workflow", "import", "source", null, source);
             itemService.update(context, item);
-            context.commit();
+            context.dispatchEvents();
         }
         return 0;
     }

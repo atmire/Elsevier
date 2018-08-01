@@ -349,8 +349,9 @@
         <property name="query" value="x:link[@ref='self']/@href"/>
     </bean>
 
-    <bean id="abstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
+    <bean id="abstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleStartSubstringXpathMetadatumContributor">
         <property name="field" ref="dc.description.abstract"/>
+        <property name="startString" value="Abstract "/>
         <property name="query" value="dc:description"/>
     </bean>
 
