@@ -8,7 +8,10 @@ import java.util.*;
 import java.util.Collection;
 import java.util.concurrent.*;
 import javax.ws.rs.core.*;
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.axiom.om.*;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.*;
 import org.apache.cxf.jaxrs.client.*;
 import org.apache.log4j.*;
@@ -173,9 +176,12 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
             if (simple.getStatusInfo().getFamily() != Response.Status.Family.SUCCESSFUL) {
                 throw new SourceException(simple.getStatusInfo().getStatusCode() + " " + simple.getStatusInfo().getReasonPhrase());
             }
-
-            OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(simple.readEntity(String.class)));
-            OMElement element = (OMElement) records.getDocumentElement().getChildrenWithLocalName("entry").next();
+            String input = simple.readEntity(String.class);
+            Iterator iterator =  AXIOMUtil.stringToOM(input).getChildrenWithLocalName("entry");
+            OMElement element = null;
+            if (iterator.hasNext()) {
+                element = (OMElement) iterator.next();
+            }
             if (element != null) {
                 element.declareNamespace("http://www.w3.org/2005/Atom", "a");
                 element.declareNamespace("http://purl.org/dc/elements/1.1/", "dc");
@@ -268,9 +274,13 @@ public class ScopusSource extends AbstractImportSource<OMElement> {
         }
 
         protected OMElement getDocumentElement(Response simple) {
-            InputStream inputStream = simple.readEntity(InputStream.class);
-            OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(inputStream);
-            return records.getDocumentElement();
+            String input = simple.readEntity(String.class);
+            try {
+                return AXIOMUtil.stringToOM(input);
+            } catch (XMLStreamException e) {
+                log.error(e.getMessage(), e);
+                return null;
+            }
         }
     }
 

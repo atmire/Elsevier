@@ -7,15 +7,14 @@ import com.atmire.import_citations.configuration.metadatamapping.MetadataContrib
 import com.atmire.import_citations.configuration.metadatamapping.MetadataFieldMapping;
 import com.atmire.import_citations.datamodel.Record;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
+import org.apache.log4j.Logger;
 import org.dspace.content.Metadatum;
 import org.jaxen.JaxenException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 
-import java.io.StringReader;
+import javax.xml.stream.XMLStreamException;
 import java.util.*;
 
 /**
@@ -29,6 +28,7 @@ public abstract class AbstractImportSource<RecordType> extends Source implements
     private Map<String, String> importFields;
     private String apiKey;
     private String idField;
+    Logger log = Logger.getLogger(AbstractImportSource.class);
 
     public GenerateQueryForItem getGenerateQueryForItem() {
         return generateQueryForItem;
@@ -86,12 +86,10 @@ public abstract class AbstractImportSource<RecordType> extends Source implements
     }
 
     protected String getSingleElementValue(String src, String elementName) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(src));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
         String value = null;
         try {
-            xpath = new AXIOMXPath("//" + elementName);
+            OMElement element = AXIOMUtil.stringToOM(src);
+            AXIOMXPath xpath = new AXIOMXPath("//" + elementName);
             xpath.addNamespace("dc", "http://purl.org/dc/elements/1.1/");
             xpath.addNamespace("opensearch", "http://a9.com/-/spec/opensearch/1.1/");
             List<OMElement> recordsList = xpath.selectNodes(element);
@@ -100,17 +98,20 @@ public abstract class AbstractImportSource<RecordType> extends Source implements
             }
         } catch (JaxenException e) {
             value = null;
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
+            value = null;
         }
         return value;
     }
 
     protected List<OMElement> splitToRecords(String recordsSrc) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-        OMElement element = records.getDocumentElement();
-
-        Iterator childElements = element.getChildElements();
-
         List<OMElement> recordsList = new ArrayList<>();
+        try {
+
+            OMElement element = AXIOMUtil.stringToOM(recordsSrc);
+
+            Iterator childElements = element.getChildElements();
 
         while (childElements.hasNext()) {
             OMElement next = (OMElement) childElements.next();
@@ -118,6 +119,9 @@ public abstract class AbstractImportSource<RecordType> extends Source implements
             if (next.getLocalName().equals("entry")) {
                 recordsList.add(next);
             }
+        }
+        } catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
         }
         return recordsList;
     }

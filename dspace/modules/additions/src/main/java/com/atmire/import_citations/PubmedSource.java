@@ -4,8 +4,7 @@ import com.atmire.import_citations.configuration.Query;
 import com.atmire.import_citations.configuration.SourceException;
 import com.atmire.import_citations.datamodel.Record;
 import org.apache.axiom.om.OMElement;
-import org.apache.axiom.om.OMXMLBuilderFactory;
-import org.apache.axiom.om.OMXMLParserWrapper;
+import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
 import org.apache.log4j.*;
 import org.dspace.content.Item;
@@ -18,6 +17,7 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.stream.XMLStreamException;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -276,14 +276,15 @@ public class PubmedSource extends AbstractImportSource<OMElement> {
 
     @Override
     public List<OMElement> splitToRecords(String recordsSrc) {
-        OMXMLParserWrapper records = OMXMLBuilderFactory.createOMBuilder(new StringReader(recordsSrc));
-        OMElement element = records.getDocumentElement();
-        AXIOMXPath xpath = null;
         try {
-            xpath = new AXIOMXPath("//PubmedArticle");
+            OMElement element = AXIOMUtil.stringToOM(recordsSrc);
+            AXIOMXPath xpath = new AXIOMXPath("//PubmedArticle");
             List<OMElement> recordsList = xpath.selectNodes(element);
             return recordsList;
         } catch (JaxenException e) {
+            return null;
+        }  catch (XMLStreamException e) {
+            log.error(e.getMessage(), e);
             return null;
         }
     }
