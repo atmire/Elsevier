@@ -50,6 +50,9 @@ Atmire's modifications to a standard DSpace for Elsevier are tracked on Github. 
 
 Save this file under a meaningful name. It will later be referred to as `<patch>`.
 
+Note: For DSpace versions 6.0 we advise to use an older version of the Elsevier patch, because breaking changes were introduced in DSpace 6.1: 
+[Download patch for DSpace 6.0](https://github.com/atmire/Elsevier/compare/9eed09e0df738073c3a396c3430caf5952984335...stable-6x-14-03-2018.patch)
+
 ## Elsevier API key
 
 The integration will send requests to Elsevier's APIs to retrieve metadata and links from Scopus and ScienceDirect. These APIs are protected with user accounts and keys to avoid abuse by robots and malicious users. To register for an API key, follow this two step approach:
