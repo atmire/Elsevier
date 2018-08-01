@@ -13,6 +13,15 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## August 1th, 2018 
+
+patch for DSpace version 5.9 and 6.3:
+- API fix: Updated the ScienceDirect DSpace backend to support the latest changes in the ScienceDirect API.
+- Fix: Fixed a bug in the maven dependencies that caused a dependency conflict with the SWORD V2 DSpace webapp
+- Fix: Improved the behaviour of the submission modal lookup window. It will now always be centered in the screen. 
+- Fix: Fixed the “Next Results” and “Previous Results” buttons in the submission modal lookup window.
+- Improvement: Added support for i18n messages to the submission modal lookup window texts. 
+
 ## March 14th, 2018
 
 - Fix: On theme Mirage 2 search results in the live import submission step now shows a link to the source record.
