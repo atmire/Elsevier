@@ -1,5 +1,6 @@
 package com.atmire.import_citations.configuration.metadatamapping;
 
+import com.atmire.import_citations.configuration.metadatamapping.processor.MetadataProcessor;
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMText;
@@ -32,6 +33,16 @@ public class SimpleXpathMetadatumContributor implements MetadataContributor<OMEl
 
     public void setMetadataFieldMapping(MetadataFieldMapping<OMElement,MetadataContributor<OMElement>> metadataFieldMapping) {
         this.metadataFieldMapping = metadataFieldMapping;
+    }
+
+    private List<MetadataProcessor> metadataProcessors = new ArrayList<>();
+
+    public List<MetadataProcessor> getMetadataProcessors() {
+        return metadataProcessors;
+    }
+
+    public void setMetadataProcessors(List<MetadataProcessor> metadataProcessors) {
+        this.metadataProcessors = metadataProcessors;
     }
 
     @Resource(name="FullprefixMapping")
@@ -105,6 +116,11 @@ public class SimpleXpathMetadatumContributor implements MetadataContributor<OMEl
     }
 
     protected void addRetrievedValueToMetadata(List<Metadatum> values, String value) {
+
+        for (MetadataProcessor processor : getMetadataProcessors()) {
+            value = processor.processMetadataValue(value);
+        }
+
         values.add(metadataFieldMapping.toDCValue(field, value));
     }
 }
