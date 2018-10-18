@@ -89,12 +89,12 @@
 
     <bean id="scopusLastNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:surname"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:surname"/>
     </bean>
 
     <bean id="scopusFirstNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:given-name"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:given-name"/>
     </bean>
 
     <bean id="scopusAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
