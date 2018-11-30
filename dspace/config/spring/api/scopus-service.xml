@@ -87,12 +87,12 @@
 
     <bean id="scopusLastNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:surname"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:surname"/>
     </bean>
 
     <bean id="scopusFirstNameContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:given-name"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:given-name"/>
     </bean>
 
     <bean id="scopusAbstractContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
