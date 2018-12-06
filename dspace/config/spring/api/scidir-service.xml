@@ -59,7 +59,7 @@
         <entry key-ref="elsevier.openaccessuserlicense" value-ref="openaccessuserlicenseContrib"/>
         <entry key-ref="dc.type" value-ref="typeContrib"/>
         <entry key-ref="elsevier.identifier.pii" value-ref="piiContrib"/>
-        <entry key-ref="dc.contributor.author" value-ref="authorContrib"/>
+        <entry key-ref="dc.contributor.author" value-ref="scidirAuthorContrib"/>
         <entry key-ref="elsevier.teaser" value-ref="teaserContrib"/>
         <entry key-ref="elsevier.url.scidir" value-ref="scidirurlContrib"/>
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
@@ -90,6 +90,10 @@
     <bean id="scidirPubmedIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.identifier.pubmedid"/>
         <property name="query" value="x:pubmed-id"/>
+    </bean>
+    <bean id="scidirAuthorContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:authors/x:author"/>
     </bean>
 
     <bean class="com.atmire.scidir.DOIBasedQueryGenerator" id="DOIBasedService">
