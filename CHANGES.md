@@ -13,6 +13,13 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 - Validation: ...
 - Testing improvements: ...
 
+## December 10th, 2018
+
+- Fix: Resolving author duplications that previously happened during the Scopus import.
+- Fix: Streamlining of first-name, last-name formats during imports.
+- Improvement: Only try the Elsevier entitlement check for relevant items. When a DOI doesn't start with a certain Elsevier related prefix, the entitlement check is irrelevant. 
+- API change: As as december 13, 2018, the Elsevier ScienceDirect Search API has been migrated. ([More information here](https://dev.elsevier.com/tecdoc_sdsearch_migration.html)). Fixed the endpoint that is called and its related mappings.
+
 ## August 1th, 2018 
 
 - API fix: Updated the ScienceDirect DSpace backend to support the latest changes in the ScienceDirect API.
