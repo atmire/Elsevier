@@ -11,7 +11,7 @@ A new `elsevier-sciencedirect.cfg` file will be created in `[dspace-src]/dspace/
 |`api.key`| Elsevier API key that has been registered [before](#prerequisites-api). You can either fill out the API key manually or include in your Maven/Puppet/Ansible configuration profiles. |${elsevier.api.key}
 |`api.article.url`| The base URL for the retrieval of an article. The default value should probably be left untouched. |http://api.elsevier.com/content/article
 |`api.entitlement.url`| The base URL for the retrieval of identifiers and the entitlement status. The default value should probably be left untouched. |http://api.elsevier.com/content/article/entitlement
-|`api.scidir.url`| The base URL for the interacting with ScienceDirect's API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scidir
+|`api.scidir.url`| The base URL for the interacting with ScienceDirect's API. The default value should probably be left untouched. |http://api.elsevier.com/content/metadata/article/
 |`api.pubmed.url`| The base URL for the interacting with PubMed's API. The default value should probably be left untouched. |https://eutils.ncbi.nlm.nih.gov/entrez/eutils/
 |`api.scopus.url`| The base URL for the interacting with Scopus' API. The default value should probably be left untouched. |http://api.elsevier.com/content/search/scopus
 |`api.scopus.view`| The Scopus view to use for retrieving results. Should either be `STANDARD` or `COMPLETE`. Only set to `COMPLETE` if your Elsevier API key allows the use of the Scopus COMPLETE view. Please refer to the [API description](http://api.elsevier.com/documentation/search/SCOPUSSearchViews.htm) for more information. |STANDARD
