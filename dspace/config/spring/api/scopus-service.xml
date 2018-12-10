@@ -41,7 +41,7 @@
         <entry key-ref="dc.identifier.uri" value-ref="scopusUriContrib"/>
         <entry key-ref="elsevier.identifier.scopusid" value-ref="scopusIdContrib"/>
         <entry key-ref="elsevier.identifier.eid" value-ref="eidContrib"/>
-        <entry key-ref="dc.creator" value-ref="creatorContrib"/>
+        <entry key-ref="dc.creator" value-ref="scopusCreatorContrib"/>
         <entry key-ref="dc.relation.ispartof" value-ref="publicationContrib"/>
         <entry key-ref="dc.identifier.issn" value-ref="issnContrib"/>
         <entry key-ref="dc.identifier.isbn" value-ref="isbnContrib"/>
@@ -76,6 +76,15 @@
         <property name="query" value="dc:identifier"/>
     </bean>
 
+    <bean id="scopusCreatorContrib" parent="creatorContrib">
+        <property name="metadataProcessors" ref="scopusCreatorProcessor"/>
+    </bean>
+
+    <bean id="scopusCreatorProcessor" class="org.dspace.importer.external.metadatamapping.processor.RegexReplaceMetadataProcessor">
+        <property name="regex" value="^(.*?)\s+((?:\s*\w\.)*)\s*?$"/>
+        <property name="replacement" value="$1, $2"/>
+    </bean>
+
     <bean id="scopusAuthorContrib" class="org.dspace.importer.external.metadatamapping.contributor.CombinedMetadatumContributor">
         <property name="separator" value=", "/>
         <property name="metadatumContributors" ref="scopusCombinedauthorList"/>
@@ -89,12 +98,12 @@
 
     <bean id="scopusLastNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:surname"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:surname"/>
     </bean>
 
     <bean id="scopusFirstNameContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">
         <property name="field" ref="dc.contributor.author"/>
-        <property name="query" value="x:author/x:given-name"/>
+        <property name="query" value="x:author[not(./x:authid=preceding-sibling::x:author/x:authid)]/x:given-name"/>
     </bean>
 
     <bean id="scopusAbstractContrib" class="org.dspace.importer.external.metadatamapping.contributor.SimpleXpathMetadatumContributor">

@@ -322,13 +322,11 @@ public class ItemViewer extends AbstractDSpaceTransformer implements CacheablePr
 
         pageMeta.addMetadata("javascript", "static", null, true).addContent("static/js/entitlement.js");
         boolean entitlementCheck = DSpaceServicesFactory.getInstance().getConfigurationService().getBooleanProperty("elsevier-sciencedirect.entitlement.check.enabled", false);
-        if(entitlementCheck) {
+        String doi = itemMetadataService.getDOI(item);
+        if (StringUtils.startsWith(doi, "10.1016") && entitlementCheck) {
             pageMeta.addMetadata("window.DSpace", "item_pii").addContent(itemMetadataService.getPII(item));
             pageMeta.addMetadata("window.DSpace", "item_eid").addContent(itemMetadataService.getEID(item));
-            String doi = itemMetadataService.getDOI(item);
-            if (StringUtils.startsWith(doi, "10.1016")) {
-                pageMeta.addMetadata("window.DSpace", "item_doi").addContent(doi);
-            }
+            pageMeta.addMetadata("window.DSpace", "item_doi").addContent(doi);
             if (publisherIsElsevier(item)) {
                 pageMeta.addMetadata("window.DSpace", "item_pubmed_id").addContent(itemMetadataService.getPubmedID(item));
                 pageMeta.addMetadata("window.DSpace", "item_scopus_id").addContent(itemMetadataService.getScopusID(item));

@@ -13,6 +13,7 @@ import org.apache.axiom.om.*;
 import org.apache.axiom.om.xpath.*;
 import org.apache.commons.lang3.*;
 import org.dspace.importer.external.metadatamapping.*;
+import org.dspace.importer.external.metadatamapping.processor.MetadataProcessor;
 import org.jaxen.*;
 import org.springframework.beans.factory.annotation.*;
 
@@ -47,6 +48,16 @@ public class SimpleXpathMetadatumContributor implements MetadataContributor<OMEl
      */
     public void setMetadataFieldMapping(MetadataFieldMapping<OMElement,MetadataContributor<OMElement>> metadataFieldMapping) {
         this.metadataFieldMapping = metadataFieldMapping;
+    }
+
+    private List<MetadataProcessor> metadataProcessors = new ArrayList<>();
+
+    public List<MetadataProcessor> getMetadataProcessors() {
+        return metadataProcessors;
+    }
+
+    public void setMetadataProcessors(List<MetadataProcessor> metadataProcessors) {
+        this.metadataProcessors = metadataProcessors;
     }
 
     /**
@@ -151,6 +162,11 @@ public class SimpleXpathMetadatumContributor implements MetadataContributor<OMEl
     }
 
     protected void addRetrievedValueToMetadata(List<MetadatumDTO> values, String value) {
+
+        for (MetadataProcessor processor : getMetadataProcessors()) {
+            value = processor.processMetadataValue(value);
+        }
+
         values.add(metadataFieldMapping.toDCValue(field, value));
     }
 }
