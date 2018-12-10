@@ -40,7 +40,7 @@
         <entry key-ref="dc.identifier" value-ref="identifierContrib"/>
         <entry key-ref="dc.identifier.uri" value-ref="uriContrib"/>
         <entry key-ref="elsevier.identifier.eid" value-ref="eidContrib"/>
-        <entry key-ref="dc.creator" value-ref="creatorContrib"/>
+        <entry key-ref="dc.creator" value-ref="scidirCreatorContrib"/>
         <entry key-ref="dc.relation.ispartof" value-ref="publicationContrib"/>
         <entry key-ref="dc.identifier.issn" value-ref="issnContrib"/>
         <entry key-ref="dc.identifier.isbn" value-ref="isbnContrib"/>
@@ -59,7 +59,7 @@
         <entry key-ref="elsevier.openaccessuserlicense" value-ref="openaccessuserlicenseContrib"/>
         <entry key-ref="dc.type" value-ref="typeContrib"/>
         <entry key-ref="elsevier.identifier.pii" value-ref="piiContrib"/>
-        <entry key-ref="dc.contributor.author" value-ref="authorContrib"/>
+        <entry key-ref="dc.contributor.author" value-ref="scidirAuthorContrib"/>
         <entry key-ref="elsevier.teaser" value-ref="teaserContrib"/>
         <entry key-ref="elsevier.url.scidir" value-ref="scidirurlContrib"/>
         <entry key-ref="elsevier.url.self" value-ref="selfurlContrib"/>
@@ -73,6 +73,15 @@
         <entry key-ref="elsevier.identifier.pubmedid" value-ref="scidirPubmedIdContrib"/>
     </util:map>
 
+    <bean id="scidirCreatorContrib" parent="creatorContrib">
+        <property name="metadataProcessors" ref="scidirCreatorProcessor"/>
+    </bean>
+
+    <bean id="scidirCreatorProcessor" class="com.atmire.import_citations.configuration.metadatamapping.processor.RegexReplaceMetadataProcessor">
+        <property name="regex" value="(.*), (.*)"/>
+        <property name="replacement" value="$2, $1"/>
+    </bean>
+
     <bean id="scidirScopusIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.identifier.scopusid"/>
         <property name="query" value="x:scopus-id"/>
@@ -81,6 +90,10 @@
     <bean id="scidirPubmedIdContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
         <property name="field" ref="elsevier.identifier.pubmedid"/>
         <property name="query" value="x:pubmed-id"/>
+    </bean>
+    <bean id="scidirAuthorContrib" class="com.atmire.import_citations.configuration.metadatamapping.SimpleXpathMetadatumContributor">
+        <property name="field" ref="dc.contributor.author"/>
+        <property name="query" value="x:authors/x:author"/>
     </bean>
 
     <bean class="com.atmire.scidir.DOIBasedQueryGenerator" id="DOIBasedService">
