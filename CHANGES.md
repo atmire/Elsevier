@@ -15,10 +15,10 @@ Unreleased changes can be found on the stable_5x and stable_6x branches
 
 ## December 10th, 2018
 
-- Fix: Resolving author duplications that previously happened during the Scopus import.
-- Fix: Streamlining of first-name, last-name formats during imports.
-- Improvement: Only try the Elsevier entitlement check for relevant items. When a DOI doesn't start with a certain Elsevier related prefix, the entitlement check is irrelevant. 
-- API change: As of december 13, 2018, the Elsevier ScienceDirect Search API has been migrated. ([More information here](https://dev.elsevier.com/tecdoc_sdsearch_migration.html)). Fixed the endpoint that is called and its related mappings.
+- Fix: Scopus import: Problem resolved where duplicate author entries were being imported for particular items.
+- Fix: All sources import: Streamlining of first-name, last-name formats.
+- Improvement: Item page Open Access Entitlements checks: The entitlement checks are now only being called on DOIs for the Elsevier 10.1016 prefix, as the API only has information on those publications.
+- ScienceDirect API: Compatibility: The patch is now compatible with ScienceDirect Search APIv2. APIv1 is being discontinued on December 13th, 2018. ([More information here](https://dev.elsevier.com/tecdoc_sdsearch_migration.html)). The patch now calls the new endpoint and the metadata mappings have been updated.
 
 ## August 1th, 2018 
 
